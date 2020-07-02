@@ -249,11 +249,11 @@ return [
             'submenu' => [
                 [
                     'text' => 'Cadastrar',
-                    'url'  => '#',
+                    'route'  => 'user.create',
                 ],
                 [
                     'text'    => 'Listar',
-                    'url'     => '#',
+                    'route'     => 'user.index',
                 ],
             ],
         ],
