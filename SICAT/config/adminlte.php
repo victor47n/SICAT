@@ -241,122 +241,105 @@ return [
             'url'  => 'admin/blog',
             'can'  => 'manage-blog',
         ],
-        ['header' => 'Funcionários'],
-//        [
-//            'text'        => 'pages',
-//            'url'         => 'admin/pages',
-//            'icon'        => 'far fa-fw fa-file',
-//            'label'       => 4,
-//            'label_color' => 'success',
-//        ],
-        [
-            'text' => 'Cadastrar',
-            'url'  => 'admin/settings',
-            'icon' => 'fas fa-fw fa-user',
-        ],
-        [
-            'text' => 'Editar',
-            'url'  => 'admin/settings',
-            'icon' => 'fas fa-fw fa-user',
-        ],
-        [
-            'text' => 'Listar',
-            'url'  => 'admin/settings',
-            'icon' => 'fas fa-fw fa-user',
-        ],
-        [
-            'text' => 'Excluir',
-            'url'  => 'admin/settings',
-            'icon' => 'fas fa-fw fa-user',
-        ],
 
-        ['header' => 'Ordem de serviço'],
         [
-            'text' => 'Cadastrar',
+            'text' => 'Funcionários',
             'url'  => 'admin/settings',
-            'icon' => 'fas fa-fw fa-user',
-        ],
-        [
-            'text' => 'Editar',
-            'url'  => 'admin/settings',
-            'icon' => 'fas fa-fw fa-user',
-        ],
-        [
-            'text' => 'Listar',
-            'url'  => 'admin/settings',
-            'icon' => 'fas fa-fw fa-user',
-        ],
-        [
-            'text' => 'Excluir',
-            'url'  => 'admin/settings',
-            'icon' => 'fas fa-fw fa-user',
-        ],
-
-        ['header' => 'account_settings'],
-        [
-            'text' => 'profile',
-            'url'  => 'admin/settings',
-            'icon' => 'fas fa-fw fa-user',
-        ],
-        [
-            'text' => 'change_password',
-            'url'  => 'admin/settings',
-            'icon' => 'fas fa-fw fa-lock',
-        ],
-        [
-            'text'    => 'multilevel',
-            'icon'    => 'fas fa-fw fa-share',
+            'icon' => 'fas fa-fw fa-users',
             'submenu' => [
                 [
-                    'text' => 'level_one',
+                    'text' => 'Cadastrar',
                     'url'  => '#',
                 ],
                 [
-                    'text'    => 'level_one',
+                    'text'    => 'Listar',
                     'url'     => '#',
-                    'submenu' => [
-                        [
-                            'text' => 'level_two',
-                            'url'  => '#',
-                        ],
-                        [
-                            'text'    => 'level_two',
-                            'url'     => '#',
-                            'submenu' => [
-                                [
-                                    'text' => 'level_three',
-                                    'url'  => '#',
-                                ],
-                                [
-                                    'text' => 'level_three',
-                                    'url'  => '#',
-                                ],
-                            ],
-                        ],
-                    ],
-                ],
-                [
-                    'text' => 'level_one',
-                    'url'  => '#',
                 ],
             ],
         ],
-        ['header' => 'labels'],
+
+        ['header' => 'SERVIÇOS'],
         [
-            'text'       => 'important',
-            'icon_color' => 'red',
-            'url'        => '#',
+            'text' => 'Ordem de serviços',
+            'url'  => 'admin/settings',
+            'icon' => 'fas fa-fw fa-clipboard-list',
+            'submenu' => [
+                [
+                    'text' => 'Cadastrar',
+                    'url'  => '#',
+                ],
+                [
+                    'text'    => 'Listar',
+                    'url'     => '#',
+                ],
+            ],
         ],
+
         [
-            'text'       => 'warning',
-            'icon_color' => 'yellow',
-            'url'        => '#',
+            'text' => 'Postos de trabalho',
+            'url'  => 'admin/settings',
+            'icon' => 'fas fa-fw fa-people-carry',
+            'submenu' => [
+                [
+                    'text' => 'Cadastrar',
+                    'url'  => '#',
+                ],
+                [
+                    'text'    => 'Listar',
+                    'url'     => '#',
+                ],
+            ],
         ],
+
+        ['header' => 'EMPRÉSTIMOS'],
         [
-            'text'       => 'information',
-            'icon_color' => 'cyan',
-            'url'        => '#',
+            'text' => 'Item de empréstimo',
+            'url'  => 'admin/settings',
+            'icon' => 'fas fa-fw fa-mouse',
+            'submenu' => [
+                [
+                    'text' => 'Cadastrar',
+                    'url'  => '#',
+                ],
+                [
+                    'text'    => 'Listar',
+                    'url'     => '#',
+                ],
+            ],
         ],
+
+        [
+            'text' => 'Empréstimo',
+            'url'  => 'admin/settings',
+            'icon' => 'fas fa-fw fa-book-open',
+            'submenu' => [
+                [
+                    'text' => 'Cadastrar',
+                    'url'  => '#',
+                ],
+                [
+                    'text'    => 'Listar',
+                    'url'     => '#',
+                ],
+            ],
+        ],
+
+//        ['header' => 'labels'],
+//        [
+//            'text'       => 'important',
+//            'icon_color' => 'red',
+//            'url'        => '#',
+//        ],
+//        [
+//            'text'       => 'warning',
+//            'icon_color' => 'yellow',
+//            'url'        => '#',
+//        ],
+//        [
+//            'text'       => 'information',
+//            'icon_color' => 'cyan',
+//            'url'        => '#',
+//        ],
     ],
 
     /*
