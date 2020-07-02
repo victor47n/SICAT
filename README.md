@@ -1,6 +1,9 @@
 <p align="center"><img src="http://vps290578.vps.ovh.ca/sicat_logo.png" width="200"></p>
-[![Badge](https://img.shields.io/badge/php-%5E7.1.3-blue)]
-[![Build Status](https://travis-ci.org/jeroennoten/Laravel-AdminLTE.svg?branch=master)](https://travis-ci.org/jeroennoten/Laravel-AdminLTE)
+<p align="center">
+<img src="https://img.shields.io/badge/php-%5E7.1.3-%23777BB4?logo=php"/>
+<img src="https://img.shields.io/badge/Laravel-7.x-%23ff2d20?logo=laravel"/>
+</p>
 
-## Sobre
+## 💻 Sobre
 **SICAT** é um sistema de informação gerencial criado para suprir as necessidades do setor CAT da faculdade UNIFAE.
+![Badge](https://img.shields.io/badge/php-%5E7.1.3-blue)
