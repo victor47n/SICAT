@@ -1,13 +1,13 @@
 @extends('adminlte::page')
 
-@section('title', 'Página inicial')
+@section('title', 'SICAT')
 
 @section('content_header')
     <h1>Página inicial</h1>
 @stop
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="#">Home</a></li>
+    <li class="breadcrumb-item"><a href={{route('welcome')}}>Home</a></li>
 @stop
 
 @section('content')

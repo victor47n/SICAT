@@ -15,10 +15,11 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('welcome');
 
-Route::get('/funcionarios', 'UserController@index')->name('user.index');
-Route::get('/funcionarios/criar', 'UserController@create')->name('user.create');
-
+/* Rotas de funcionários */
+Route::get('/funcionarios/listar', 'UserController@index')->name('user.index');
+Route::get('/funcionarios/cadastrar', 'UserController@create')->name('user.create');
+Route::get('funcionario/show', 'UserController@show')->name('user.show');
 //POST
 Route::post('/funcionarios/add','UserController@add')->name('user.add');
