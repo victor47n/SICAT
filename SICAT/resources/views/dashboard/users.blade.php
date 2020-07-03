@@ -50,8 +50,7 @@
 @section('js')
     <script>
         $(document).ready(function () {
-            var table = $('#tUsers');
-            table.DataTable({
+            var table = $('#tUsers').DataTable({
                 "ajax": '{{ route('user.show') }}',
                 "language": {
                     "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json",
@@ -75,7 +74,11 @@
                             '</div>',
                     }
                 ],
+                drawCallback: function () {
+                    $('#tUsers_paginate ul.pagination').addClass("justify-content-start");
+                }
             });
+
         });
     </script>
 @stop
