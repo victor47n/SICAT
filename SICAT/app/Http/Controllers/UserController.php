@@ -9,21 +9,24 @@ use Illuminate\Support\Facades\DB;
 class UserController extends Controller
 {
 
-    function index(){
+    function index()
+    {
         return view('dashboard/users');
     }
 
-    function create(){
-        return view ('dashboard/users_create');
+    function create()
+    {
+        return view('dashboard/users_create');
     }
 
-    function add(Request $req){
-       $data = $req->all();
+    function add(Request $req)
+    {
+        $data = $req->all();
 
-       //echo $data;
+        //echo $data;
 
-       $user = User::create($data);
-       return response()->json(array("message"=> "Cadastrado com sucesso", "data"=> json_encode($data)));
+        $user = User::create($data);
+        return response()->json(array("message" => "Cadastrado com sucesso", "data" => json_encode($data)));
     }
 
     function show()

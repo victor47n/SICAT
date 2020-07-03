@@ -16,13 +16,16 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Cadastros de funcionários</h3>
+                </div>
                 <div class="card-body">
                     <table id="tUsers" class="table table-hover table-bordered table-striped">
                         <thead>
                         <tr role="row">
-                            <th class="sorting_asc" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Rendering engine: activate to sort column descending">Nome</th>
-                            <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending">Email</th>
-                            <th class="sorting" tabindex="0">Opções</th>
+                            <th class="sorting_asc">Nome</th>
+                            <th class="sorting">Email</th>
+                            <th class="sorting" >Opções</th>
                         </tr>
                         </thead>
                     </table>
@@ -51,9 +54,11 @@
             table.DataTable({
                 "ajax": '{{ route('user.show') }}',
                 "language": {
-                    "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json"
+                    "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json",
                 },
                 "searching": true,
+                "autoWidth": false,
+                "responsive": true,
                 // "columnDefs": [
                 //     {"name": "Nome", "targets": 0,},
                 //     {"name": "Email", "targets": 1},
@@ -62,6 +67,13 @@
                 "columns": [
                     {"data": "name"},
                     {"data": "email"},
+                    {"data": null,
+                        "className": "text-center",
+                        "defaultContent": '<div class="btn-group btn-group-sm" role="group" aria-label="Exemplo básico">' +
+                            '<button type="button" class="btn btn-secondary"><i class="fas fa-edit"></i></button>' +
+                            '<button type="button" class="btn btn-danger"><i class="fas fa-trash"></i></button>' +
+                            '</div>',
+                    }
                 ],
             });
         });
