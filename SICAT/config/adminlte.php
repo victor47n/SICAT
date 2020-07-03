@@ -324,22 +324,22 @@ return [
             ],
         ],
 
-//        ['header' => 'labels'],
-//        [
-//            'text'       => 'important',
-//            'icon_color' => 'red',
-//            'url'        => '#',
-//        ],
-//        [
-//            'text'       => 'warning',
-//            'icon_color' => 'yellow',
-//            'url'        => '#',
-//        ],
-//        [
-//            'text'       => 'information',
-//            'icon_color' => 'cyan',
-//            'url'        => '#',
-//        ],
+        //        ['header' => 'labels'],
+        //        [
+        //            'text'       => 'important',
+        //            'icon_color' => 'red',
+        //            'url'        => '#',
+        //        ],
+        //        [
+        //            'text'       => 'warning',
+        //            'icon_color' => 'yellow',
+        //            'url'        => '#',
+        //        ],
+        //        [
+        //            'text'       => 'information',
+        //            'icon_color' => 'cyan',
+        //            'url'        => '#',
+        //        ],
     ],
 
     /*
@@ -390,7 +390,17 @@ return [
                 [
                     'type' => 'js',
                     'asset' => false,
-                    'location' => '//cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js',
+                    'location' => 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js'
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => false,
+                    'location' => 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js'
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => false,
+                    'location' => '//cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.21/b-1.6.2/b-colvis-1.6.2/b-html5-1.6.2/b-print-1.6.2/r-2.2.5/sp-1.1.1/datatables.min.js',
                 ],
                 [
                     'type' => 'css',
