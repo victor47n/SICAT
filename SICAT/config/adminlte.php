@@ -400,7 +400,7 @@ return [
                 [
                     'type' => 'js',
                     'asset' => false,
-                    'location' => '//cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.21/b-1.6.2/b-colvis-1.6.2/b-html5-1.6.2/b-print-1.6.2/r-2.2.5/sp-1.1.1/datatables.min.js',
+                    'location' => '//cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.21/b-1.6.2/b-colvis-1.6.2/b-html5-1.6.2/b-print-1.6.2/r-2.2.5/sp-1.1.1/sl-1.3.1/datatables.min.js',
                 ],
                 [
                     'type' => 'css',

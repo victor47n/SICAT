@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Dashboard')
+@section('title', 'Funcionários')
 
 @section('content_header')
     <h1>Funcionários</h1>
@@ -49,7 +49,6 @@
 @section('plugins.Datatables', true)
 
 @section('js')
-
     <script>
         $(document).ready(function () {
             var table = $('#tUsers');
@@ -94,7 +93,7 @@
                             "1": "Uma linha copiada com sucesso",
                             "_": "%d linhas copiadas com sucesso"
                         }
-                    }
+                    },
                 },
                 buttons: [
                     {
@@ -145,17 +144,12 @@
                         visible: false,
                     }
                 ],
-                // createdRow: function ( row, data, index ) {
-                //     if (data[2].replace(/[\$,]/g, '') * 1 > 4000 ) {
-                //         $('td', row).eq(2).addClass('text-center');
-                //     }
-                // },
                 drawCallback: function () {
                     $('#tUsers tbody tr td:eq(2)',).addClass('text-center');
                     $('#tUsers_paginate ul.pagination').addClass("justify-content-start");
                 }
             });
-
         });
     </script>
 @stop
+
