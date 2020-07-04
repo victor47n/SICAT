@@ -19,6 +19,7 @@ Route::get('/', function () {
 
 /* Rotas de funcionários */
 Route::get('/funcionarios/listar', 'UserController@index')->name('user.index');
+//Route::resource('/funcionarios/listar', 'UserController');
 Route::get('/funcionarios/cadastrar', 'UserController@create')->name('user.create');
 Route::get('funcionario/show', 'UserController@show')->name('user.show');
 //POST
