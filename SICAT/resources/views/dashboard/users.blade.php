@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Dashboard')
+@section('title', 'Funcionários')
 
 @section('content_header')
 <h1>Funcionários</h1>
@@ -55,11 +55,22 @@
             table.DataTable({
                 "ajax": '{{ route('user.show') }}',
                 "language": {
+                    "searchPanes": {
+                        "title": {
+                            _: 'Filtros',
+                            0: 'Filtros',
+                            1: 'Filtros'
+                        },
+                        "collapse":{
+                            _: "t"
+                        }
+                    },
                     "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json",
                 },
                 "buttons": [
                     'copy', 'excel', 'pdf'
                 ],
+                "searchPanes":{},
                 "dom": 'Bfrltip',
                 "searching": true,
                 "autoWidth": false,
