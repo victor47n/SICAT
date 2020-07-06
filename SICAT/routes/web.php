@@ -23,4 +23,8 @@ Route::get('/funcionarios/listar', 'UserController@index')->name('user.index');
 Route::get('/funcionarios/cadastrar', 'UserController@create')->name('user.create');
 Route::get('funcionario/show', 'UserController@show')->name('user.show');
 //POST
-Route::post('/funcionarios/add','UserController@add')->name('user.add');
+Route::post('/funcionarios/add', 'UserController@add')->name('user.add');
+
+
+/* Rotas de Ordem de Serviço */
+Route::get('/ordem/listar', 'OrdemServico@index')->name("ordem.index");
