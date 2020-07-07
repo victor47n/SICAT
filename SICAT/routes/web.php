@@ -27,4 +27,5 @@ Route::post('/funcionarios/add', 'UserController@add')->name('user.add');
 
 
 /* Rotas de Ordem de Serviço */
-Route::get('/ordem/listar', 'OrdemServico@index')->name("ordem.index");
+Route::get('/ordem/listar', 'OrdemServicoController@index')->name("ordem.index");
+Route::get('/ordem/cadastrar', 'OrdemServicoController@create')->name("ordem.create");
