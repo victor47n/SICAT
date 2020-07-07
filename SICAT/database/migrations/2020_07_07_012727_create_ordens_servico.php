@@ -16,11 +16,11 @@ class CreateOrdensServico extends Migration
         Schema::create('ordens_servico', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string("os_descricao", 150);
-            $table->string("os_problema", 255);
-            $table->timestamp("os_data_agendado")->useCurrent();
-            $table->integer("os_status");
-            $table->integer("os_local");
+            $table->string("description", 150);
+            $table->string("problem", 255);
+            $table->timestamp("scheduled")->useCurrent();
+            $table->integer("status");
+            $table->integer("place");
         });
     }
 
