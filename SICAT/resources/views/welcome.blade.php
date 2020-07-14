@@ -25,7 +25,7 @@
                     <p>Total</p>
                 </div>
                 <div class="icon">
-                    <i class="ion ion-bag"></i>
+                    <i class="fas fa-clipboard-list"></i>
                 </div>
             </div>
         </div>
@@ -38,7 +38,7 @@
                     <p>Finalizado</p>
                 </div>
                 <div class="icon">
-                    <i class="ion ion-check"></i>
+                    <i class="fas fa-check"></i>
                 </div>
             </div>
         </div>
@@ -51,7 +51,7 @@
                     <p>Pendente</p>
                 </div>
                 <div class="icon">
-                    <i class="ion ion-flag"></i>
+                    <i class="far fa-flag"></i>
                 </div>
             </div>
         </div>
@@ -64,7 +64,7 @@
                     <p>Atrasados</p>
                 </div>
                 <div class="icon">
-                    <i class="ion ion-flag"></i>
+                    <i class="fas fa-exclamation-triangle"></i>
                 </div>
             </div>
         </div>
@@ -84,7 +84,7 @@
                     <p>Total</p>
                 </div>
                 <div class="icon">
-                    <i class="ion ion-bag"></i>
+                    <i class="fas fa-clipboard-list"></i>
                 </div>
             </div>
         </div>
@@ -97,7 +97,7 @@
                     <p>Devolvidos</p>
                 </div>
                 <div class="icon">
-                    <i class="ion ion-check"></i>
+                    <i class="fas fa-check"></i>
                 </div>
             </div>
         </div>
@@ -110,7 +110,7 @@
                     <p>Emprestados</p>
                 </div>
                 <div class="icon">
-                    <i class="ion ion-flag"></i>
+                    <i class="far fa-flag"></i>
                 </div>
             </div>
         </div>
@@ -123,7 +123,7 @@
                     <p>Atrasados</p>
                 </div>
                 <div class="icon">
-                    <i class="ion ion-flag"></i>
+                    <i class="fas fa-exclamation-triangle"></i>
                 </div>
             </div>
         </div>

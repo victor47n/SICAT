@@ -18,9 +18,14 @@ Route::get('/', function () {
 })->name('welcome');
 
 /* Rotas de funcionários */
-Route::get('/funcionarios/listar', 'UserController@index')->name('user.index');
-//Route::resource('/funcionarios/listar', 'UserController');
-Route::get('/funcionarios/cadastrar', 'UserController@create')->name('user.create');
-Route::get('funcionario/show', 'UserController@show')->name('user.show');
-//POST
-Route::post('/funcionarios/add','UserController@add')->name('user.add');
+Route::prefix('funcionarios')->group(function () {
+    Route::get('/registros', 'UserController@index')->name('user.index');
+    Route::get('/cadastrar', 'UserController@create')->name('user.create');
+    Route::get('/list', 'UserController@list')->name('user.list');
+    Route::get('/show/{id}', 'UserController@show');
+    //POST
+    Route::post('/add', 'UserController@add')->name('user.add');
+    //PUT
+    Route::put('/update/{id}', 'UserController@update')->name('user.update');
+    Route::delete('/disable/{id}', 'UserController@disable')->name('user.disable');
+});

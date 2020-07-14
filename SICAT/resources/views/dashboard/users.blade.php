@@ -34,6 +34,39 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="modalEdit" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Editar funcionário</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" id="formEdit" novalidate="novalidate">
+                        {{ csrf_field() }}
+                        @method('PUT')
+                        <div class="form-group">
+                            <label for="inputName">Nome</label>
+                            <input type="text" class="form-control" id="inputName" name="name">
+                        </div>
+                        <div class="form-group">
+                            <label for="inputEmail">Email</label>
+                            <input type="text" class="form-control" id="inputEmail" name="email">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-primary" id="updateButton">Salvar mudanças</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @stop
 
 @section('footer')
@@ -47,6 +80,8 @@
 @stop
 
 @section('plugins.Datatables', true)
+@section('plugins.Sweetalert2', true)
+@section('plugins.Validation', true)
 
 @section('js')
     <script>
@@ -114,7 +149,7 @@
                 ],
                 dom: 'B<"row mt-3" <"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>rt<"row mt-3" <"col-sm-12 col-md-5" i><"col-sm-12 col-md-7" p>>',
                 ajax: {
-                    url: '{{ route('user.show') }}',
+                    url: '{{ route('user.list') }}',
                 },
                 columns: [
                     {
@@ -145,11 +180,128 @@
                     }
                 ],
                 drawCallback: function () {
-                    $('#tUsers tbody tr td:eq(2)',).addClass('text-center');
+                    $('#tUsers tbody tr td:last-child').addClass('text-center');
                     $('#tUsers_paginate ul.pagination').addClass("justify-content-start");
                 }
             });
+
+            $('#formEdit').validate({
+                rules: {
+                    name: {
+                        required: true,
+                    },
+                    email: {
+                        required: true,
+                        email: true,
+                    },
+                },
+                messages: {
+                    name: {
+                        required: "Digite um nome",
+                    },
+                    email: {
+                        required: "Digite um endereço de email",
+                        email: "Por favor insira um email válido."
+                    },
+                },
+                errorElement: 'span',
+                errorPlacement: function (error, element) {
+                    error.addClass('invalid-feedback');
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function (element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
+                }
+            });
         });
+    </script>
+    <script>
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000
+        });
+
+        function showEditModal(id) {
+            $.ajax({
+                type: 'GET',
+                url: `show/${id}`,
+                context: 'json',
+                success: function (data) {
+                    $('#inputName').val(data.name);
+                    $('#inputEmail').val(data.email);
+                    $('#updateButton').attr('onclick', 'update(' + data.id + ')');
+                    $('#modalEdit').modal('show');
+                },
+                error: function () {
+                    console.log('Ocorreu um erro ao encontrar o funcionário');
+                }
+            });
+        }
+
+        function update(id) {
+            $.ajax({
+                type: 'PUT',
+                url: `update/${id}`,
+                dataType: 'json',
+                data: $('#formEdit').serialize(),
+                success: function (data) {
+                    Toast.fire({
+                        type: 'success',
+                        title: data.message
+                    });
+                    $('#tUsers').DataTable().ajax.reload();
+                },
+                error: function (data) {
+                    Toast.fire({
+                        type: 'error',
+                        title: data.responseJSON.message
+                    });
+
+                }
+            });
+        }
+
+        function disable(id) {
+            Swal.fire({
+                title: 'Você tem certeza?',
+                text: "Ao desabilitar o funcionário, você não poderá reverter isso! Apenas contatando o suporte.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sim, desabilite o funcionário!'
+            }).then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        type: 'DELETE',
+                        url: `disable/${id}`,
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function (data) {
+                            Swal.fire({
+                                title: 'Desabilitado!',
+                                text: data.message,
+                                type: 'success'
+                            });
+                            $('#tUsers').DataTable().ajax.reload();
+                        },
+                        error: function (data) {
+                            Swal.fire({
+                                title: 'Algo de errado aconteceu!',
+                                text: data.responseJSON.message,
+                                type: 'error'
+                            });
+                        }
+                    });
+                }
+            });
+        }
     </script>
 @stop
 

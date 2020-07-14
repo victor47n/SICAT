@@ -463,5 +463,21 @@ return [
                 ],
             ],
         ],
+        [
+            'name' => 'Validation',
+            'active' => false,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => false,
+                    'location' => '/dist/plugins/jquery-validation/jquery.validate.js',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => false,
+                    'location' => '/dist/plugins/jquery-validation/additional-methods.js',
+                ],
+            ],
+        ],
     ],
 ];
