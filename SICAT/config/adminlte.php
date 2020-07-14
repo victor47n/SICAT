@@ -266,11 +266,11 @@ return [
             'submenu' => [
                 [
                     'text' => 'Cadastrar',
-                    'url'  => '#',
+                    'route' => 'ordem.create'
                 ],
                 [
                     'text'    => 'Listar',
-                    'url'     => '#',
+                    'route' => 'ordem.index'
                 ],
             ],
         ],

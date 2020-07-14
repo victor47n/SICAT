@@ -18,6 +18,7 @@ Route::get('/', function () {
 })->name('welcome');
 
 /* Rotas de funcionários */
+
 Route::prefix('funcionarios')->group(function () {
     Route::get('/registros', 'UserController@index')->name('user.index');
     Route::get('/cadastrar', 'UserController@create')->name('user.create');
@@ -29,3 +30,8 @@ Route::prefix('funcionarios')->group(function () {
     Route::put('/update/{id}', 'UserController@update')->name('user.update');
     Route::delete('/disable/{id}', 'UserController@disable')->name('user.disable');
 });
+
+/* Rotas de Ordem de Serviço */
+Route::get('/ordem/listar', 'OrdemServicoController@index')->name("ordem.index");
+Route::get('/ordem/cadastrar', 'OrdemServicoController@create')->name("ordem.create");
+
