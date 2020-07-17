@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateOrdensServico extends Migration
+class CreateWorkstationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,11 @@ class CreateOrdensServico extends Migration
      */
     public function up()
     {
-        Schema::create('ordens_servico', function (Blueprint $table) {
+        Schema::create('workstations', function (Blueprint $table) {
             $table->id();
+            $table->string('name', 100);
+            $table->foreignId('locale_id')->constrained('locales');
             $table->timestamps();
-            $table->string("description", 150);
-            $table->string("problem", 255);
-            $table->timestamp("scheduled")->useCurrent();
-            $table->integer("status");
-            $table->integer("place");
         });
     }
 
@@ -31,6 +28,6 @@ class CreateOrdensServico extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('Ordens_Servico');
+        Schema::dropIfExists('workstations');
     }
 }
