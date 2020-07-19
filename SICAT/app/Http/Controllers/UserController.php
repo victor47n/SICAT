@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
 
@@ -19,6 +22,11 @@ class UserController extends Controller
 
     function index()
     {
+        Auth::loginUsingId(1);
+
+        // echo "<pre>";
+        // var_dump(Route::getCurrentRoute()->action['as']);
+        // echo "</pre>";
         return view('dashboard/users');
     }
 
