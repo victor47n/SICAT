@@ -27,18 +27,25 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        Gate::define('rolesUser', function ($user, $args) {
 
-            $permissoes = DB::table('permissions')
-                ->select(['permissions.id', 'permissions.key', 'role_permissions.role_id', 'role_permissions.permission_id', 'user_roles.*'])
-                ->leftJoin('role_permissions', 'permissions.id', '=', 'role_permissions.permission_id')
-                ->leftJoin('user_roles', 'role_permissions.role_id', '=', 'user_roles.role_id')
-                ->where('user_id', '=', $user->id)
-                ->where('key', '=', $args)
-                ->get();
-            //  echo "<pre>";
-            //  var_dump($permissoes[0]->key);
-            //  echo "</pre>";
+        Gate::define('rolesUser', function ($user, ...$args) {
+            $permissoes = DB::table('permissions');
+            if (is_array($args)) {
+                $permissoes->select(['permissions.id', 'permissions.key', 'role_permissions.role_id', 'role_permissions.permission_id', 'user_roles.*'])
+                    ->leftJoin('role_permissions', 'permissions.id', '=', 'role_permissions.permission_id')
+                    ->leftJoin('user_roles', 'role_permissions.role_id', '=', 'user_roles.role_id')
+                    ->where('user_id', '=', $user->id)
+                    ->whereIn('key', $args);
+            } else {
+                $permissoes->select(['permissions.id', 'permissions.key', 'role_permissions.role_id', 'role_permissions.permission_id', 'user_roles.*'])
+                    ->leftJoin('role_permissions', 'permissions.id', '=', 'role_permissions.permission_id')
+                    ->leftJoin('user_roles', 'role_permissions.role_id', '=', 'user_roles.role_id')
+                    ->where('user_id', '=', $user->id)
+                    ->where('key', '=', $args);
+            }
+
+            $permissoes = $permissoes->get();
+
             return count($permissoes) > 0;
         });
 
