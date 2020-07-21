@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
 
@@ -19,6 +22,11 @@ class UserController extends Controller
 
     function index()
     {
+        Auth::loginUsingId(1);
+
+        // echo "<pre>";
+        // var_dump(Route::getCurrentRoute()->action['as']);
+        // echo "</pre>";
         return view('dashboard/users');
     }
 
@@ -38,12 +46,19 @@ class UserController extends Controller
     function list()
     {
         $users = DB::table('users')->select('id', 'name', 'email')->get();
+
         return Datatables::of($users)
             ->addColumn('action', function ($data) {
-                return '<div class="btn-group btn-group-sm" role="group" aria-label="Exemplo básico">
-                       <button type="button" id="' . $data->id . '" class="btn btn-secondary" onclick="showEditModal(' . $data->id . ')"><i class="fas fa-fw fa-edit"></i>Editar</button>
-                       <button type="button" id="' . $data->id . '" class="btn btn-danger" onclick="disable(' . $data->id . ')"><i class="fas fa-fw fa-trash"></i>Excluir</button>
-                       </div>';
+
+                $result = '<div class="btn-group btn-group-sm" role="group" aria-label="Exemplo básico">';
+                if (Gate::allows('rolesUser', 'user_edit')) {
+                    $result .= '<button type="button" id="' . $data->id . '" class="btn btn-secondary" onclick="showEditModal(' . $data->id . ')"><i class="fas fa-fw fa-edit"></i>Editar</button>';
+                }
+                if (Gate::allows('rolesUser', 'user_delete')) {
+                    $result .= '<button type="button" id="' . $data->id . '" class="btn btn-danger" onclick="disable(' . $data->id . ')"><i class="fas fa-fw fa-trash"></i>Excluir</button>';
+                }
+                $result .= '</div>';
+                return $result;
             })
             ->rawColumns(['action'])
             ->make(true);

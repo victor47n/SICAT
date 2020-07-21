@@ -246,14 +246,20 @@ return [
             'text' => 'Funcionários',
             'url'  => 'admin/settings',
             'icon' => 'fas fa-fw fa-users',
+            'can' => 'rolesCategory',
+            'model' => 'user',
             'submenu' => [
                 [
                     'text' => 'Cadastrar',
                     'route'  => 'user.create',
+                    'can' => 'rolesUser',
+                    'model' => 'user_create',
                 ],
                 [
                     'text'    => 'Listar',
                     'route'     => 'user.index',
+                    'can' => 'rolesUser',
+                    'model' => 'user_list',
                 ],
             ],
         ],

@@ -3,77 +3,77 @@
 @section('title', 'Funcionários')
 
 @section('content_header')
-    <h1>Funcionários</h1>
+<h1>Funcionários</h1>
 @stop
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href={{route('welcome')}}>Home</a></li>
-    <li class="breadcrumb-item active">Funcionários</li>
-    <li class="breadcrumb-item active">Listar</li>
+<li class="breadcrumb-item"><a href={{route('welcome')}}>Home</a></li>
+<li class="breadcrumb-item active">Funcionários</li>
+<li class="breadcrumb-item active">Listar</li>
 @stop
 
 @section('content')
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Cadastros de funcionários</h3>
-                </div>
-                <div class="card-body">
-                    <table id="tUsers" class="table table-hover table-bordered table-striped">
-                        <thead>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Cadastros de funcionários</h3>
+            </div>
+            <div class="card-body">
+
+                <table id="tUsers" class="table table-hover table-bordered table-striped">
+                    <thead>
                         <tr role="row">
                             <th class="sorting">ID</th>
                             <th class="sorting_asc">Nome</th>
                             <th class="sorting">Email</th>
                             <th class="sorting">Opções</th>
                         </tr>
-                        </thead>
-                    </table>
-                </div>
+                    </thead>
+                </table>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Modal -->
-    <div class="modal fade" id="modalEdit" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editModalLabel">Editar funcionário</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form method="post" id="formEdit" novalidate="novalidate">
-                        {{ csrf_field() }}
-                        @method('PUT')
-                        <div class="form-group">
-                            <label for="inputName">Nome</label>
-                            <input type="text" class="form-control" id="inputName" name="name">
-                        </div>
-                        <div class="form-group">
-                            <label for="inputEmail">Email</label>
-                            <input type="text" class="form-control" id="inputEmail" name="email">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-                    <button type="button" class="btn btn-primary" id="updateButton">Salvar mudanças</button>
-                </div>
+<!-- Modal -->
+<div class="modal fade" id="modalEdit" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Editar funcionário</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" id="formEdit" novalidate="novalidate">
+                    {{ csrf_field() }}
+                    @method('PUT')
+                    <div class="form-group">
+                        <label for="inputName">Nome</label>
+                        <input type="text" class="form-control" id="inputName" name="name">
+                    </div>
+                    <div class="form-group">
+                        <label for="inputEmail">Email</label>
+                        <input type="text" class="form-control" id="inputEmail" name="email">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-primary" id="updateButton">Salvar mudanças</button>
             </div>
         </div>
     </div>
+</div>
 @stop
 
 @section('footer')
-    <div class="float-right d-none d-sm-inline">
-        <strong>Versão</strong> 1.0
-    </div>
-    <strong>Copyright &copy; {{date("Y")}} <a href="#">Carlos A. & Victor H</a>.</strong> Todos os direitos reservados.
+<div class="float-right d-none d-sm-inline">
+    <strong>Versão</strong> 1.0
+</div>
+<strong>Copyright &copy; {{date("Y")}} <a href="#">Carlos A. & Victor H</a>.</strong> Todos os direitos reservados.
 @stop
 
 @section('css')
@@ -84,8 +84,8 @@
 @section('plugins.Validation', true)
 
 @section('js')
-    <script>
-        $(document).ready(function () {
+<script>
+    $(document).ready(function () {
             var table = $('#tUsers');
             table.DataTable({
                 processing: true,
@@ -163,7 +163,7 @@
                     {
                         data: 'email',
                         name: 'email'
-                    },
+                    }, 
                     {
                         data: 'action',
                         name: 'opções',
@@ -177,6 +177,10 @@
                     {
                         targets: 0,
                         visible: false,
+                    },
+                    {
+                        targets: 3,
+                        visible: {{Gate::allows('rolesUser', ['user_delete','user_edit']) ? 'true' : 'false'}}
                     }
                 ],
                 drawCallback: function () {
@@ -217,9 +221,9 @@
                 }
             });
         });
-    </script>
-    <script>
-        const Toast = Swal.mixin({
+</script>
+<script>
+    const Toast = Swal.mixin({
             toast: true,
             position: 'top-end',
             showConfirmButton: false,
@@ -302,6 +306,5 @@
                 }
             });
         }
-    </script>
+</script>
 @stop
-
