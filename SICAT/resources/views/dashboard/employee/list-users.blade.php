@@ -177,6 +177,10 @@
                     {
                         targets: 0,
                         visible: false,
+                    },
+                    {
+                        targets: 3,
+                        visible: {{Gate::allows('rolesUser', ['user_delete','user_edit']) ? 'true' : 'false'}}
                     }
                 ],
                 drawCallback: function () {
