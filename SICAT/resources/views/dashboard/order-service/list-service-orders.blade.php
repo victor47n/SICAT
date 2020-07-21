@@ -7,7 +7,7 @@
 @stop
 
 @section('breadcrumb')
-<li class="breadcrumb-item"><a href={{route('welcome')}}>Home</a></li>
+<li class="breadcrumb-item"><a href={{route('dashboard.index')}}>Home</a></li>
 <li class="breadcrumb-item active">Ordens de serviço</li>
 <li class="breadcrumb-item active">Listar</li>
 @stop
@@ -114,7 +114,7 @@
                 ],
                 dom: 'B<"row mt-3" <"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>rt<"row mt-3" <"col-sm-12 col-md-5" i><"col-sm-12 col-md-7" p>>',
                 ajax: {
-                    url: '{{ route('user.show') }}',
+                    url: '{{ route('order.list') }}',
                 },
                 columns: [
                     {
@@ -145,7 +145,7 @@
                     }
                 ],
                 drawCallback: function () {
-                    $('#tUsers tbody tr td:eq(2)',).addClass('text-center');
+                    $('#tUsers tbody tr td:last-child').addClass('text-center');
                     $('#tUsers_paginate ul.pagination').addClass("justify-content-start");
                 }
             });

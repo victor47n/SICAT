@@ -13,7 +13,7 @@ class CreateBorrowingsTable extends Migration
      */
     public function up()
     {
-        Schema::create('borrowings', function (Blueprint $table) {
+        Schema::create('borrowing', function (Blueprint $table) {
             $table->id();
             $table->string('requester', 100);
             $table->string('phone_requester', 15);
@@ -34,6 +34,6 @@ class CreateBorrowingsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('borrowings');
+        Schema::dropIfExists('borrowing');
     }
 }

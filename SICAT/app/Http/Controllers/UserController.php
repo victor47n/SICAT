@@ -27,12 +27,12 @@ class UserController extends Controller
         // echo "<pre>";
         // var_dump(Route::getCurrentRoute()->action['as']);
         // echo "</pre>";
-        return view('dashboard/users');
+        return view('dashboard/employee/list-users');
     }
 
     function create()
     {
-        return view('dashboard/users_create');
+        return view('dashboard/employee/create-users');
     }
 
     function add(Request $req)

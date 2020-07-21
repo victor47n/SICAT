@@ -3,25 +3,27 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\OrderService;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
 
-class OrdemServicoController extends Controller
+class OrderServiceController extends Controller
 {
-    function Index(Request $request)
+    function index(Request $request)
     {
-        return view("dashboard/listar_ordens");
+        return view("dashboard/order-service/list-service-orders");
     }
 
-    function Create(Request $request)
+    function create(Request $request)
     {
-        return view("dashboard/listar_ordens");
+        return view("dashboard/order-service/create-service-orders");
     }
 
 
     function show()
     {
-        $os = DB::table('ordens_servico')->select('id', 'description', 'place', 'scheduled', 'status')->get();
+        $os = DB::table('order_services')->select('id', 'problem_type', 'problem', 'realized_date', 'solution_problem',
+        'designated_employee')->get();
         return Datatables::of($os)
             ->addColumn('action', function ($data) {
                 return '<div class="btn-group btn-group-sm" role="group" aria-label="Exemplo básico">

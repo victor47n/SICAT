@@ -106,7 +106,7 @@ return [
     'classes_auth_body' => '',
     'classes_auth_footer' => '',
     'classes_auth_icon' => '',
-    'classes_auth_btn' => 'btn-flat btn-primary',
+    'classes_auth_btn' => 'btn-primary',
 
     /*
     |--------------------------------------------------------------------------
@@ -186,19 +186,19 @@ return [
     |
     */
 
-    'use_route_url' => false,
+    'use_route_url' => true,
 
-    'dashboard_url' => '/',
+    'dashboard_url' => 'dashboard.index',
 
     'logout_url' => 'logout',
 
     'login_url' => 'login',
 
-    'register_url' => 'register',
+    'register_url' => '',
 
-    'password_reset_url' => 'password/reset',
+    'password_reset_url' => '',
 
-    'password_email_url' => 'password/email',
+    'password_email_url' => '',
 
     'profile_url' => false,
 
@@ -272,11 +272,11 @@ return [
             'submenu' => [
                 [
                     'text' => 'Cadastrar',
-                    'route' => 'ordem.create'
+                    'route' => 'order.create'
                 ],
                 [
                     'text'    => 'Listar',
-                    'route' => 'ordem.index'
+                    'route' => 'order.index'
                 ],
             ],
         ],
