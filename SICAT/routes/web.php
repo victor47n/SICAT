@@ -39,4 +39,4 @@ Route::get('/ordem/cadastrar', 'OrdemServicoController@create')->name("ordem.cre
 Route::get('/local/listar', 'LocaleController@index')->name("local.index");
 Route::get('/local/cadastrar', 'LocaleController@create')->name("local.create");
 Route::get('/local/show/{id}', 'LocaleController@show')->name('local.show');
-Route::get('/local/list', 'LocaleController@show')->name('local.list');
+Route::get('/local/list', 'LocaleController@list')->name('local.list');

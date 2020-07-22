@@ -3,12 +3,12 @@
 @section('title', 'Funcionários')
 
 @section('content_header')
-<h1>Ordens de serviço</h1>
+<h1>Postos de trabalho</h1>
 @stop
 
 @section('breadcrumb')
 <li class="breadcrumb-item"><a href={{route('welcome')}}>Home</a></li>
-<li class="breadcrumb-item active">Ordens de serviço</li>
+<li class="breadcrumb-item active">Postos de trabalho</li>
 <li class="breadcrumb-item active">Listar</li>
 @stop
 
@@ -17,15 +17,14 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Cadastros de Ordens de Serviço</h3>
+                <h3 class="card-title">Cadastros de Postos de trabalho</h3>
             </div>
             <div class="card-body">
-                <table id="tUsers" class="table table-hover table-bordered table-striped">
+                <table id="tOrdens" class="table table-hover table-bordered table-striped">
                     <thead>
                         <tr role="row">
                             <th class="sorting">ID</th>
                             <th class="sorting_asc">Nome</th>
-                            <th class="sorting">Email</th>
                             <th class="sorting">Opções</th>
                         </tr>
                     </thead>
@@ -124,10 +123,6 @@
                     {
                         data: 'name',
                         name: 'nome'
-                    },
-                    {
-                        data: 'email',
-                        name: 'email'
                     },
                     {
                         data: 'action',

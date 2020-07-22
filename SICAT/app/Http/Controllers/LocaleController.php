@@ -30,12 +30,11 @@ class LocaleController extends Controller
         return response()->json(array("message" => "Cadastrado com sucesso", "data" => json_encode($local)));
     }
 
-    function list($id)
+    function list()
     {
-        $data = Locale::find($id);
-        $users = DB::table('locales')->select('id', 'name')->get();
+        $locais = DB::table('locales')->select('id', 'name')->get();
 
-        return DataTables::of($users)
+        return DataTables::of($locais)
             ->addColumn('action', function ($data) {
 
                 $result = '<div class="btn-group btn-group-sm" role="group" aria-label="Exemplo básico">';
