@@ -291,8 +291,8 @@ return [
                     'url'  => '#',
                 ],
                 [
-                    'text'    => 'Listar',
-                    'url'     => '#',
+                    'text' => 'Listar',
+                    'route' => 'local.index'
                 ],
             ],
         ],

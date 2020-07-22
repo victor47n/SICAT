@@ -35,3 +35,8 @@ Route::prefix('funcionarios')->group(function () {
 Route::get('/ordem/listar', 'OrdemServicoController@index')->name("ordem.index");
 Route::get('/ordem/cadastrar', 'OrdemServicoController@create')->name("ordem.create");
 
+/* Rotas de Postos de trabalho */
+Route::get('/local/listar', 'LocaleController@index')->name("local.index");
+Route::get('/local/cadastrar', 'LocaleController@create')->name("local.create");
+Route::get('/local/show/{id}', 'LocaleController@show')->name('local.show');
+Route::get('/local/list', 'LocaleController@show')->name('local.list');
