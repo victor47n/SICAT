@@ -73,7 +73,7 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="inputPermission">Cargo</label>
+                            <label for="inputPermission">Permissão</label>
                             <select id="inputPermission" class="form-control" name="role_id">
                                 @foreach($roles as $role)
                                     <option value="{{$role->id}}">{{$role->name}}</option>
@@ -114,6 +114,7 @@
                 serverSide: true,
                 autoWidth: false,
                 responsive: true,
+                deferRender: true,
                 language: {
                     // url: '//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json',
                     "sEmptyTable": "Nenhum registro encontrado",
@@ -292,9 +293,10 @@
                                 opt.setAttribute('selected', true);
                             }
                         }
+
+                        $('#updateButton').attr('onclick', 'update(' + _data.id + ')');
                     });
 
-                    $('#updateButton').attr('onclick', 'update(' + data.id + ')');
                     $('#modalEdit').modal('show');
                 },
                 error: function () {

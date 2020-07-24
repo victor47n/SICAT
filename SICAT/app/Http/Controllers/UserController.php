@@ -106,11 +106,17 @@ class UserController extends Controller
                 'email' => 'required',
             ]);
 
-            $data = $request->all();
+            $data = $request->except(['_token', '_method']);
+            $user_role = $request->only('role_id');
             if (!empty($data['password'])) {
                 $data['password'] = Hash::make($data['password']);
             }
-            User::find($user)->update($data);
+
+            DB::transaction(function () use ($user, $data, $user_role) {
+                $user = User::find($user);
+                $user->update($data);
+                $user->user_roles()->update($user_role);
+            });
 
             return response()->json(["message" => "Atualizado com sucesso!"], 201);
         } catch (\Exception $e) {
