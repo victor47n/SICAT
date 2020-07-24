@@ -26,6 +26,9 @@
                             <th class="sorting">ID</th>
                             <th class="sorting_asc">Nome</th>
                             <th class="sorting">Email</th>
+                            <th class="sorting">Telefone</th>
+                            <th class="sorting">Cargo</th>
+                            <th class="sorting">Permissão</th>
                             <th class="sorting">Opções</th>
                         </tr>
                         </thead>
@@ -57,6 +60,25 @@
                         <div class="form-group">
                             <label for="inputEmail">Email</label>
                             <input type="text" class="form-control" id="inputEmail" name="email">
+                        </div>
+                        <div class="form-group">
+                            <label for="inputPhone">Telefone</label>
+                            <input type="text" class="form-control" id="inputPhone" name="phone">
+                        </div>
+                        <div class="form-group">
+                            <label for="inputOffice">Cargo</label>
+                            <select id="inputOffice" class="form-control" name="office">
+                                <option>Funcionário</option>
+                                <option>Estagiário</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputPermission">Cargo</label>
+                            <select id="inputPermission" class="form-control" name="role_id">
+                                @foreach($roles as $role)
+                                    <option value="{{$role->id}}">{{$role->name}}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </form>
                 </div>
@@ -149,7 +171,7 @@
                 ],
                 dom: 'B<"row mt-3" <"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>rt<"row mt-3" <"col-sm-12 col-md-5" i><"col-sm-12 col-md-7" p>>',
                 ajax: {
-                    url: '{{ route('user.list') }}',
+                    url: '{{ route('user.index') }}',
                 },
                 columns: [
                     {
@@ -158,11 +180,23 @@
                     },
                     {
                         data: 'name',
-                        name: 'nome'
+                        name: 'nome',
                     },
                     {
                         data: 'email',
                         name: 'email'
+                    },
+                    {
+                        data: 'phone',
+                        name: 'telefone'
+                    },
+                    {
+                        data: 'office',
+                        name: 'cargo'
+                    },
+                    {
+                        data: 'permission',
+                        name: 'permissão'
                     },
                     {
                         data: 'action',
@@ -179,7 +213,7 @@
                         visible: false,
                     },
                     {
-                        targets: 3,
+                        targets: 6,
                         visible: {{Gate::allows('rolesUser', ['user_delete','user_edit']) ? 'true' : 'false'}}
                     }
                 ],
@@ -233,11 +267,33 @@
         function showEditModal(id) {
             $.ajax({
                 type: 'GET',
-                url: `show/${id}`,
+                url: 'funcionarios/' + id,
                 context: 'json',
                 success: function (data) {
-                    $('#inputName').val(data.name);
-                    $('#inputEmail').val(data.email);
+
+
+                    data.map(_data => {
+                        $('#inputName').val(_data.name);
+                        $('#inputEmail').val(_data.email);
+                        $('#inputPhone').val(_data.phone);
+
+                        let opt;
+
+                        for (let i = 0, len = $('#inputOffice option').length; i < len; i++) {
+                            opt = $('#inputOffice option')[i];
+                            if (opt.text == _data.office) {
+                                opt.setAttribute('selected', true);
+                            }
+                        }
+
+                        for (let i = 0, len = $('#inputPermission option').length; i < len; i++) {
+                            opt = $('#inputPermission option')[i];
+                            if (opt.text == _data.permission) {
+                                opt.setAttribute('selected', true);
+                            }
+                        }
+                    });
+
                     $('#updateButton').attr('onclick', 'update(' + data.id + ')');
                     $('#modalEdit').modal('show');
                 },
@@ -250,7 +306,7 @@
         function update(id) {
             $.ajax({
                 type: 'PUT',
-                url: `update/${id}`,
+                url: 'funcionarios/' + id,
                 dataType: 'json',
                 data: $('#formEdit').serialize(),
                 success: function (data) {
@@ -282,8 +338,8 @@
             }).then((result) => {
                 if (result.value) {
                     $.ajax({
-                        type: 'DELETE',
-                        url: `disable/${id}`,
+                        type: 'PUT',
+                        url: 'funcionarios/' + id + '/disable',
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },

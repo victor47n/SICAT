@@ -25,22 +25,10 @@ Route::group(['middleware' => 'auth'], function () {
     });
 
     /* Rotas de funcionários */
-    Route::name('user.')->prefix('funcionarios')->group(function () {
-        /* GET */
-        Route::get('/registros', 'UserController@index')->name('index');
-        Route::get('/cadastrar', 'UserController@create')->name('create');
-        Route::get('/list', 'UserController@list')->name('list');
-        Route::get('/show/{id}', 'UserController@show');
-
-        /* POST */
-        Route::post('/add', 'UserController@add')->name('add');
-
-        /* PUT */
-        Route::put('/update/{id}', 'UserController@update')->name('update');
-
-        /* DELETE */
-        Route::delete('/disable/{id}', 'UserController@disable')->name('disable');
-    });
+    Route::put('funcionarios/{user}/disabilitar', 'UserController@disable')->name('user.disable');
+    Route::resource('funcionarios', 'UserController')->names('user')
+        ->parameters(['funcionarios' => 'user'])
+        ->except(['edit']);
 
     /* Rotas de Ordem de Serviço */
     Route::name('order.')->prefix('ordem')->group(function () {

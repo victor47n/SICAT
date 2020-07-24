@@ -485,5 +485,17 @@ return [
                 ],
             ],
         ],
+
+        [
+            'name' => 'Inputmask',
+            'active' => false,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => false,
+                    'location' => '/vendor/inputmask/min/jquery.inputmask.bundle.min.js',
+                ],
+            ],
+        ],
     ],
 ];
