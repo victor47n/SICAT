@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Locale;
+use App\Workstation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -23,10 +24,22 @@ class LocaleController extends Controller
         return view('dashboard/listar_locais');
     }
 
+    function create()
+    {
+        return view('dashboard/locales_create');
+    }
+
     function add(Request $req)
     {
         $data = $req->all();
-        $local = Locale::create($data);
+        $local = null;
+        DB::transaction(function () use ($data, $local) {
+            $local = Locale::create($data);
+            foreach ($data['sala'] as $sala) {
+                $local->workstation()->create(["name" => $sala]);
+            }
+        });
+
         return response()->json(array("message" => "Cadastrado com sucesso", "data" => json_encode($local)));
     }
 

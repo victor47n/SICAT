@@ -20,16 +20,17 @@ class Workstation extends Model
      *
      * @var array
      */
-    protected $hidden = [
-
-    ];
+    protected $hidden = [];
 
     /**
      * The attributes that should be cast to native types.
      *
      * @var array
      */
-    protected $casts = [
+    protected $casts = [];
 
-    ];
+    function locale()
+    {
+        return $this->belongsTo(Locale::class);
+    }
 }

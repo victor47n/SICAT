@@ -20,16 +20,17 @@ class Locale extends Model
      *
      * @var array
      */
-    protected $hidden = [
-
-    ];
+    protected $hidden = [];
 
     /**
      * The attributes that should be cast to native types.
      *
      * @var array
      */
-    protected $casts = [
+    protected $casts = [];
 
-    ];
+    public function workstation()
+    {
+        return $this->hasMany(Workstation::class);
+    }
 }

@@ -38,5 +38,6 @@ Route::get('/ordem/cadastrar', 'OrdemServicoController@create')->name("ordem.cre
 /* Rotas de Postos de trabalho */
 Route::get('/local/listar', 'LocaleController@index')->name("local.index");
 Route::get('/local/cadastrar', 'LocaleController@create')->name("local.create");
+Route::post('/local/add', 'LocaleController@add')->name("local.add");
 Route::get('/local/show/{id}', 'LocaleController@show')->name('local.show');
 Route::get('/local/list', 'LocaleController@list')->name('local.list');
