@@ -33,6 +33,38 @@
         </div>
     </div>
 </div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="modalEdit" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Editar Local</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" id="formEdit" novalidate="novalidate">
+                    {{ csrf_field() }}
+                    @method('PUT')
+                    <div class="form-group">
+                        <label for="inputName">Nome</label>
+                        <input type="text" class="form-control" id="inputName" name="name">
+                    </div>
+                    <div id="sala-row" class="form-row">
+
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-primary" id="updateButton">Salvar mudanças</button>
+            </div>
+        </div>
+    </div>
+</div>
 @stop
 
 @section('footer')
@@ -46,6 +78,7 @@
 @stop
 
 @section('plugins.Datatables', true)
+@section('plugins.Sweetalert2', true)
 
 @section('js')
 <script>
@@ -145,5 +178,191 @@
                 }
             });
         });
+
+        
+        function showEditModal(id) {
+            $("#sala-row").html('');
+            $.ajax({
+                type: 'GET',
+                url: `show/${id}`,
+                context: 'json',
+                success: function (data) {
+                    $('#inputName').val(data.name);
+                    workstations = data.workstation;
+
+                    workstations.forEach(element => {
+                        statusButton ="";
+                       if(element.status == 'able'){
+                            statusButton = `<button id="delete-${element.id}" onclick="disableWorkstation(${element.id})" type="button" class="btn btn-success"><i class="fas fa-check"></i></button>`
+                        }else{
+                            statusButton = `<button id="delete-${element.id}" onclick="ableWorkstation(${element.id})" type="button" class="btn btn-danger"><i class="fas fa-times"></i></button>`
+
+                        }
+                       $("#sala-row").append(`
+                       <div  id="sala-${element.id}"  class="col-12 row">
+                            <div class="form-group col-10">
+                                    <input type="text" data-status=${element.status} value=${element.name} disabled class="form-control" id="sala[]" name="sala[]" placeholder="Nome da sala">
+                            </div>
+                            <div class="col-auto">${statusButton}</div>
+                        </div>`);
+                    });
+                    
+                    $('#inputEmail').val(data.email);
+                    $('#updateButton').attr('onclick', 'update(' + data.id + ')');
+                    $('#modalEdit').modal('show');
+                },
+                error: function () {
+                    console.log('Ocorreu um erro ao encontrar o funcionário');
+                }
+            });
+        }
+
+        function update(id) {
+            $.ajax({
+                type: 'PUT',
+                url: `update/${id}`,
+                dataType: 'json',
+                data: $('#formEdit').serialize(),
+                success: function (data) {
+                    Toast.fire({
+                        type: 'success',
+                        title: data.message
+                    });
+                    $('#tUsers').DataTable().ajax.reload();
+                },
+                error: function (data) {
+                    Toast.fire({
+                        type: 'error',
+                        title: data.responseJSON.message
+                    });
+
+                }
+            });
+        }
+
+        function disable(id) {
+            Swal.fire({
+                title: 'Você tem certeza?',
+                text: "Ao desabilitar o local de trabalho.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sim, desabilite o local de trabalho!'
+            }).then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        type: 'DELETE',
+                        url: `disable/${id}`,
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function (data) {
+                            Swal.fire({
+                                title: 'Desabilitado!',
+                                text: data.message,
+                                type: 'success'
+                            });
+                            $('#tOrdens').DataTable().ajax.reload();
+                        },
+                        error: function (data) {
+                            Swal.fire({
+                                title: 'Algo de errado aconteceu!',
+                                text: data.responseJSON.message,
+                                type: 'error'
+                            });
+                        }
+                    });
+                }
+            });
+        }
+
+        function disableWorkstation(id) {
+
+            Swal.fire({
+                title: 'Você tem certeza?',
+                text: "Ao desabilitar o local de trabalho.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sim, desabilite o local de trabalho!'
+            }).then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        type: 'DELETE',
+                        url: `workstation/disable/${id}`,
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function (data) {
+                            Swal.fire({
+                                title: 'Desabilitado!',
+                                text: data.message,
+                                type: 'success'
+                            });
+                                        
+                            $("#sala-"+id+" > div > input").attr("data-status", "disable");
+                            $("#delete-"+id).attr('onclick', 'ableWorkstation(' + id + ')')
+                                .toggleClass("btn-success btn-danger")
+                                .html(`<i class="fas fa-times"></i>`)
+
+            
+                           // $('#tOrdens').DataTable().ajax.reload();
+                        },
+                        error: function (data) {
+                            Swal.fire({
+                                title: 'Algo de errado aconteceu!',
+                                text: data.responseJSON.message,
+                                type: 'error'
+                            });
+                        }
+                    });
+                }
+            });
+        }
+
+        function ableWorkstation(id) {
+            Swal.fire({
+                title: 'Você tem certeza?',
+                text: "Deseja habilitar o local de trabalho?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sim, habilite o local de trabalho!'
+            }).then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        type: 'DELETE',
+                        url: `workstation/able/${id}`,
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function (data) {
+                            Swal.fire({
+                                title: 'Habilitado!',
+                                text: data.message,
+                                type: 'success'
+                            });
+                            
+                            $("#sala-"+id+" > div > input").attr("data-status", "able");
+                            $("#delete-"+id).attr('onclick', 'disableWorkstation(' + id + ')')
+                                .toggleClass("btn-success btn-danger")
+                                .html(`<i class="fas fa-check"></i>`)
+
+                        // $('#tOrdens').DataTable().ajax.reload();
+                        },
+                        error: function (data) {
+                            Swal.fire({
+                                title: 'Algo de errado aconteceu!',
+                                text: data.responseJSON.message,
+                                type: 'error'
+                            });
+                        }
+                    });
+                }
+            });
+            }
 </script>
 @stop

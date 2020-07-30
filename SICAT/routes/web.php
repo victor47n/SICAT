@@ -40,4 +40,9 @@ Route::get('/local/listar', 'LocaleController@index')->name("local.index");
 Route::get('/local/cadastrar', 'LocaleController@create')->name("local.create");
 Route::post('/local/add', 'LocaleController@add')->name("local.add");
 Route::get('/local/show/{id}', 'LocaleController@show')->name('local.show');
+Route::delete('/local/disable/{id}', 'LocaleController@disable')->name('local.disable');
 Route::get('/local/list', 'LocaleController@list')->name('local.list');
+
+//criar controller proprio para isso
+Route::delete('/local/workstation/disable/{id}', 'LocaleController@disableWorkstation')->name('workstation.disable');
+Route::delete('/local/workstation/able/{id}', 'LocaleController@ableWorkstation')->name('workstation.able');

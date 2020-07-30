@@ -89,15 +89,55 @@ class LocaleController extends Controller
     function show($id)
     {
         $data = Locale::find($id);
+        $data->workstation = $data->workstation;
 
         return $data;
     }
 
+
     function disable($id)
     {
         try {
-            Locale::find($id)->delete();
-            return response()->json(["message" => "Funcionário desabilitado com sucesso!"], 201);
+            $locale = Locale::find($id);
+            $locale->status = "disable";
+            $locale->save();
+
+            return response()->json(["message" => "Local desabilitado com sucesso!"], 201);
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
+                return response()->json(["message" => $e->getMessage()], 400);
+            }
+
+            return response()->json(["message" => $e->getMessage()], 400);
+        }
+    }
+
+    function disableWorkstation($id)
+    {
+        try {
+            $work = Workstation::find($id);
+            $work->status = "disable";
+            $work->save();
+
+            return response()->json(["message" => "Posto de trabalho desabilitado com sucesso!"], 201);
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
+                return response()->json(["message" => $e->getMessage()], 400);
+            }
+
+            return response()->json(["message" => $e->getMessage()], 400);
+        }
+    }
+
+
+    function ableWorkstation($id)
+    {
+        try {
+            $work = Workstation::find($id);
+            $work->status = "able";
+            $work->save();
+
+            return response()->json(["message" => "Posto de trabalho habilitado com sucesso!"], 201);
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 return response()->json(["message" => $e->getMessage()], 400);
