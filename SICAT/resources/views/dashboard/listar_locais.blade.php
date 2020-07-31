@@ -60,6 +60,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-primary" id="addButton">Adicionar local</button>
                 <button type="button" class="btn btn-primary" id="updateButton">Salvar mudanças</button>
             </div>
         </div>
@@ -198,6 +199,7 @@
                             statusButton = `<button id="delete-${element.id}" onclick="ableWorkstation(${element.id})" type="button" class="btn btn-danger"><i class="fas fa-times"></i></button>`
 
                         }
+
                        $("#sala-row").append(`
                        <div  id="sala-${element.id}"  class="col-12 row">
                             <div class="form-group col-10">
@@ -205,8 +207,19 @@
                             </div>
                             <div class="col-auto">${statusButton}</div>
                         </div>`);
+
+                    
                     });
                     
+                    $("#sala-row").append(`
+                        <div  id="sala"  class="col-12 row">
+                            <div class="form-group col-10">
+                                    <input type="text" class="form-control" id="sala" name="sala" placeholder="Nome da sala">
+                            </div>
+                            <div class="col-auto">
+                                <button id="insert" onclick="addworkstation()" type="button" class="btn btn-info"><i class="fas fa-plus"></i></button>
+                            </div>
+                        </div>`);
                     $('#inputEmail').val(data.email);
                     $('#updateButton').attr('onclick', 'update(' + data.id + ')');
                     $('#modalEdit').modal('show');
@@ -305,9 +318,8 @@
                             $("#sala-"+id+" > div > input").attr("data-status", "disable");
                             $("#delete-"+id).attr('onclick', 'ableWorkstation(' + id + ')')
                                 .toggleClass("btn-success btn-danger")
-                                .html(`<i class="fas fa-times"></i>`)
+                                .html(`<i class="fas fa-times"></i>`);
 
-            
                            // $('#tOrdens').DataTable().ajax.reload();
                         },
                         error: function (data) {
@@ -363,6 +375,17 @@
                     });
                 }
             });
-            }
+        }
+
+        function addworkstation(){
+            $(`<div  id="saladadas"  class="col-12 row">
+                            <div class="form-group col-10">
+                                    <input type="text" data-status="" value="" disabled class="form-control" id="sala[]" name="sala[]" placeholder="Nome da sala">
+                            </div>
+                            <div class="col-auto">
+                                <button id="delete-${element.id}" onclick="disableWorkstation(${element.id})" type="button" class="btn btn-success"><i class="fas fa-check"></i></button>
+                            </div>
+                        </div>`).insertBefore("#sala");
+        }
 </script>
 @stop
