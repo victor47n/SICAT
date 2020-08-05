@@ -41,8 +41,11 @@ Route::get('/local/cadastrar', 'LocaleController@create')->name("local.create");
 Route::post('/local/add', 'LocaleController@add')->name("local.add");
 Route::get('/local/show/{id}', 'LocaleController@show')->name('local.show');
 Route::delete('/local/disable/{id}', 'LocaleController@disable')->name('local.disable');
+Route::put('/local/update/{id}', 'LocaleController@update')->name('local.update');
 Route::get('/local/list', 'LocaleController@list')->name('local.list');
 
 //criar controller proprio para isso
-Route::delete('/local/workstation/disable/{id}', 'LocaleController@disableWorkstation')->name('workstation.disable');
-Route::delete('/local/workstation/able/{id}', 'LocaleController@ableWorkstation')->name('workstation.able');
+Route::delete('/workstation/disable/{id}', 'WorkstationController@disable')->name('workstation.disable');
+Route::delete('/workstation/able/{id}', 'WorkstationController@able')->name('workstation.able');
+Route::put('/workstation/{id}', 'WorkstationController@update')->name('workstation.update');
+Route::post('/workstation/add', 'WorkstationController@add')->name('workstation.add');

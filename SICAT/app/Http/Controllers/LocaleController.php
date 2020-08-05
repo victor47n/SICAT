@@ -21,12 +21,12 @@ class LocaleController extends Controller
 
     function index()
     {
-        return view('dashboard/listar_locais');
+        return view('dashboard/locale/list-locales');
     }
 
     function create()
     {
-        return view('dashboard/locales_create');
+        return view('dashboard/locale/create-locales');
     }
 
     function add(Request $req)
@@ -55,7 +55,11 @@ class LocaleController extends Controller
                 $result .= '<button type="button" id="' . $data->id . '" class="btn btn-secondary" onclick="showEditModal(' . $data->id . ')"><i class="fas fa-fw fa-edit"></i>Editar</button>';
 
                 //if (Gate::allows('rolesUser', 'user_delete')) 
-                $result .= '<button type="button" id="' . $data->id . '" class="btn btn-danger" onclick="disable(' . $data->id . ')"><i class="fas fa-fw fa-trash"></i>Excluir</button>';
+                if ($data->status == 'able') {
+                    $result .= '<button type="button" id="' . $data->id . '" class="btn btn-danger" onclick="disable(' . $data->id . ')"><i class="fas fa-fw fa-trash"></i>Excluir</button>';
+                } else {
+                    $result .= '<button type="button" id="' . $data->id . '" class="btn btn-danger" onclick="disable(' . $data->id . ')"><i class="fas fa-fw fa-trash"></i>Excluir</button>';
+                }
 
                 $result .= '</div>';
                 return $result;
@@ -103,41 +107,6 @@ class LocaleController extends Controller
             $locale->save();
 
             return response()->json(["message" => "Local desabilitado com sucesso!"], 201);
-        } catch (\Exception $e) {
-            if (config('app.debug')) {
-                return response()->json(["message" => $e->getMessage()], 400);
-            }
-
-            return response()->json(["message" => $e->getMessage()], 400);
-        }
-    }
-
-    function disableWorkstation($id)
-    {
-        try {
-            $work = Workstation::find($id);
-            $work->status = "disable";
-            $work->save();
-
-            return response()->json(["message" => "Posto de trabalho desabilitado com sucesso!"], 201);
-        } catch (\Exception $e) {
-            if (config('app.debug')) {
-                return response()->json(["message" => $e->getMessage()], 400);
-            }
-
-            return response()->json(["message" => $e->getMessage()], 400);
-        }
-    }
-
-
-    function ableWorkstation($id)
-    {
-        try {
-            $work = Workstation::find($id);
-            $work->status = "able";
-            $work->save();
-
-            return response()->json(["message" => "Posto de trabalho habilitado com sucesso!"], 201);
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 return response()->json(["message" => $e->getMessage()], 400);
