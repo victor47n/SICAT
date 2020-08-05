@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Funcionários')
+@section('title', 'Postos de Trabalhos')
 
 @section('content_header')
 <h1>Postos de trabalho</h1>
@@ -20,7 +20,7 @@
                 <h3 class="card-title">Cadastros de Postos de trabalho</h3>
             </div>
             <div class="card-body">
-                <table id="tOrdens" class="table table-hover table-bordered table-striped">
+                <table id="tLocais" class="table table-hover table-bordered table-striped">
                     <thead>
                         <tr role="row">
                             <th class="sorting">ID</th>
@@ -60,7 +60,6 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-                <button type="button" class="btn btn-primary" id="addButton">Adicionar local</button>
                 <button type="button" class="btn btn-primary" id="updateButton">Salvar mudanças</button>
             </div>
         </div>
@@ -83,8 +82,15 @@
 
 @section('js')
 <script>
+    const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000
+        });
+
     $(document).ready(function () {
-            var table = $('#tOrdens');
+            var table = $('#tLocais');
             table.DataTable({
                 processing: true,
                 serverSide: true,
@@ -182,19 +188,19 @@
 
         
         function showEditModal(id) {
-            $("#sala-row").html('');
             $.ajax({
                 type: 'GET',
                 url: `show/${id}`,
                 context: 'json',
                 success: function (data) {
+                    $("#sala-row").html('');
                     $('#inputName').val(data.name);
                     workstations = data.workstation;
 
                     workstations.forEach(element => {
                         statusButton ="";
                        if(element.status == 'able'){
-                            statusButton = `<button id="delete-${element.id}" onclick="disableWorkstation(${element.id})" type="button" class="btn btn-success"><i class="fas fa-check"></i></button>`
+                            statusButton = `<button id="delete-${element.id}"  onclick="disableWorkstation(${element.id})" type="button" class="btn btn-success"><i class="fas fa-check"></i></button>`
                         }else{
                             statusButton = `<button id="delete-${element.id}" onclick="ableWorkstation(${element.id})" type="button" class="btn btn-danger"><i class="fas fa-times"></i></button>`
 
@@ -203,7 +209,7 @@
                        $("#sala-row").append(`
                        <div  id="sala-${element.id}"  class="col-12 row">
                             <div class="form-group col-10">
-                                    <input type="text" data-status=${element.status} value=${element.name} disabled class="form-control" id="sala[]" name="sala[]" placeholder="Nome da sala">
+                                    <input type="text" data-status=${element.status} onfocusout="updateWorkstation(${element.id})" value=${element.name} class="form-control" id="sala[]" name="sala[]" placeholder="Nome da sala">
                             </div>
                             <div class="col-auto">${statusButton}</div>
                         </div>`);
@@ -214,10 +220,10 @@
                     $("#sala-row").append(`
                         <div  id="sala"  class="col-12 row">
                             <div class="form-group col-10">
-                                    <input type="text" class="form-control" id="sala" name="sala" placeholder="Nome da sala">
+                                    <input type="text" class="form-control" id="novasala" name="novasala"  placeholder="Nome da sala">
                             </div>
                             <div class="col-auto">
-                                <button id="insert" onclick="addworkstation()" type="button" class="btn btn-info"><i class="fas fa-plus"></i></button>
+                                <button id="insert" onclick="addworkstation(${data.id})" type="button" class="btn btn-info"><i class="fas fa-plus"></i></button>
                             </div>
                         </div>`);
                     $('#inputEmail').val(data.email);
@@ -234,14 +240,17 @@
             $.ajax({
                 type: 'PUT',
                 url: `update/${id}`,
+                headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
                 dataType: 'json',
-                data: $('#formEdit').serialize(),
+                data: {name: $('#inputName').val()},
                 success: function (data) {
                     Toast.fire({
                         type: 'success',
                         title: data.message
                     });
-                    $('#tUsers').DataTable().ajax.reload();
+                    $('#tLocais').DataTable().ajax.reload();
                 },
                 error: function (data) {
                     Toast.fire({
@@ -276,7 +285,7 @@
                                 text: data.message,
                                 type: 'success'
                             });
-                            $('#tOrdens').DataTable().ajax.reload();
+                            $('#tLocais').DataTable().ajax.reload();
                         },
                         error: function (data) {
                             Swal.fire({
@@ -290,8 +299,19 @@
             });
         }
 
-        function disableWorkstation(id) {
+        function updateWorkstation(id){
+            $.ajax({
+                type: 'PUT',
+                url: `workstation/${id}`,
+                dataType: 'json',
+                data: {name: $("#sala-"+id+" div input").val()},
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+            });
+        }
 
+        function disableWorkstation(id) {
             Swal.fire({
                 title: 'Você tem certeza?',
                 text: "Ao desabilitar o local de trabalho.",
@@ -320,7 +340,7 @@
                                 .toggleClass("btn-success btn-danger")
                                 .html(`<i class="fas fa-times"></i>`);
 
-                           // $('#tOrdens').DataTable().ajax.reload();
+                           // $('#tLocais').DataTable().ajax.reload();
                         },
                         error: function (data) {
                             Swal.fire({
@@ -363,7 +383,7 @@
                                 .toggleClass("btn-success btn-danger")
                                 .html(`<i class="fas fa-check"></i>`)
 
-                        // $('#tOrdens').DataTable().ajax.reload();
+                        // $('#tLocais').DataTable().ajax.reload();
                         },
                         error: function (data) {
                             Swal.fire({
@@ -377,15 +397,44 @@
             });
         }
 
-        function addworkstation(){
-            $(`<div  id="saladadas"  class="col-12 row">
-                            <div class="form-group col-10">
-                                    <input type="text" data-status="" value="" disabled class="form-control" id="sala[]" name="sala[]" placeholder="Nome da sala">
-                            </div>
-                            <div class="col-auto">
-                                <button id="delete-${element.id}" onclick="disableWorkstation(${element.id})" type="button" class="btn btn-success"><i class="fas fa-check"></i></button>
-                            </div>
-                        </div>`).insertBefore("#sala");
+        function addworkstation(id){
+            $.ajax({
+                type: 'POST',
+                url: '/workstation/add',
+                headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                dataType: 'json',
+                data: {
+                    id: id, 
+                    name: $('#novasala').val()
+                },
+                success: function (data) {
+                    Toast.fire({
+                        type: 'success',
+                        title: data.message
+                    });
+
+                    data = data.data;
+                    $(`<div id="sala-${data.id}" class="col-12 row">
+                    <div class="form-group col-10">
+                        <input type="text" data-status="" value=${data.name} class="form-control" id="sala[]" name="sala[]" placeholder="Nome da sala">
+                    </div>
+                    <div class="col-auto">
+                        <button id="delete-${data.id}" onclick="difsableWorkstation(${data.id})" type="button" class="btn btn-success"><i class="fas fa-check"></i></button>
+                    </div>
+                    </div>`).insertBefore("#sala");
+
+                    $('#tLocais').DataTable().ajax.reload();
+                },
+                error: function (data) {
+                    Toast.fire({
+                        type: 'error',
+                        title: data.responseJSON.message
+                    });
+
+                }
+            });
         }
 </script>
 @stop
