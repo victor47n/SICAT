@@ -31,21 +31,12 @@ Route::prefix('funcionarios')->group(function () {
     Route::delete('/disable/{id}', 'UserController@disable')->name('user.disable');
 });
 
-/* Rotas de Ordem de Serviço */
-Route::get('/ordem/listar', 'OrdemServicoController@index')->name("ordem.index");
-Route::get('/ordem/cadastrar', 'OrdemServicoController@create')->name("ordem.create");
-
 /* Rotas de Postos de trabalho */
-Route::get('/local/listar', 'LocaleController@index')->name("local.index");
-Route::get('/local/cadastrar', 'LocaleController@create')->name("local.create");
-Route::post('/local/add', 'LocaleController@add')->name("local.add");
-Route::get('/local/show/{id}', 'LocaleController@show')->name('local.show');
-Route::delete('/local/disable/{id}', 'LocaleController@disable')->name('local.disable');
-Route::put('/local/update/{id}', 'LocaleController@update')->name('local.update');
+Route::put('/local/disable/{id}', 'LocaleController@disable')->name('local.disable');
+Route::put('/local/able/{id}', 'LocaleController@able')->name('local.able');
 Route::get('/local/list', 'LocaleController@list')->name('local.list');
+Route::resource('local', 'LocaleController')->names('local');
 
-//criar controller proprio para isso
-Route::delete('/workstation/disable/{id}', 'WorkstationController@disable')->name('workstation.disable');
-Route::delete('/workstation/able/{id}', 'WorkstationController@able')->name('workstation.able');
-Route::put('/workstation/{id}', 'WorkstationController@update')->name('workstation.update');
-Route::post('/workstation/add', 'WorkstationController@add')->name('workstation.add');
+Route::put('/workstation/disable/{id}', 'WorkstationController@disable')->name('workstation.disable');
+Route::put('/workstation/able/{id}', 'WorkstationController@able')->name('workstation.able');
+Route::resource('workstation', 'WorkstationController')->names('workstation');

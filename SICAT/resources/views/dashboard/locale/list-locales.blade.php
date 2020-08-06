@@ -274,7 +274,7 @@
             }).then((result) => {
                 if (result.value) {
                     $.ajax({
-                        type: 'DELETE',
+                        type: 'PUT',
                         url: `disable/${id}`,
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -323,7 +323,7 @@
             }).then((result) => {
                 if (result.value) {
                     $.ajax({
-                        type: 'DELETE',
+                        type: 'PUT',
                         url: `workstation/disable/${id}`,
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -366,7 +366,7 @@
             }).then((result) => {
                 if (result.value) {
                     $.ajax({
-                        type: 'DELETE',
+                        type: 'PUT',
                         url: `workstation/able/${id}`,
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

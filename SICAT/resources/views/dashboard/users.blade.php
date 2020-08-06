@@ -282,7 +282,7 @@
             }).then((result) => {
                 if (result.value) {
                     $.ajax({
-                        type: 'DELETE',
+                        type: 'PUT',
                         url: `disable/${id}`,
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

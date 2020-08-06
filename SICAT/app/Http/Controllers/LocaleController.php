@@ -29,7 +29,7 @@ class LocaleController extends Controller
         return view('dashboard/locale/create-locales');
     }
 
-    function add(Request $req)
+    function store(Request $req)
     {
         $data = $req->all();
         $local = null;
@@ -107,6 +107,23 @@ class LocaleController extends Controller
             $locale->save();
 
             return response()->json(["message" => "Local desabilitado com sucesso!"], 201);
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
+                return response()->json(["message" => $e->getMessage()], 400);
+            }
+
+            return response()->json(["message" => $e->getMessage()], 400);
+        }
+    }
+
+    function able($id)
+    {
+        try {
+            $locale = Locale::find($id);
+            $locale->status = "able";
+            $locale->save();
+
+            return response()->json(["message" => "Local habilitado com sucesso!"], 201);
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 return response()->json(["message" => $e->getMessage()], 400);

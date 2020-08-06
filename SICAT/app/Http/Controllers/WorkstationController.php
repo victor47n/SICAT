@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 class WorkstationController extends Controller
 {
 
-    function add(Request $req)
+    function store(Request $req)
     {
         try {
             $data = $req->all();
