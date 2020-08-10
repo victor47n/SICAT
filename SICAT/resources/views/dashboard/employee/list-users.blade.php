@@ -20,8 +20,8 @@
                     <h3 class="card-title">Cadastros de funcionários</h3>
                 </div>
                 <div class="card-body">
-                    <table id="tUsers" class="table table-hover table-bordered table-striped">
-                        <thead>
+                    <table id="tUsers" class="table table-hover table-borderless">
+                        <thead class="thead-dark">
                         <tr role="row">
                             <th class="sorting">ID</th>
                             <th class="sorting_asc">Nome</th>
@@ -38,11 +38,84 @@
         </div>
     </div>
 
-    <!-- Modal -->
+    {{--    <div class="modal fade" id="modalLoader" tabindex="1" role="dialog" aria-labelledby="viewModalLabel"--}}
+    {{--         aria-hidden="true">--}}
+    {{--        <div class="modal-dialog modal-dialog-centered" role="document">--}}
+    {{--            <div class="modal-content">--}}
+    {{--                <div class="overlay d-flex justify-content-center align-items-center">--}}
+    {{--                    <div class="spinner-border" role="status">--}}
+    {{--                        <span class="sr-only">Loading...</span>--}}
+    {{--                    </div>--}}
+    {{--                </div>--}}
+    {{--            </div>--}}
+    {{--        </div>--}}
+    {{--    </div>--}}
+
+    <!-- Modal View -->
+    <div class="modal fade" id="modalView" tabindex="-1" role="dialog" aria-labelledby="viewModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="overlay">
+                    <div class="d-flex h-100 justify-content-center align-items-center">
+                        <div class="spinner-border" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="viewModalLabel">Dados do funcionário</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="formView" class="d-none">
+                        <fieldset disabled>
+                            <div class="form-group">
+                                <label for="inputNameView">Nome</label>
+                                <input type="text" class="form-control-plaintext" id="inputNameView">
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="inputEmailView">Email</label>
+                                    <input type="text" class="form-control-plaintext" id="inputEmailView">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="inputPhoneView">Telefone</label>
+                                    <input type="text" class="form-control-plaintext" id="inputPhoneView">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="inputOfficeView">Cargo</label>
+                                    <input type="text" class="form-control-plaintext" id="inputOfficeView">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="inputPermissionView">Permissão</label>
+                                    <input type="text" class="form-control-plaintext" id="inputPermissionView">
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Edit-->
     <div class="modal fade" id="modalEdit" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
          aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
+                <div class="overlay">
+                    <div class="d-flex h-100 justify-content-center align-items-center">
+                        <div class="spinner-border" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                </div>
                 <div class="modal-header">
                     <h5 class="modal-title" id="editModalLabel">Editar funcionário</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
@@ -50,31 +123,31 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form method="post" id="formEdit" novalidate="novalidate">
+                    <form method="post" id="formEdit" class="needs-validation" novalidate>
                         {{ csrf_field() }}
                         @method('PUT')
                         <div class="form-group">
-                            <label for="inputName">Nome</label>
-                            <input type="text" class="form-control" id="inputName" name="name">
+                            <label for="inputNameEdit">Nome</label>
+                            <input type="text" class="form-control" id="inputNameEdit" name="name" required>
                         </div>
                         <div class="form-group">
-                            <label for="inputEmail">Email</label>
-                            <input type="text" class="form-control" id="inputEmail" name="email">
+                            <label for="inputEmailEdit">Email</label>
+                            <input type="text" class="form-control" id="inputEmailEdit" name="email" required>
                         </div>
                         <div class="form-group">
-                            <label for="inputPhone">Telefone</label>
-                            <input type="text" class="form-control" id="inputPhone" name="phone">
+                            <label for="inputPhoneEdit">Telefone</label>
+                            <input type="text" class="form-control" id="inputPhoneEdit" name="phone">
                         </div>
                         <div class="form-group">
-                            <label for="inputOffice">Cargo</label>
-                            <select id="inputOffice" class="form-control" name="office">
+                            <label for="inputOfficeEdit">Cargo</label>
+                            <select id="inputOfficeEdit" class="form-control" name="office" required>
                                 <option>Funcionário</option>
                                 <option>Estagiário</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="inputPermission">Permissão</label>
-                            <select id="inputPermission" class="form-control" name="role_id">
+                            <label for="inputPermissionEdit">Permissão</label>
+                            <select id="inputPermissionEdit" class="form-control" name="role_id" required>
                                 @foreach($roles as $role)
                                     <option value="{{$role->id}}">{{$role->name}}</option>
                                 @endforeach
@@ -107,13 +180,17 @@
 
 @section('js')
     <script>
+
         $(document).ready(function () {
             var table = $('#tUsers');
             table.DataTable({
                 processing: true,
                 serverSide: true,
                 autoWidth: false,
-                responsive: true,
+                responsive: {
+                    details: true,
+                    type: 'column'
+                },
                 deferRender: true,
                 language: {
                     // url: '//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json',
@@ -174,6 +251,9 @@
                 ajax: {
                     url: '{{ route('user.index') }}',
                 },
+                rowId: function(a) {
+                    return 'row_' + a.id;
+                },
                 columns: [
                     {
                         data: 'id',
@@ -215,7 +295,7 @@
                     },
                     {
                         targets: 6,
-                        visible: {{Gate::allows('rolesUser', ['user_delete','user_edit']) ? 'true' : 'false'}}
+                        visible: {{Gate::allows('rolesUser', ['employee_disable', 'employee_edit', 'employee_view']) ? 'true' : 'false'}}
                     }
                 ],
                 drawCallback: function () {
@@ -256,8 +336,7 @@
                 }
             });
         });
-    </script>
-    <script>
+
         const Toast = Swal.mixin({
             toast: true,
             position: 'top-end',
@@ -265,45 +344,95 @@
             timer: 3000
         });
 
-        function showEditModal(id) {
+        function clearModal(formModal) {
+            $("#" +formModal).addClass('d-none');
+            $("#" +formModal)[0].reset();
+        }
+
+        function loader() {
+            this.id = '.overlay'
+        };
+
+        loader.prototype.show = function () {
+            $(this.id).fadeIn();
+        };
+
+        loader.prototype.hide = function () {
+            $(this.id).fadeOut('slow', function () {
+                $(this.id).attr("style", "display: none !important");
+            });
+        };
+
+        loaderObj = new loader();
+
+        $('#modalView').on('show.bs.modal', function (event) {
+            clearModal('formView');
+            loaderObj.show();
+            let button = $(event.relatedTarget); // Botão que acionou o modal
+            let recipient = button.data('whatever'); // Extrai informação dos atributos data-*
+
             $.ajax({
                 type: 'GET',
-                url: 'funcionarios/' + id,
+                url: 'funcionarios/' + recipient,
                 context: 'json',
                 success: function (data) {
 
+                    $("#formView").removeClass('d-none');
 
                     data.map(_data => {
-                        $('#inputName').val(_data.name);
-                        $('#inputEmail').val(_data.email);
-                        $('#inputPhone').val(_data.phone);
+                        $('#inputNameView').val(_data.name);
+                        $('#inputEmailView').val(_data.email);
+                        $('#inputPhoneView').val(_data.phone);
+                        $('#inputOfficeView').val(_data.office);
+                        $('#inputPermissionView').val(_data.permission);
+                    });
+                    loaderObj.hide();
+                },
+            });
+        })
+
+        $('#modalEdit').on('show.bs.modal', function (event) {
+            clearModal('formEdit');
+            loaderObj.show();
+            let button = $(event.relatedTarget); // Botão que acionou o modal
+            let recipient = button.data('whatever'); // Extrai informação dos atributos data-*
+            $.ajax({
+                type: 'GET',
+                url: 'funcionarios/' + recipient,
+                context: 'json',
+                success: function (data) {
+                    $("#formEdit").removeClass('d-none');
+
+                    data.map(_data => {
+                        $('#inputNameEdit').val(_data.name);
+                        $('#inputEmailEdit').val(_data.email);
+                        $('#inputPhoneEdit').val(_data.phone);
 
                         let opt;
 
-                        for (let i = 0, len = $('#inputOffice option').length; i < len; i++) {
-                            opt = $('#inputOffice option')[i];
+                        for (let i = 0, len = $('#inputOfficeEdit option').length; i < len; i++) {
+                            opt = $('#inputOfficeEdit option')[i];
                             if (opt.text == _data.office) {
                                 opt.setAttribute('selected', true);
                             }
                         }
 
-                        for (let i = 0, len = $('#inputPermission option').length; i < len; i++) {
-                            opt = $('#inputPermission option')[i];
+                        for (let i = 0, len = $('#inputPermissionEdit option').length; i < len; i++) {
+                            opt = $('#inputPermissionEdit option')[i];
                             if (opt.text == _data.permission) {
                                 opt.setAttribute('selected', true);
                             }
                         }
-
-                        $('#updateButton').attr('onclick', 'update(' + _data.id + ')');
+                        $('#updateButton').attr('onclick', 'update(' + recipient + ')');
                     });
 
-                    $('#modalEdit').modal('show');
+                    loaderObj.hide();
                 },
                 error: function () {
                     console.log('Ocorreu um erro ao encontrar o funcionário');
                 }
             });
-        }
+        });
 
         function update(id) {
             $.ajax({
@@ -326,9 +455,10 @@
 
                 }
             });
-        }
+        };
 
         function disable(id) {
+            let table = $('#tUsers').DataTable();
             Swal.fire({
                 title: 'Você tem certeza?',
                 text: "Ao desabilitar o funcionário, você não poderá reverter isso! Apenas contatando o suporte.",
@@ -341,17 +471,18 @@
                 if (result.value) {
                     $.ajax({
                         type: 'PUT',
-                        url: 'funcionarios/' + id + '/disable',
+                        url: 'funcionarios/' + id + '/desabilitar',
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
                         success: function (data) {
+                            table.row('#' +id).remove().draw(false);
+                            $('#tUsers').DataTable().ajax.reload();
                             Swal.fire({
                                 title: 'Desabilitado!',
                                 text: data.message,
                                 type: 'success'
                             });
-                            $('#tUsers').DataTable().ajax.reload();
                         },
                         error: function (data) {
                             Swal.fire({
@@ -363,7 +494,7 @@
                     });
                 }
             });
-        }
+        };
     </script>
 @stop
 

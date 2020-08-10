@@ -27,24 +27,37 @@ class UserController extends Controller
     {
         $roles = DB::table('roles')->select('id', 'name')->get();
 
+//        $users = DB::table('users')
+//            ->select('users.id', 'users.name', 'users.email', 'users.phone', 'users.office', 'roles.name as permission')
+//            ->join('user_roles', 'users.id', '=', 'user_roles.user_id')
+//            ->join('roles', 'user_roles.role_id', '=', 'roles.id')
+//            ->join('status', 'users.status_id', '=', 'status.id')
+//            ->where('status.name', '!=', 'Desabilitado')
+//            ->dd();
+
         if ($request->ajax()) {
             $users = DB::table('users')
                 ->select('users.id', 'users.name', 'users.email', 'users.phone', 'users.office', 'roles.name as permission')
                 ->join('user_roles', 'users.id', '=', 'user_roles.user_id')
                 ->join('roles', 'user_roles.role_id', '=', 'roles.id')
-                ->where('status', '!=', 'disable')
+                ->join('status', 'users.status_id', '=', 'status.id')
+                ->where('status.name', '!=', 'Desabilitado')
                 ->get();
 
             return Datatables::of($users)
                 ->addColumn('action', function ($data) {
 
                     $result = '<div class="btn-group btn-group-sm" role="group" aria-label="Exemplo básico">';
-                    if (Gate::allows('rolesUser', 'user_edit')) {
-                        $result .= '<button type="button" id="' . $data->id . '" class="btn btn-secondary" onclick="showEditModal(' . $data->id . ')"><i class="fas fa-fw fa-edit"></i>Editar</button>';
+                    if (Gate::allows('rolesUser', 'employee_view')) {
+                        $result .= '<button type="button" id="' . $data->id . '" class="btn btn-primary"  data-toggle="modal" data-target="#modalView" data-whatever="' . $data->id . '""><i class="fas fa-fw fa-eye"></i>Visualizar</button>';
                     }
-                    if (Gate::allows('rolesUser', 'user_delete')) {
-                        $result .= '<button type="button" id="' . $data->id . '" class="btn btn-danger" onclick="disable(' . $data->id . ')"><i class="fas fa-fw fa-trash"></i>Excluir</button>';
+                    if (Gate::allows('rolesUser', 'employee_edit')) {
+                        $result .= '<button type="button" id="' . $data->id . '" class="btn btn-secondary" data-toggle="modal" data-target="#modalEdit" data-whatever="'. $data->id .'""><i class="fas fa-fw fa-edit"></i>Editar</button>';
                     }
+                    if (Gate::allows('rolesUser', 'employee_disable')) {
+                        $result .= '<button type="button" id="' . $data->id . '" class="btn btn-danger" onclick="disable(' . $data->id . ')"><i class="fas fa-fw fa-trash"></i>Desabilitar</button>';
+                    }
+
                     $result .= '</div>';
                     return $result;
                 })
@@ -90,7 +103,8 @@ class UserController extends Controller
             ->select('users.id', 'users.name', 'users.email', 'users.phone', 'users.office', 'roles.name as permission')
             ->join('user_roles', 'users.id', '=', 'user_roles.user_id')
             ->join('roles', 'user_roles.role_id', '=', 'roles.id')
-            ->where('status', '!=', 'disable')
+            ->join('status', 'users.status_id', '=', 'status.id')
+            ->where('status.name', '!=', 'Desabilitado')
             ->where('users.id', '=', $user)
             ->get();
 

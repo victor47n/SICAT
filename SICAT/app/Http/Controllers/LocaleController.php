@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Item;
+use App\Locale;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
-class ItemController extends Controller
+class LocaleController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -25,9 +24,7 @@ class ItemController extends Controller
      */
     public function create()
     {
-        $roles = DB::table('types')->select('id', 'name')->get();
-
-        return view('dashboard.item.create-items', ['roles' => $roles]);
+        //
     }
 
     /**
@@ -44,10 +41,10 @@ class ItemController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Item  $item
+     * @param  \App\Locale  $locale
      * @return \Illuminate\Http\Response
      */
-    public function show(Item $item)
+    public function show(Locale $locale)
     {
         //
     }
@@ -55,10 +52,10 @@ class ItemController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Item  $item
+     * @param  \App\Locale  $locale
      * @return \Illuminate\Http\Response
      */
-    public function edit(Item $item)
+    public function edit(Locale $locale)
     {
         //
     }
@@ -67,10 +64,10 @@ class ItemController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Item  $item
+     * @param  \App\Locale  $locale
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Item $item)
+    public function update(Request $request, Locale $locale)
     {
         //
     }
@@ -78,10 +75,10 @@ class ItemController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Item  $item
+     * @param  \App\Locale  $locale
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Item $item)
+    public function destroy(Locale $locale)
     {
         //
     }

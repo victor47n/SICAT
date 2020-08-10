@@ -9,16 +9,25 @@ use Yajra\DataTables\DataTables;
 
 class OrderServiceController extends Controller
 {
-    function index(Request $request)
+    function index()
     {
         return view("dashboard/order-service/list-service-orders");
     }
 
-    function create(Request $request)
+    function create()
     {
         return view("dashboard/order-service/create-service-orders");
     }
 
+    public function store(Request $request)
+    {
+        //
+    }
+
+    public function update(Request $request, OrderService $order)
+    {
+        //
+    }
 
     function show()
     {
@@ -33,5 +42,10 @@ class OrderServiceController extends Controller
             })
             ->rawColumns(['action'])
             ->make(true);
+    }
+
+    function disable($order)
+    {
+
     }
 }
