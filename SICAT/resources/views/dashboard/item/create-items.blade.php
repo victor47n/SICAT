@@ -3,42 +3,41 @@
 @section('title', 'SICAT')
 
 @section('content_header')
-    <h1>Funcionários</h1>
+    <h1>Itens</h1>
 @stop
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href={{route('welcome')}}>Home</a></li>
-    <li class="breadcrumb-item active">Funcionários</li>
+    <li class="breadcrumb-item"><a href={{route('dashboard.index')}}>Home</a></li>
+    <li class="breadcrumb-item active">Itens</li>
     <li class="breadcrumb-item active">Cadastrar</li>
 @stop
 
 @section('content')
     <div class="row  justify-content-center">
-        <div class="col-md-6">
+        <div class="col-sm-12 col-md-8 col-lg-8 col-xl-6">
             <div class="card card-primary">
                 <div class="card-header">
-                    <h3 class="card-title">Cadastrar funcionário</h3>
+                    <h3 class="card-title">Cadastrar itens</h3>
                 </div>
 
                 <form id="form">
                     {{ csrf_field() }}
 
                     <div class="card-body">
-                        <div class="form-group">
-                            <label for="name">Nome</label>
-                            <input type="text" class="form-control" id="name" name="name"
-                                   placeholder="Nome">
-                        </div>
                         <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label for="email">Email</label>
-                                <input type="email" class="form-control" id="email" name="email"
-                                       placeholder="exemplo@abc.xyz">
+                            <div class="form-group col-md-12 col-lg-6">
+                                <label for="inputName">Email</label>
+                                <input type="text" class="form-control" id="inputName" name="name"
+                                       placeholder="">
                             </div>
-                            <div class="form-group col-md-6">
-                                <label for="password">Senha</label>
-                                <input type="password" class="form-control" id="password" name="password"
-                                       placeholder="Senha">
+                            <div class="form-group col-md-12 col-lg-4">
+                                <label for="inputType">Nivel de permissão</label>
+                                <select id="inputType" class="form-control" name="type_id">
+                                    <option selected>Escolher...</option>
+                                    @foreach($roles as $role)
+                                        <option value="{{$role->id}}">{{$role->name}}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -62,10 +61,13 @@
 @section('css')
 @stop
 
+@section('plugins.Inputmask', true)
 @section('plugins.Sweetalert2', true)
 
 @section('js')
     <script>
+        $('[data-mask]').inputmask();
+
         const Toast = Swal.mixin({
             toast: true,
             position: 'top-end',
@@ -77,7 +79,7 @@
             e.preventDefault();
 
             $.ajax({
-                url: "{{route('user.add')}}",
+                url: "{{ route('user.store') }}",
                 method: "POST",
                 dataType: 'json',
                 data: $('#form').serialize(),
@@ -85,6 +87,13 @@
                     Toast.fire({
                         type: 'success',
                         title: data.message
+                    });
+                },
+                error: function (data) {
+                    Swal.fire({
+                        type: 'error',
+                        title: 'Algo de errado aconteceu!',
+                        text: data.responseJSON.message
                     });
                 }
             });

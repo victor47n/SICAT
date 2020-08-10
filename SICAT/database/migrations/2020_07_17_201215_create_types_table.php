@@ -16,6 +16,7 @@ class CreateTypesTable extends Migration
         Schema::create('types', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->foreignId('status_id')->constrained('status');
             $table->timestamps();
         });
     }
@@ -27,6 +28,9 @@ class CreateTypesTable extends Migration
      */
     public function down()
     {
+        Schema::create('types', function (Blueprint $table) {
+            $table->dropForeign(['status_id']);
+        });
         Schema::dropIfExists('types');
     }
 }

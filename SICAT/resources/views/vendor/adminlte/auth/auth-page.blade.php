@@ -27,29 +27,30 @@
         </div>
 
         {{-- Card Box --}}
-        <div class="card {{ config('adminlte.classes_auth_card', 'card-outline card-primary') }}">
+        <div class="card">
+        <div class="{{ $auth_type ?? 'login' }}-card-body">
 
             {{-- Card Header --}}
             @hasSection('auth_header')
-                <div class="card-header {{ config('adminlte.classes_auth_header', '') }}">
-                    <h3 class="card-title float-none text-center">
+{{--                <div class="card-header {{ config('adminlte.classes_auth_header', '') }}">--}}
+                    <p class="login-box-msg">
                         @yield('auth_header')
-                    </h3>
-                </div>
+                    </p>
+{{--                </div>--}}
             @endif
 
             {{-- Card Body --}}
-            <div class="card-body {{ $auth_type ?? 'login' }}-card-body {{ config('adminlte.classes_auth_body', '') }}">
+{{--            <div class="card-body {{ $auth_type ?? 'login' }}-card-body {{ config('adminlte.classes_auth_body', '') }}">--}}
                 @yield('auth_body')
-            </div>
+{{--            </div>--}}
 
             {{-- Card Footer --}}
             @hasSection('auth_footer')
-                <div class="card-footer {{ config('adminlte.classes_auth_footer', '') }}">
+{{--                <div class="card-footer {{ config('adminlte.classes_auth_footer', '') }}">--}}
                     @yield('auth_footer')
-                </div>
+{{--                </div>--}}
             @endif
-
+        </div>
         </div>
 
     </div>
