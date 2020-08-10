@@ -302,7 +302,7 @@
         function updateWorkstation(id){
             $.ajax({
                 type: 'PUT',
-                url: `workstation/${id}`,
+                url: `postos/${id}/update`,
                 dataType: 'json',
                 data: {name: $("#sala-"+id+" div input").val()},
                 headers: {
@@ -324,7 +324,7 @@
                 if (result.value) {
                     $.ajax({
                         type: 'PUT',
-                        url: `workstation/disable/${id}`,
+                        url: `postos/${id}/desabilitar`,
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
@@ -367,7 +367,7 @@
                 if (result.value) {
                     $.ajax({
                         type: 'PUT',
-                        url: `workstation/able/${id}`,
+                        url: `postos/${id}/habilitar`,
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
@@ -400,7 +400,7 @@
         function addworkstation(id){
             $.ajax({
                 type: 'POST',
-                url: '/workstation/add',
+                url: "{{ route('workstation.store') }}",
                 headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
@@ -421,7 +421,7 @@
                         <input type="text" data-status="" value=${data.name} class="form-control" id="sala[]" name="sala[]" placeholder="Nome da sala">
                     </div>
                     <div class="col-auto">
-                        <button id="delete-${data.id}" onclick="difsableWorkstation(${data.id})" type="button" class="btn btn-success"><i class="fas fa-check"></i></button>
+                        <button id="delete-${data.id}" onclick="disableWorkstation(${data.id})" type="button" class="btn btn-success"><i class="fas fa-check"></i></button>
                     </div>
                     </div>`).insertBefore("#sala");
 

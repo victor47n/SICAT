@@ -93,7 +93,7 @@
             $("#form").on("submit", function (e) {
                 e.preventDefault();
                 $.ajax({
-                    url: "{{route('local.add')}}",
+                    url: "{{route('locale.add')}}",
                     method: "POST",
                     contentType: 'application/json',
                     dataType: 'json',

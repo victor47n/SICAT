@@ -32,11 +32,11 @@ Route::prefix('funcionarios')->group(function () {
 });
 
 /* Rotas de Postos de trabalho */
-Route::put('/local/disable/{id}', 'LocaleController@disable')->name('local.disable');
-Route::put('/local/able/{id}', 'LocaleController@able')->name('local.able');
-Route::get('/local/list', 'LocaleController@list')->name('local.list');
-Route::resource('local', 'LocaleController')->names('local');
+Route::put('/locais/{id}/desabilitar', 'LocaleController@disable')->name('locale.disable');
+Route::put('/locais/{id}/habilitar', 'LocaleController@able')->name('locale.able');
+Route::get('/locais/list', 'LocaleController@list')->name('locale.list');
+Route::resource('locais', 'LocaleController')->names('locale');
 
-Route::put('/workstation/disable/{id}', 'WorkstationController@disable')->name('workstation.disable');
-Route::put('/workstation/able/{id}', 'WorkstationController@able')->name('workstation.able');
-Route::resource('workstation', 'WorkstationController')->names('workstation');
+Route::put('/postos/{id}/desabilitar', 'WorkstationController@disable')->name('workstation.disable');
+Route::put('/postos/{id}/habilitar', 'WorkstationController@able')->name('workstation.able');
+Route::resource('postos', 'WorkstationController')->names('workstation');
