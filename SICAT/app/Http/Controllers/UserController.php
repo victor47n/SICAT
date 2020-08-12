@@ -27,14 +27,6 @@ class UserController extends Controller
     {
         $roles = DB::table('roles')->select('id', 'name')->get();
 
-//        $users = DB::table('users')
-//            ->select('users.id', 'users.name', 'users.email', 'users.phone', 'users.office', 'roles.name as permission')
-//            ->join('user_roles', 'users.id', '=', 'user_roles.user_id')
-//            ->join('roles', 'user_roles.role_id', '=', 'roles.id')
-//            ->join('status', 'users.status_id', '=', 'status.id')
-//            ->where('status.name', '!=', 'Desabilitado')
-//            ->dd();
-
         if ($request->ajax()) {
             $users = DB::table('users')
                 ->select('users.id', 'users.name', 'users.email', 'users.phone', 'users.office', 'roles.name as permission')

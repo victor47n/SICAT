@@ -29,7 +29,7 @@ class CreateWorkstationsTable extends Migration
      */
     public function down()
     {
-        Schema::create('workstations', function (Blueprint $table) {
+        Schema::table('workstations', function (Blueprint $table) {
             $table->dropForeign(['locale_id']);
             $table->dropForeign(['status_id']);
         });

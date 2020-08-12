@@ -31,7 +31,7 @@ class CreateItemsTable extends Migration
      */
     public function down()
     {
-        Schema::create('items', function (Blueprint $table) {
+        Schema::table('items', function (Blueprint $table) {
             $table->dropForeign(['type_id']);
             $table->dropForeign(['status_id']);
         });

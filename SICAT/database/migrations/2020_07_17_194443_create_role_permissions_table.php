@@ -28,7 +28,7 @@ class CreateRolePermissionsTable extends Migration
      */
     public function down()
     {
-        Schema::create('role_permissions', function (Blueprint $table) {
+        Schema::table('role_permissions', function (Blueprint $table) {
             $table->dropForeign(['role_id']);
             $table->dropForeign(['permission_id']);
         });

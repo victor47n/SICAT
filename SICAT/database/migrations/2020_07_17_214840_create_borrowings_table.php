@@ -34,10 +34,11 @@ class CreateBorrowingsTable extends Migration
      */
     public function down()
     {
-        Schema::create('borrowing', function (Blueprint $table) {
+        Schema::table('borrowing', function (Blueprint $table) {
             $table->dropForeign(['item_id']);
             $table->dropForeign(['status_id']);
         });
+
         Schema::dropIfExists('borrowing');
     }
 }

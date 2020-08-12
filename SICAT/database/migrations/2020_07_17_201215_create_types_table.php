@@ -28,7 +28,7 @@ class CreateTypesTable extends Migration
      */
     public function down()
     {
-        Schema::create('types', function (Blueprint $table) {
+        Schema::table('types', function (Blueprint $table) {
             $table->dropForeign(['status_id']);
         });
         Schema::dropIfExists('types');
