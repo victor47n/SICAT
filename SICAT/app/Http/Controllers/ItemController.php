@@ -28,7 +28,7 @@ class ItemController extends Controller
         $types = DB::table('types')->select('id', 'name')->get();
         $status = DB::table('status')->select('id', 'name')
             ->where('name', '=', 'Habilitado')
-            ->orWhere('name', '=', 'Desabilitado')
+            ->where('name', '=', 'Desabilitado')
             ->get();
 
         return view('dashboard.item.create-items', ['types' => $types], ['status' => $status]);
@@ -37,29 +37,55 @@ class ItemController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $data = $request->all();
+            Item::create($data);
+
+            return response()->json(["message" => "Cadastrado com sucesso"], 201);
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
+                return response()->json(["message" => $e->getMessage()], 400);
+            }
+
+            return response()->json(["message" => $e->getMessage()], 400);
+        }
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Item  $item
+     * @param \App\Item $item
      * @return \Illuminate\Http\Response
      */
     public function show(Item $item)
     {
-        //
+        try {
+            $items = DB::table('items')
+                ->select('items.name', 'items.amount', 'items.availability', 'types.name')
+                ->join('types', 'items.type_id', '=', 'types.id')
+                ->join('status', 'items.status_id', '=', 'status.id')
+                ->where('status.name', '!=', 'Desabilitado')
+                ->get();
+
+            return $items;
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
+                return response()->json(["message" => $e->getMessage()], 400);
+            }
+
+            return response()->json(["message" => $e->getMessage()], 400);
+        }
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Item  $item
+     * @param \App\Item $item
      * @return \Illuminate\Http\Response
      */
     public function edit(Item $item)
@@ -70,8 +96,8 @@ class ItemController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Item  $item
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Item $item
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Item $item)
@@ -82,7 +108,7 @@ class ItemController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Item  $item
+     * @param \App\Item $item
      * @return \Illuminate\Http\Response
      */
     public function destroy(Item $item)

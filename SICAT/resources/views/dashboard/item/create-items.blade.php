@@ -95,7 +95,7 @@
             e.preventDefault();
 
             $.ajax({
-                url: "{{ route('user.store') }}",
+                url: "{{ route('item.store') }}",
                 method: "POST",
                 dataType: 'json',
                 data: $('#form').serialize(),
