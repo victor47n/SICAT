@@ -25,9 +25,13 @@ class ItemController extends Controller
      */
     public function create()
     {
-        $roles = DB::table('types')->select('id', 'name')->get();
+        $types = DB::table('types')->select('id', 'name')->get();
+        $status = DB::table('status')->select('id', 'name')
+            ->where('name', '=', 'Habilitado')
+            ->orWhere('name', '=', 'Desabilitado')
+            ->get();
 
-        return view('dashboard.item.create-items', ['roles' => $roles]);
+        return view('dashboard.item.create-items', ['types' => $types], ['status' => $status]);
     }
 
     /**

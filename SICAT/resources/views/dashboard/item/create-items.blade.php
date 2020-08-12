@@ -26,16 +26,32 @@
                     <div class="card-body">
                         <div class="form-row">
                             <div class="form-group col-md-12 col-lg-6">
-                                <label for="inputName">Email</label>
+                                <label for="inputName">Nome</label>
                                 <input type="text" class="form-control" id="inputName" name="name"
                                        placeholder="">
                             </div>
-                            <div class="form-group col-md-12 col-lg-4">
-                                <label for="inputType">Nivel de permissão</label>
+                            <div class="form-group col-md-12 col-lg-6">
+                                <label for="inputType">Tipo de item</label>
                                 <select id="inputType" class="form-control" name="type_id">
                                     <option selected>Escolher...</option>
-                                    @foreach($roles as $role)
-                                        <option value="{{$role->id}}">{{$role->name}}</option>
+                                    @foreach($types as $type)
+                                        <option value="{{$type->id}}">{{$type->name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-12 col-lg-6">
+                                <label for="inputAmount">Quantidade</label>
+                                <input type="text" class="form-control" id="inputAmount" name="amount"
+                                       placeholder="">
+                            </div>
+                            <div class="form-group col-md-12 col-lg-6">
+                                <label for="inputStatus">Status</label>
+                                <select id="inputStatus" class="form-control" name="status_id">
+                                    <option selected>Escolher...</option>
+                                    @foreach($status as $s)
+                                        <option value="{{$s->id}}">{{$s->name}}</option>
                                     @endforeach
                                 </select>
                             </div>
