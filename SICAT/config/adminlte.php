@@ -259,7 +259,8 @@ return [
             ],
         ],
 
-        ['header' => 'SERVIÇOS',
+        [
+            'header' => 'SERVIÇOS',
             'can' => 'rolesCategory',
             'model' => 'services_category'
         ],
@@ -307,9 +308,11 @@ return [
             ],
         ],
 
-        ['header' => 'EMPRÉSTIMOS',
+        [
+            'header' => 'EMPRÉSTIMOS',
             'can' => 'rolesCategory',
-            'model' => 'borrowing_category'],
+            'model' => 'borrowing_category'
+        ],
         [
             'text' => 'Item de empréstimo',
             'url' => 'admin/settings',

@@ -3,83 +3,133 @@
 namespace App\Http\Controllers;
 
 use App\Locale;
+use App\Workstation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
+use Yajra\DataTables\Facades\DataTables;
 
 class LocaleController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+
+    private $locale;
+
+    public function __construct(Locale $locale)
     {
-        //
+        $this->locale = $locale;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    function index()
     {
-        //
+        return view('dashboard/locale/list-locales');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    function create()
     {
-        //
+        return view('dashboard/locale/create-locales');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Locale  $locale
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Locale $locale)
+    function store(Request $req)
     {
-        //
+        $data = $req->all();
+        $local = null;
+        DB::transaction(function () use ($data, $local) {
+            $local = Locale::create($data);
+            foreach ($data['sala'] as $sala) {
+                $local->workstation()->create(["name" => $sala]);
+            }
+        });
+
+        return response()->json(array("message" => "Cadastrado com sucesso", "data" => json_encode($local)));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Locale  $locale
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Locale $locale)
+    function list()
     {
-        //
+        $locais = DB::table('locales')->select('id', 'name')->get();
+
+        return DataTables::of($locais)
+            ->addColumn('action', function ($data) {
+
+                $result = '<div class="btn-group btn-group-sm" role="group" aria-label="Exemplo básico">';
+                // if (Gate::allows('rolesUser', 'user_edit')) 
+                $result .= '<button type="button" id="' . $data->id . '" class="btn btn-secondary" onclick="showEditModal(' . $data->id . ')"><i class="fas fa-fw fa-edit"></i>Editar</button>';
+
+                //if (Gate::allows('rolesUser', 'user_delete')) 
+                if ($data->status == 'able') {
+                    $result .= '<button type="button" id="' . $data->id . '" class="btn btn-danger" onclick="disable(' . $data->id . ')"><i class="fas fa-fw fa-trash"></i>Excluir</button>';
+                } else {
+                    $result .= '<button type="button" id="' . $data->id . '" class="btn btn-danger" onclick="disable(' . $data->id . ')"><i class="fas fa-fw fa-trash"></i>Excluir</button>';
+                }
+
+                $result .= '</div>';
+                return $result;
+            })
+            ->rawColumns(['action'])
+            ->make(true);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Locale  $locale
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Locale $locale)
+    function update(Request $req, $id)
     {
-        //
+        try {
+
+            $validatedData = $req->validate([
+                'name' => 'required',
+            ]);
+
+            $data = $req->all();
+            $locale = $this->locale->find($id);
+            $locale->update($data);
+
+            return response()->json(["message" => "Atualizado com sucesso!"], 201);
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
+                return response()->json(["message" => $e->getMessage()], 400);
+            }
+
+            return response()->json(["message" => $e->getMessage()], 400);
+        }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Locale  $locale
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Locale $locale)
+    function show($id)
     {
-        //
+        $data = Locale::find($id);
+        $data->workstation = $data->workstation;
+
+        return $data;
+    }
+
+
+    function disable($id)
+    {
+        try {
+            $locale = Locale::find($id);
+            $locale->status = "disable";
+            $locale->save();
+
+            return response()->json(["message" => "Local desabilitado com sucesso!"], 201);
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
+                return response()->json(["message" => $e->getMessage()], 400);
+            }
+
+            return response()->json(["message" => $e->getMessage()], 400);
+        }
+    }
+
+    function able($id)
+    {
+        try {
+            $locale = Locale::find($id);
+            $locale->status = "able";
+            $locale->save();
+
+            return response()->json(["message" => "Local habilitado com sucesso!"], 201);
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
+                return response()->json(["message" => $e->getMessage()], 400);
+            }
+
+            return response()->json(["message" => $e->getMessage()], 400);
+        }
     }
 }
