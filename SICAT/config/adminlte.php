@@ -106,7 +106,7 @@ return [
     'classes_auth_body' => '',
     'classes_auth_footer' => '',
     'classes_auth_icon' => '',
-    'classes_auth_btn' => 'btn-flat btn-primary',
+    'classes_auth_btn' => 'btn-primary',
 
     /*
     |--------------------------------------------------------------------------
@@ -186,19 +186,19 @@ return [
     |
     */
 
-    'use_route_url' => false,
+    'use_route_url' => true,
 
-    'dashboard_url' => '/',
+    'dashboard_url' => 'dashboard.index',
 
     'logout_url' => 'logout',
 
     'login_url' => 'login',
 
-    'register_url' => 'register',
+    'register_url' => '',
 
-    'password_reset_url' => 'password/reset',
+    'password_reset_url' => '',
 
-    'password_email_url' => 'password/email',
+    'password_email_url' => '',
 
     'profile_url' => false,
 
@@ -236,47 +236,52 @@ return [
             'search' => true,
             'topnav' => true,
         ],
-        [
-            'text' => 'blog',
-            'url'  => 'admin/blog',
-            'can'  => 'manage-blog',
-        ],
 
         [
             'text' => 'Funcionários',
             'url'  => 'admin/settings',
             'icon' => 'fas fa-fw fa-users',
             'can' => 'rolesCategory',
-            'model' => 'user',
+            'model' => 'employee_menu',
             'submenu' => [
                 [
                     'text' => 'Cadastrar',
                     'route'  => 'user.create',
                     'can' => 'rolesUser',
-                    'model' => 'user_create',
+                    'model' => 'employee_submenu_create',
                 ],
                 [
-                    'text'    => 'Listar',
-                    'route'     => 'user.index',
+                    'text' => 'Listar',
+                    'route' => 'user.index',
                     'can' => 'rolesUser',
-                    'model' => 'user_list',
+                    'model' => 'employee_submenu_list',
                 ],
             ],
         ],
 
-        ['header' => 'SERVIÇOS'],
+        [
+            'header' => 'SERVIÇOS',
+            'can' => 'rolesCategory',
+            'model' => 'services_category'
+        ],
         [
             'text' => 'Ordem de serviços',
             'url'  => 'admin/settings',
             'icon' => 'fas fa-fw fa-clipboard-list',
+            'can' => 'rolesCategory',
+            'model' => 'order_service_menu',
             'submenu' => [
                 [
                     'text' => 'Cadastrar',
-                    'route' => 'ordem.create'
+                    'route' => 'order.create',
+                    'can' => 'rolesUser',
+                    'model' => 'order_service_submenu_create',
                 ],
                 [
-                    'text'    => 'Listar',
-                    'route' => 'ordem.index'
+                    'text' => 'Listar',
+                    'route' => 'order.index',
+                    'can' => 'rolesUser',
+                    'model' => 'order_service_submenu_list',
                 ],
             ],
         ],
@@ -285,31 +290,47 @@ return [
             'text' => 'Postos de trabalho',
             'url'  => 'admin/settings',
             'icon' => 'fas fa-fw fa-people-carry',
+            'can' => 'rolesCategory',
+            'model' => 'workstation_menu',
             'submenu' => [
                 [
                     'text' => 'Cadastrar',
-                    'url'  => '#',
+                    'route'  => 'locale.create',
+                    'can' => 'rolesUser',
+                    'model' => 'workstation_submenu_create',
                 ],
                 [
                     'text' => 'Listar',
-                    'route' => 'local.index'
+                    'route'  => 'locale.index',
+                    'can' => 'rolesUser',
+                    'model' => 'workstation_submenu_list',
                 ],
             ],
         ],
 
-        ['header' => 'EMPRÉSTIMOS'],
+        [
+            'header' => 'EMPRÉSTIMOS',
+            'can' => 'rolesCategory',
+            'model' => 'borrowing_category'
+        ],
         [
             'text' => 'Item de empréstimo',
-            'url'  => 'admin/settings',
+            'url' => 'admin/settings',
             'icon' => 'fas fa-fw fa-mouse',
+            'can' => 'rolesCategory',
+            'model' => 'item_menu',
             'submenu' => [
                 [
                     'text' => 'Cadastrar',
-                    'url'  => '#',
+                    'route'  => 'item.create',
+                    'can' => 'rolesUser',
+                    'model' => 'item_submenu_create',
                 ],
                 [
-                    'text'    => 'Listar',
-                    'url'     => '#',
+                    'text' => 'Listar',
+                    'route'  => 'item.index',
+                    'can' => 'rolesUser',
+                    'model' => 'item_submenu_list',
                 ],
             ],
         ],
@@ -318,14 +339,20 @@ return [
             'text' => 'Empréstimo',
             'url'  => 'admin/settings',
             'icon' => 'fas fa-fw fa-book-open',
+            'can' => 'rolesCategory',
+            'model' => 'borrowing_menu',
             'submenu' => [
                 [
                     'text' => 'Cadastrar',
-                    'url'  => '#',
+                    'route'  => 'borrowing.create',
+                    'can' => 'rolesUser',
+                    'model' => 'borrowing_submenu_create',
                 ],
                 [
-                    'text'    => 'Listar',
-                    'url'     => '#',
+                    'text' => 'Listar',
+                    'route'  => 'borrowing.index',
+                    'can' => 'rolesUser',
+                    'model' => 'borrowing_submenu_list',
                 ],
             ],
         ],
@@ -482,6 +509,18 @@ return [
                     'type' => 'js',
                     'asset' => false,
                     'location' => '/dist/plugins/jquery-validation/additional-methods.js',
+                ],
+            ],
+        ],
+
+        [
+            'name' => 'Inputmask',
+            'active' => false,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => false,
+                    'location' => '/vendor/inputmask/min/jquery.inputmask.bundle.min.js',
                 ],
             ],
         ],

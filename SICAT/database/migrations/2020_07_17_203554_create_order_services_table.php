@@ -38,6 +38,13 @@ class CreateOrderServicesTable extends Migration
      */
     public function down()
     {
+        Schema::table('order_services', function (Blueprint $table) {
+            $table->dropForeign(['locale_id']);
+            $table->dropForeign(['workstation_id']);
+            $table->dropForeign(['designated_employee']);
+            $table->dropForeign(['solver_employee']);
+            $table->dropForeign(['status_id']);
+        });
         Schema::dropIfExists('order_services');
     }
 }

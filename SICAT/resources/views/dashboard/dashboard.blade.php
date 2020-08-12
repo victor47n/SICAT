@@ -7,7 +7,7 @@
 @stop
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href={{route('welcome')}}>Home</a></li>
+    <li class="breadcrumb-item"><a href={{route('dashboard.index')}}>Home</a></li>
 @stop
 
 @section('content')
@@ -25,7 +25,7 @@
                     <p>Total</p>
                 </div>
                 <div class="icon">
-                    <i class="fas fa-clipboard-list"></i>
+                    <i class="fas icon-book-open"></i>
                 </div>
             </div>
         </div>
@@ -38,7 +38,7 @@
                     <p>Finalizado</p>
                 </div>
                 <div class="icon">
-                    <i class="fas fa-check"></i>
+                    <i class="fas icon-check"></i>
                 </div>
             </div>
         </div>
@@ -51,7 +51,7 @@
                     <p>Pendente</p>
                 </div>
                 <div class="icon">
-                    <i class="far fa-flag"></i>
+                    <i class="fas icon-flag"></i>
                 </div>
             </div>
         </div>
@@ -64,7 +64,7 @@
                     <p>Atrasados</p>
                 </div>
                 <div class="icon">
-                    <i class="fas fa-exclamation-triangle"></i>
+                    <i class="fas icon-exclamation"></i>
                 </div>
             </div>
         </div>
@@ -84,7 +84,7 @@
                     <p>Total</p>
                 </div>
                 <div class="icon">
-                    <i class="fas fa-clipboard-list"></i>
+                    <i class="fas icon-book-open"></i>
                 </div>
             </div>
         </div>
@@ -97,7 +97,7 @@
                     <p>Devolvidos</p>
                 </div>
                 <div class="icon">
-                    <i class="fas fa-check"></i>
+                    <i class="fas icon-check"></i>
                 </div>
             </div>
         </div>
@@ -110,7 +110,7 @@
                     <p>Emprestados</p>
                 </div>
                 <div class="icon">
-                    <i class="far fa-flag"></i>
+                    <i class="fas icon-flag"></i>
                 </div>
             </div>
         </div>
@@ -123,7 +123,7 @@
                     <p>Atrasados</p>
                 </div>
                 <div class="icon">
-                    <i class="fas fa-exclamation-triangle"></i>
+                    <i class="fas icon-exclamation"></i>
                 </div>
             </div>
         </div>

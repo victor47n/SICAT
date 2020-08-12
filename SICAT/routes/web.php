@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,30 +14,39 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('welcome');
+Route::get('/', 'Auth\LoginController@showLoginForm')->name('login');
 
-/* Rotas de funcionários */
+Auth::routes();
 
-Route::prefix('funcionarios')->group(function () {
-    Route::get('/registros', 'UserController@index')->name('user.index');
-    Route::get('/cadastrar', 'UserController@create')->name('user.create');
-    Route::get('/list', 'UserController@list')->name('user.list');
-    Route::get('/show/{id}', 'UserController@show');
-    //POST
-    Route::post('/add', 'UserController@add')->name('user.add');
-    //PUT
-    Route::put('/update/{id}', 'UserController@update')->name('user.update');
-    Route::delete('/disable/{id}', 'UserController@disable')->name('user.disable');
+Route::group(['middleware' => 'auth'], function () {
+    /* Rota dashboard */
+    Route::name('dashboard.')->prefix('dashboard')->group(function () {
+        Route::get('/', 'DashboardController@index')->name('index');
+    });
+
+    /* Rotas de funcionários */
+    Route::put('funcionarios/{user}/desabilitar', 'UserController@disable')->name('user.disable');
+    Route::resource('funcionarios', 'UserController')->names('user')
+        ->parameters(['funcionarios' => 'user'])
+        ->except(['edit']);
+
+    Route::put('ordens/{order}/desabilitar', 'OrderServiceController@disable')->name('order.disable');
+    Route::resource('ordens', 'OrderServiceController')->names('order')
+        ->parameters(['ordens' => 'order'])
+        ->except(['edit']);
+
+    Route::put('locais/{locale}/desabilitar', 'LocaleController@disable')->name('locale.disable');
+    Route::resource('locais', 'LocaleController')->names('locale')
+        ->parameters(['locais' => 'locale'])
+        ->except(['edit']);
+
+    Route::put('itens/{item}/desabilitar', 'ItemController@disable')->name('item.disable');
+    Route::resource('itens', 'ItemController')->names('item')
+        ->parameters(['itens' => 'item'])
+        ->except(['edit']);
+
+    Route::put('emprestimos/{borrowing}/desabilitar', 'BorrowingController@disable')->name('borrowing.disable');
+    Route::resource('emprestimos', 'BorrowingController')->names('borrowing')
+        ->parameters(['emprestimos' => 'borrowing'])
+        ->except(['edit']);
 });
-
-/* Rotas de Postos de trabalho */
-Route::put('/locais/{id}/desabilitar', 'LocaleController@disable')->name('locale.disable');
-Route::put('/locais/{id}/habilitar', 'LocaleController@able')->name('locale.able');
-Route::get('/locais/list', 'LocaleController@list')->name('locale.list');
-Route::resource('locais', 'LocaleController')->names('locale');
-
-Route::put('/postos/{id}/desabilitar', 'WorkstationController@disable')->name('workstation.disable');
-Route::put('/postos/{id}/habilitar', 'WorkstationController@able')->name('workstation.able');
-Route::resource('postos', 'WorkstationController')->names('workstation');
