@@ -7,7 +7,7 @@ use App\Workstation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
-use Yajra\DataTables\Facades\DataTables;
+use Yajra\DataTables\DataTables;
 
 class LocaleController extends Controller
 {
@@ -19,14 +19,46 @@ class LocaleController extends Controller
         $this->locale = $locale;
     }
 
-    function index()
+    function index(Request $request)
     {
-        return view('dashboard/locale/list-locales');
+        if ($request->ajax()) {
+            $locales = DB::table('locales')->select('id', 'name')->get();
+
+            try {
+                return DataTables::of($locales)
+                    ->addColumn('action', function ($data) {
+
+                        $result = '<div class="btn-group btn-group-sm" role="group" aria-label="Exemplo básico">';
+                        if (Gate::allows('rolesUser', 'workstation_view')) {
+                            $result .= '<button type="button" id="' . $data->id . '" class="btn btn-primary"  data-toggle="modal" data-target="#modalView" data-whatever="' . $data->id . '""><i class="fas fa-fw fa-eye"></i>Visualizar</button>';
+                        }
+                        if (Gate::allows('rolesUser', 'workstation_edit')) {
+                            $result .= '<button type="button" id="' . $data->id . '" class="btn btn-secondary" data-toggle="modal" data-target="#modalEdit" data-whatever="' . $data->id . '""><i class="fas fa-fw fa-edit"></i>Editar</button>';
+                        }
+                        if (Gate::allows('rolesUser', 'workstation_disable')) {
+                            $result .= '<button type="button" id="' . $data->id . '" class="btn btn-danger" onclick="disable(' . $data->id . ')"><i class="fas fa-fw fa-trash"></i>Desabilitar</button>';
+                        }
+
+                        $result .= '</div>';
+                        return $result;
+                    })
+                    ->rawColumns(['action'])
+                    ->make(true);
+            } catch (\Exception $e) {
+                if (config('app.debug')) {
+                    return response()->json(["message" => $e->getMessage()], 400);
+                }
+
+                return response()->json(["message" => $e->getMessage()], 400);
+            }
+        }
+
+        return view('dashboard.locale.list-locales');
     }
 
     function create()
     {
-        return view('dashboard/locale/create-locales');
+        return view('dashboard.locale.create-locales');
     }
 
     function store(Request $req)
@@ -41,31 +73,6 @@ class LocaleController extends Controller
         });
 
         return response()->json(array("message" => "Cadastrado com sucesso", "data" => json_encode($local)));
-    }
-
-    function list()
-    {
-        $locais = DB::table('locales')->select('id', 'name')->get();
-
-        return DataTables::of($locais)
-            ->addColumn('action', function ($data) {
-
-                $result = '<div class="btn-group btn-group-sm" role="group" aria-label="Exemplo básico">';
-                // if (Gate::allows('rolesUser', 'user_edit')) 
-                $result .= '<button type="button" id="' . $data->id . '" class="btn btn-secondary" onclick="showEditModal(' . $data->id . ')"><i class="fas fa-fw fa-edit"></i>Editar</button>';
-
-                //if (Gate::allows('rolesUser', 'user_delete')) 
-                if ($data->status == 'able') {
-                    $result .= '<button type="button" id="' . $data->id . '" class="btn btn-danger" onclick="disable(' . $data->id . ')"><i class="fas fa-fw fa-trash"></i>Excluir</button>';
-                } else {
-                    $result .= '<button type="button" id="' . $data->id . '" class="btn btn-danger" onclick="disable(' . $data->id . ')"><i class="fas fa-fw fa-trash"></i>Excluir</button>';
-                }
-
-                $result .= '</div>';
-                return $result;
-            })
-            ->rawColumns(['action'])
-            ->make(true);
     }
 
     function update(Request $req, $id)
@@ -97,7 +104,6 @@ class LocaleController extends Controller
 
         return $data;
     }
-
 
     function disable($id)
     {

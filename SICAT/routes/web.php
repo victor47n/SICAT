@@ -40,6 +40,11 @@ Route::group(['middleware' => 'auth'], function () {
         ->parameters(['locais' => 'locale'])
         ->except(['edit']);
 
+    Route::put('postos/{workstation}/desabilitar', 'WorkstationController@disable')->name('workstation.disable');
+    Route::resource('postos', 'WorkstationController')->names('workstation')
+        ->parameters(['postos' => 'workstation'])
+        ->except(['index', 'create', 'show', 'edit']);
+
     Route::put('itens/{item}/desabilitar', 'ItemController@disable')->name('item.disable');
     Route::resource('itens', 'ItemController')->names('item')
         ->parameters(['itens' => 'item'])

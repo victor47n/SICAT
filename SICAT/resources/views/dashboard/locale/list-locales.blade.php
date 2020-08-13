@@ -7,7 +7,7 @@
 @stop
 
 @section('breadcrumb')
-<li class="breadcrumb-item"><a href={{route('welcome')}}>Home</a></li>
+<li class="breadcrumb-item"><a href={{route('dashboard.index')}}>Home</a></li>
 <li class="breadcrumb-item active">Postos de trabalho</li>
 <li class="breadcrumb-item active">Listar</li>
 @stop
@@ -20,8 +20,8 @@
                 <h3 class="card-title">Cadastros de Postos de trabalho</h3>
             </div>
             <div class="card-body">
-                <table id="tLocais" class="table table-hover table-bordered table-striped">
-                    <thead>
+                <table id="tLocais" class="table table-hover table-bordered">
+                    <thead class="thead-dark">
                         <tr role="row">
                             <th class="sorting">ID</th>
                             <th class="sorting_asc">Nome</th>
@@ -153,7 +153,7 @@
                 ],
                 dom: 'B<"row mt-3" <"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>rt<"row mt-3" <"col-sm-12 col-md-5" i><"col-sm-12 col-md-7" p>>',
                 ajax: {
-                    url: '{{ route('local.list') }}',
+                    url: '{{ route('locale.index') }}',
                 },
                 columns: [
                     {
@@ -186,7 +186,7 @@
             });
         });
 
-        
+
         function showEditModal(id) {
             $.ajax({
                 type: 'GET',
@@ -214,9 +214,9 @@
                             <div class="col-auto">${statusButton}</div>
                         </div>`);
 
-                    
+
                     });
-                    
+
                     $("#sala-row").append(`
                         <div  id="sala"  class="col-12 row">
                             <div class="form-group col-10">
@@ -334,7 +334,7 @@
                                 text: data.message,
                                 type: 'success'
                             });
-                                        
+
                             $("#sala-"+id+" > div > input").attr("data-status", "disable");
                             $("#delete-"+id).attr('onclick', 'ableWorkstation(' + id + ')')
                                 .toggleClass("btn-success btn-danger")
@@ -377,7 +377,7 @@
                                 text: data.message,
                                 type: 'success'
                             });
-                            
+
                             $("#sala-"+id+" > div > input").attr("data-status", "able");
                             $("#delete-"+id).attr('onclick', 'disableWorkstation(' + id + ')')
                                 .toggleClass("btn-success btn-danger")
@@ -406,7 +406,7 @@
                 },
                 dataType: 'json',
                 data: {
-                    id: id, 
+                    id: id,
                     name: $('#novasala').val()
                 },
                 success: function (data) {

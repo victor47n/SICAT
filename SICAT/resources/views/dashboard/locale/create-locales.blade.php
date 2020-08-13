@@ -7,7 +7,7 @@
 @stop
 
 @section('breadcrumb')
-<li class="breadcrumb-item"><a href={{route('welcome')}}>Home</a></li>
+<li class="breadcrumb-item"><a href={{route('dashboard.index')}}>Home</a></li>
 <li class="breadcrumb-item active">Postos de Trabalho</li>
 <li class="breadcrumb-item active">Cadastrar</li>
 @stop
@@ -36,7 +36,7 @@
                                 placeholder="Nome da sala">
                         </div>
                         <div class="col-auto">
-                            <button id="delete" type="button" class="btn btn-danger">X</button>
+                            <button id="delete" type="button" class="btn btn-danger"><i class="fas fa-fw fa-times"></i></button>
                         </div>
                     </div>
                 </div>
@@ -80,7 +80,7 @@
                 console.log( $("#delete").parents());
                 $(this).parents()[1].remove();
             });
-           
+
             $("#addSala").on('click',function(){
                 console.log(fieldSala);
                 a++;
@@ -89,11 +89,11 @@
 
                $(".card-body").append(t);
             });
-            
+
             $("#form").on("submit", function (e) {
                 e.preventDefault();
                 $.ajax({
-                    url: "{{route('locale.add')}}",
+                    url: "{{route('locale.store')}}",
                     method: "POST",
                     contentType: 'application/json',
                     dataType: 'json',
