@@ -36,6 +36,57 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="modalEdit" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="overlay">
+                    <div class="d-flex h-100 justify-content-center align-items-center">
+                        <div class="spinner-border" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Editar funcionário</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" id="formEdit" class="needs-validation" novalidate>
+                        {{ csrf_field() }}
+                        @method('PUT')
+                        <div class="form-group">
+                            <label for="inputNameEdit">Nome</label>
+                            <input type="text" class="form-control" id="inputNameEdit" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputAmountEdit">Quantidade</label>
+                            <input type="text" class="form-control" id="inputAmountEdit" name="amount" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputAvailabilityEdit">Disponibilidade</label>
+                            <input type="text" class="form-control" id="inputPhoneEdit" name="availability">
+                        </div>
+                        <div class="form-group">
+                            <label for="inputTypeEdit">Tipo</label>
+                            <select id="inputOfficeEdit" class="form-control" name="type_id" required>
+                                @foreach($types as $type)
+                                    <option value="{{$type->id}}">{{$type->name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-primary" id="updateButton">Salvar mudanças</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @stop
 
 @section('footer')
@@ -174,8 +225,9 @@
                     },
                     {
                         targets: 5,
-                        visible: {{Gate::allows('rolesUser', ['item_disable', 'item_edit', 'item_view']) ? 'true' : 'false'}}
-                    }
+                        visible: {{Gate::allows('rolesUser', ['item_disable', 'item_edit', 'item_view']) ? 'true' : 'false'}},
+                        width: "20%"
+                    },
                 ],
                 drawCallback: function () {
                     $('#tUsers tbody tr td:last-child').addClass('text-center');
@@ -213,32 +265,6 @@
 
         loaderObj = new loader();
 
-        $('#modalView').on('show.bs.modal', function (event) {
-            clearModal('formView');
-            loaderObj.show();
-            let button = $(event.relatedTarget); // Botão que acionou o modal
-            let recipient = button.data('whatever'); // Extrai informação dos atributos data-*
-
-            $.ajax({
-                type: 'GET',
-                url: 'funcionarios/' + recipient,
-                context: 'json',
-                success: function (data) {
-
-                    $("#formView").removeClass('d-none');
-
-                    data.map(_data => {
-                        $('#inputNameView').val(_data.name);
-                        $('#inputEmailView').val(_data.email);
-                        $('#inputPhoneView').val(_data.phone);
-                        $('#inputOfficeView').val(_data.office);
-                        $('#inputPermissionView').val(_data.permission);
-                    });
-                    loaderObj.hide();
-                },
-            });
-        })
-
         $('#modalEdit').on('show.bs.modal', function (event) {
             clearModal('formEdit');
             loaderObj.show();
@@ -246,28 +272,26 @@
             let recipient = button.data('whatever'); // Extrai informação dos atributos data-*
             $.ajax({
                 type: 'GET',
-                url: 'funcionarios/' + recipient,
+                url: 'itens/' + recipient,
                 context: 'json',
                 success: function (data) {
                     $("#formEdit").removeClass('d-none');
 
                     data.map(_data => {
+                        console.log(data);
                         $('#inputNameEdit').val(_data.name);
-                        $('#inputEmailEdit').val(_data.email);
-                        $('#inputPhoneEdit').val(_data.phone);
+                        $('#inputAmountEdit').val(_data.amount);
+                        $('#inputAvailabilityEdit').val(_data.availability);
 
                         let opt;
 
-                        for (let i = 0, len = $('#inputOfficeEdit option').length; i < len; i++) {
-                            opt = $('#inputOfficeEdit option')[i];
-                            if (opt.text == _data.office) {
-                                opt.setAttribute('selected', true);
-                            }
-                        }
+                        console.log("tamanho: "+$('#inputTypeEdit option').length);
 
-                        for (let i = 0, len = $('#inputPermissionEdit option').length; i < len; i++) {
-                            opt = $('#inputPermissionEdit option')[i];
-                            if (opt.text == _data.permission) {
+                        for (let i = 0, len = $('#inputTypeEdit option').length; i < len; i++) {
+                            opt = $('#inputTypeEdit option')[i];
+                            console.log("opt: "+opt);
+                            console.log("type: "+_data.type);
+                            if (opt.text == _data.type) {
                                 opt.setAttribute('selected', true);
                             }
                         }

@@ -19,7 +19,7 @@ class ItemController extends Controller
      */
     public function index(Request $request)
     {
-        $roles = DB::table('roles')->select('id', 'name')->get();
+        $types = DB::table('types')->select('id', 'name')->get();
 
         if ($request->ajax()) {
             $items = DB::table('items')
@@ -33,9 +33,6 @@ class ItemController extends Controller
                 ->addColumn('action', function ($data) {
 
                     $result = '<div class="btn-group btn-group-sm" role="group" aria-label="Exemplo básico">';
-                    if (Gate::allows('rolesUser', 'employee_view')) {
-                        $result .= '<button type="button" id="' . $data->id . '" class="btn btn-primary"  data-toggle="modal" data-target="#modalView" data-whatever="' . $data->id . '""><i class="fas fa-fw fa-eye"></i>Visualizar</button>';
-                    }
                     if (Gate::allows('rolesUser', 'employee_edit')) {
                         $result .= '<button type="button" id="' . $data->id . '" class="btn btn-secondary" data-toggle="modal" data-target="#modalEdit" data-whatever="'. $data->id .'""><i class="fas fa-fw fa-edit"></i>Editar</button>';
                     }
@@ -46,23 +43,11 @@ class ItemController extends Controller
                     $result .= '</div>';
                     return $result;
                 })
-//                ->editColumn('availability', function($items) {
-//                    if ($items->availability == 'true')
-//                    {
-//                        $result = '<span class="badge badge-pill badge-success">Sim</span>';
-//                        return $result;
-//                    }
-//                    if ($items->availability == 'false')
-//                    {
-//                        $result = '<span class="badge badge-pill badge-danger">Não</span>';
-//                        return $result;
-//                    }
-//                })
                 ->rawColumns(['action'])
                 ->make(true);
         }
 
-        return view('dashboard.item.list-items', ['roles' => $roles]);
+        return view('dashboard.item.list-items', ['types' => $types]);
     }
 
     /**
@@ -114,14 +99,15 @@ class ItemController extends Controller
      * @param \App\Item $item
      * @return \Illuminate\Http\Response
      */
-    public function show(Item $item)
+    public function show($item)
     {
         try {
             $items = DB::table('items')
-                ->select('items.name', 'items.amount', 'items.availability', 'types.name')
+                ->select('items.name', 'items.amount', 'items.availability', 'types.name as type')
                 ->join('types', 'items.type_id', '=', 'types.id')
                 ->join('status', 'items.status_id', '=', 'status.id')
                 ->where('status.name', '!=', 'Desabilitado')
+                ->where('items.id', '=', $item)
                 ->get();
 
             return $items;
