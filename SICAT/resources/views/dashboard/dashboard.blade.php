@@ -98,8 +98,9 @@
                             @foreach ($os as $item)
                             <tr>
                                 <td></td>
-                                <td>Call of Duty IV</td>
-                                <td><span class="badge badge-success">Shipped</span></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
                             </tr>
                             @endforeach
                         </tbody>
@@ -109,8 +110,8 @@
             </div>
             <!-- /.card-body -->
             <div class="card-footer clearfix">
-                <a href="javascript:void(0)" class="btn btn-sm btn-info float-left">Place New Order</a>
-                <a href="javascript:void(0)" class="btn btn-sm btn-secondary float-right">View All Orders</a>
+                <a href="javascript:void(0)" class="btn btn-sm btn-info float-left"></a>
+                <a href="javascript:void(0)" class="btn btn-sm btn-secondary float-right"></a>
             </div>
             <!-- /.card-footer -->
         </div>
@@ -144,13 +145,10 @@
                         <tbody>
                             @foreach ($os as $item)
                             <tr>
-                                <td>OR9842</td>
-                                <td>Call of Duty IV</td>
-                                <td><span class="badge badge-success">Shipped</span></td>
-                                <td>
-                                    <div class="sparkbar" data-color="#00a65a" data-height="20">90,80,90,-70,61,-83,63
-                                    </div>
-                                </td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
                             </tr>
                             @endforeach
                         </tbody>
@@ -160,8 +158,8 @@
             </div>
             <!-- /.card-body -->
             <div class="card-footer clearfix">
-                <a href="javascript:void(0)" class="btn btn-sm btn-info float-left">Place New Order</a>
-                <a href="javascript:void(0)" class="btn btn-sm btn-secondary float-right">View All Orders</a>
+                <a href="javascript:void(0)" class="btn btn-sm btn-info float-left"></a>
+                <a href="javascript:void(0)" class="btn btn-sm btn-secondary float-right"></a>
             </div>
             <!-- /.card-footer -->
         </div>
