@@ -137,7 +137,8 @@ class UserController extends Controller
     function disable($user)
     {
         try {
-            User::find($user)->update(['status' => 'disable']);
+            $disable = DB::table('status')->select('id')->where('name', '=', 'Desabilitado')->first();
+            User::find($user)->update(['status' => $disable->id]);
             return response()->json(["message" => "Funcionário desabilitado com sucesso!"], 201);
         } catch (\Exception $e) {
             if (config('app.debug')) {
