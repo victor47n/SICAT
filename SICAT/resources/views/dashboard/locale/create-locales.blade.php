@@ -36,7 +36,8 @@
                                 placeholder="Nome da sala">
                         </div>
                         <div class="col-auto">
-                            <button id="delete" type="button" class="btn btn-danger"><i class="fas fa-fw fa-times"></i></button>
+                            <button id="delete" type="button" class="btn btn-danger"><i
+                                    class="fas fa-fw fa-times"></i></button>
                         </div>
                     </div>
                 </div>
@@ -95,7 +96,6 @@
                 $.ajax({
                     url: "{{route('locale.store')}}",
                     method: "POST",
-                    contentType: 'application/json',
                     dataType: 'json',
                     data: $('#form').serialize(),
                     success: function (data) {

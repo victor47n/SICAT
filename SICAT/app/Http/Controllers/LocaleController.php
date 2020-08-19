@@ -65,8 +65,9 @@ class LocaleController extends Controller
     {
         $data = $req->all();
         $local = null;
+
         DB::transaction(function () use ($data, $local) {
-            $local = Locale::create($data);
+            $local = Locale::create(["name" => $data['name']]);
             foreach ($data['sala'] as $sala) {
                 $local->workstation()->create(["name" => $sala]);
             }
