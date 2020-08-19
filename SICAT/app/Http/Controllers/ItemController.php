@@ -167,7 +167,7 @@ class ItemController extends Controller
         //
     }
 
-    public function  disable($item)
+    public function disable($item)
     {
         try {
             $disable = DB::table('status')->select('id')->where('name', '=', 'Desabilitado')->first();

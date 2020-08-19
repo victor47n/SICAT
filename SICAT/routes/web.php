@@ -51,6 +51,7 @@ Route::group(['middleware' => 'auth'], function () {
         ->except(['edit']);
 
     Route::put('emprestimos/{borrowing}/desabilitar', 'BorrowingController@disable')->name('borrowing.disable');
+    Route::get('emprestimos/select', 'BorrowingController@select')->name('borrowing.select');
     Route::resource('emprestimos', 'BorrowingController')->names('borrowing')
         ->parameters(['emprestimos' => 'borrowing'])
         ->except(['edit']);
