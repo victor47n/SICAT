@@ -20,7 +20,7 @@
                     <h3 class="card-title">Cadastros de itens</h3>
                 </div>
                 <div class="card-body">
-                    <table id="tUsers" class="table table-hover table-borderless">
+                    <table id="tItems" class="table table-hover table-borderless">
                         <thead class="thead-dark">
                         <tr role="row">
                             <th class="sorting">ID</th>
@@ -68,11 +68,14 @@
                         </div>
                         <div class="form-group">
                             <label for="inputAvailabilityEdit">Disponibilidade</label>
-                            <input type="text" class="form-control" id="inputPhoneEdit" name="availability">
+                            <select id="inputAvailabilityEdit" class="form-control" name="availability" required>
+                                <option value="true">Em estoque</option>
+                                <option value="false">Sem estoque</option>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label for="inputTypeEdit">Tipo</label>
-                            <select id="inputOfficeEdit" class="form-control" name="type_id" required>
+                            <select id="inputTypeEdit" class="form-control" name="type_id" required>
                                 @foreach($types as $type)
                                     <option value="{{$type->id}}">{{$type->name}}</option>
                                 @endforeach
@@ -104,15 +107,12 @@
     <script>
 
         $(document).ready(function () {
-            var table = $('#tUsers');
+            var table = $('#tItems');
             table.DataTable({
                 processing: true,
                 serverSide: true,
                 autoWidth: false,
-                responsive: {
-                    details: true,
-                    type: 'column'
-                },
+                responsive: true,
                 deferRender: true,
                 language: {
                     // url: '//cdn.datatables.net/plug-ins/1.10.21/i18n/Portuguese-Brasil.json',
@@ -217,8 +217,7 @@
                             if (data == 'true') {
                                 return '<span class="badge badge-success">Em estoque</span>';
                             }
-                            if (data == 'false')
-                            {
+                            if (data == 'false') {
                                 return '<span class="badge badge-danger">Sem estoque</span>';
                             }
                         }
@@ -230,8 +229,8 @@
                     },
                 ],
                 drawCallback: function () {
-                    $('#tUsers tbody tr td:last-child').addClass('text-center');
-                    $('#tUsers_paginate ul.pagination').addClass("justify-content-start");
+                    $('#tItems tbody tr td:last-child').addClass('text-center');
+                    $('#tItems_paginate ul.pagination').addClass("justify-content-start");
                 }
             });
 
@@ -278,19 +277,20 @@
                     $("#formEdit").removeClass('d-none');
 
                     data.map(_data => {
-                        console.log(data);
                         $('#inputNameEdit').val(_data.name);
                         $('#inputAmountEdit').val(_data.amount);
-                        $('#inputAvailabilityEdit').val(_data.availability);
 
                         let opt;
 
-                        console.log("tamanho: "+$('#inputTypeEdit option').length);
+                        for (let i = 0, len = $('#inputAvailabilityEdit option').length; i < len; i++) {
+                            opt = $('#inputAvailabilityEdit option')[i];
+                            if (opt.value == _data.availability) {
+                                opt.setAttribute('selected', true);
+                            }
+                        }
 
                         for (let i = 0, len = $('#inputTypeEdit option').length; i < len; i++) {
                             opt = $('#inputTypeEdit option')[i];
-                            console.log("opt: "+opt);
-                            console.log("type: "+_data.type);
                             if (opt.text == _data.type) {
                                 opt.setAttribute('selected', true);
                             }
@@ -309,7 +309,7 @@
         function update(id) {
             $.ajax({
                 type: 'PUT',
-                url: 'funcionarios/' + id,
+                url: 'itens/' + id,
                 dataType: 'json',
                 data: $('#formEdit').serialize(),
                 success: function (data) {
@@ -317,7 +317,7 @@
                         type: 'success',
                         title: data.message
                     });
-                    $('#tUsers').DataTable().ajax.reload();
+                    $('#tItems').DataTable().ajax.reload();
                 },
                 error: function (data) {
                     Toast.fire({
@@ -330,26 +330,26 @@
         };
 
         function disable(id) {
-            let table = $('#tUsers').DataTable();
+            let table = $('#tItems').DataTable();
             Swal.fire({
                 title: 'Você tem certeza?',
-                text: "Ao desabilitar o funcionário, você não poderá reverter isso! Apenas contatando o suporte.",
+                text: "Ao desabilitar o item, você não poderá reverter isso! Apenas contatando o suporte.",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Sim, desabilite o funcionário!'
+                confirmButtonText: 'Sim, desabilite o item!'
             }).then((result) => {
                 if (result.value) {
                     $.ajax({
                         type: 'PUT',
-                        url: 'funcionarios/' + id + '/desabilitar',
+                        url: 'itens/' + id + '/desabilitar',
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
                         success: function (data) {
                             table.row('#' + id).remove().draw(false);
-                            $('#tUsers').DataTable().ajax.reload();
+                            $('#tItems').DataTable().ajax.reload();
                             Swal.fire({
                                 title: 'Desabilitado!',
                                 text: data.message,

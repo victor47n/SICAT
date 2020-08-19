@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Item;
+use App\Status;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\DataTables;
 
 class ItemController extends Controller
@@ -33,10 +35,10 @@ class ItemController extends Controller
                 ->addColumn('action', function ($data) {
 
                     $result = '<div class="btn-group btn-group-sm" role="group" aria-label="Exemplo básico">';
-                    if (Gate::allows('rolesUser', 'employee_edit')) {
+                    if (Gate::allows('rolesUser', 'item_edit')) {
                         $result .= '<button type="button" id="' . $data->id . '" class="btn btn-secondary" data-toggle="modal" data-target="#modalEdit" data-whatever="'. $data->id .'""><i class="fas fa-fw fa-edit"></i>Editar</button>';
                     }
-                    if (Gate::allows('rolesUser', 'employee_disable')) {
+                    if (Gate::allows('rolesUser', 'item_disable')) {
                         $result .= '<button type="button" id="' . $data->id . '" class="btn btn-danger" onclick="disable(' . $data->id . ')"><i class="fas fa-fw fa-trash"></i>Desabilitar</button>';
                     }
 
@@ -121,26 +123,37 @@ class ItemController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param \App\Item $item
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Item $item)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
      * @param \App\Item $item
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Item $item)
+    public function update(Request $request, $item)
     {
-        //
+        try {
+
+            $validatedData = $request->validate([
+                'name' => 'required',
+                'amount' => 'required',
+                'availability' => 'required',
+            ]);
+
+            $data = $request->only(['name', 'amount', 'availability', 'type_id', 'status_id']);
+
+            DB::transaction(function () use ($data, $item) {
+                $_item = Item::find($item);
+                $_item->update($data);
+            });
+
+            return response()->json(["message" => "Atualizado com sucesso!"], 201);
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
+                return response()->json(["message" => $e->getMessage()], 400);
+            }
+
+            return response()->json(["message" => $e->getMessage()], 400);
+        }
     }
 
     /**
@@ -152,5 +165,20 @@ class ItemController extends Controller
     public function destroy(Item $item)
     {
         //
+    }
+
+    public function  disable($item)
+    {
+        try {
+            $disable = DB::table('status')->select('id')->where('name', '=', 'Desabilitado')->first();
+            Item::find($item)->update(['status_id' => $disable->id]);
+            return response()->json(["message" => "Item desabilitado com sucesso!"], 201);
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
+                return response()->json(["message" => $e->getMessage()], 400);
+            }
+
+            return response()->json(["message" => $e->getMessage()], 400);
+        }
     }
 }

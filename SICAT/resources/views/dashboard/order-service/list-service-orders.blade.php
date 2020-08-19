@@ -114,7 +114,7 @@
                 ],
                 dom: 'B<"row mt-3" <"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>rt<"row mt-3" <"col-sm-12 col-md-5" i><"col-sm-12 col-md-7" p>>',
                 ajax: {
-                    url: '{{ route('order.list') }}',
+                    url: '{{ route('order.index') }}',
                 },
                 columns: [
                     {
