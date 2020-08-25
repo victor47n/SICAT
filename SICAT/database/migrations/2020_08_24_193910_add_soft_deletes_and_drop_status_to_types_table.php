@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTypesTable extends Migration
+class AddSoftDeletesAndDropStatusToTypesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,10 @@ class CreateTypesTable extends Migration
      */
     public function up()
     {
-        Schema::create('types', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->foreignId('status_id')->constrained('statuses');
-            $table->timestamps();
+        Schema::table('types', function (Blueprint $table) {
+            $table->dropForeign(['status_id']);
+            $table->dropColumn('status_id');
+            $table->softDeletes()->after('updated_at');
         });
     }
 
@@ -29,10 +28,7 @@ class CreateTypesTable extends Migration
     public function down()
     {
         Schema::table('types', function (Blueprint $table) {
-            if (Schema::hasColumn('types', 'status_id')) {
-                $table->dropForeign(['status_id']);
-            }
+            //
         });
-        Schema::dropIfExists('types');
     }
 }

@@ -19,7 +19,6 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('senha'),
                 'phone' => '(19)99999-9999',
                 'office' => 'Funcionário',
-                'status_id' => 1
             ],
             [
                 'name' => 'Funcionario',
@@ -27,7 +26,6 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('senha'),
                 'phone' => '(19)88888-8888',
                 'office' => 'Funcionário',
-                'status_id' => 1
             ],
             [
                 'name' => 'Estagiario',
@@ -35,7 +33,6 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('senha'),
                 'phone' => '(19)77777-7777',
                 'office' => 'Estagiário',
-                'status_id' => 1
             ]
         ];
 

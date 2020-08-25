@@ -14,17 +14,16 @@ class StatusSeeder extends Seeder
     public function run()
     {
         $status = [
-            ['name' => 'Habilitado', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
-            ['name' => 'Desabilitado', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
-            ['name' => 'Finalizado', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
-            ['name' => 'Pendente', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
-            ['name' => 'Atrasado', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
-            ['name' => 'Emprestado', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'Atrasado'],
+            ['name' => 'Devolvido'],
+            ['name' => 'Emprestado'],
+            ['name' => 'Finalizado'],
+            ['name' => 'Pendente'],
         ];
 
         foreach ($status as $s)
         {
-            DB::table('status')->insert($s);
+            Status::create($s);
         }
 
 

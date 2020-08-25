@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Item;
-use App\Status;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -12,6 +11,13 @@ use Yajra\DataTables\DataTables;
 
 class ItemController extends Controller
 {
+    private $item;
+
+    public function __construct(Item $item)
+    {
+        $this->item = $item;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -27,8 +33,7 @@ class ItemController extends Controller
             $items = DB::table('items')
                 ->select('items.id', 'items.name', 'items.amount', 'items.availability', 'types.name as type')
                 ->join('types', 'items.type_id', '=', 'types.id')
-                ->join('status', 'items.status_id', '=', 'status.id')
-                ->where('status.name', '!=', 'Desabilitado')
+                ->whereNull('items.deleted_at')
                 ->get();
 
             return Datatables::of($items)
@@ -60,12 +65,8 @@ class ItemController extends Controller
     public function create()
     {
         $types = DB::table('types')->select('id', 'name')->get();
-        $status = DB::table('status')->select('id', 'name')
-            ->where('name', '=', 'Habilitado')
-            ->orWhere('name', '=', 'Desabilitado')
-            ->get();
 
-        return view('dashboard.item.create-items', ['types' => $types, 'status' => $status]);
+        return view('dashboard.item.create-items', ['types' => $types]);
     }
 
     /**
@@ -77,7 +78,7 @@ class ItemController extends Controller
     public function store(Request $request)
     {
         try {
-            $data = $request->only('name', 'amount', 'type_id', 'status_id');
+            $data = $request->only('name', 'amount', 'type_id');
             if ($data['amount'] == 0)
             {
                 $data['availability'] = 'false';
@@ -107,9 +108,8 @@ class ItemController extends Controller
             $items = DB::table('items')
                 ->select('items.name', 'items.amount', 'items.availability', 'types.name as type')
                 ->join('types', 'items.type_id', '=', 'types.id')
-                ->join('status', 'items.status_id', '=', 'status.id')
-                ->where('status.name', '!=', 'Desabilitado')
                 ->where('items.id', '=', $item)
+                ->whereNull('items.deleted_at')
                 ->get();
 
             return $items;
@@ -139,7 +139,7 @@ class ItemController extends Controller
                 'availability' => 'required',
             ]);
 
-            $data = $request->only(['name', 'amount', 'availability', 'type_id', 'status_id']);
+            $data = $request->only(['name', 'amount', 'availability', 'type_id']);
 
             DB::transaction(function () use ($data, $item) {
                 $_item = Item::find($item);
@@ -170,8 +170,7 @@ class ItemController extends Controller
     public function disable($item)
     {
         try {
-            $disable = DB::table('status')->select('id')->where('name', '=', 'Desabilitado')->first();
-            Item::find($item)->update(['status_id' => $disable->id]);
+            Item::destroy($item);
             return response()->json(["message" => "Item desabilitado com sucesso!"], 201);
         } catch (\Exception $e) {
             if (config('app.debug')) {

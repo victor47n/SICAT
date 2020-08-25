@@ -15,23 +15,18 @@ class TypeSeeder extends Seeder
         $types = [
             [
                 'name' => 'Acessórios',
-                'status_id' => 1
             ],
             [
                 'name' => 'Adaptadores',
-                'status_id' => 1
             ],
             [
                 'name' => 'Cabos',
-                'status_id' => 1
             ],
             [
                 'name' => 'Periféricos',
-                'status_id' => 1
             ],
             [
                 'name' => 'Suportes',
-                'status_id' => 1
             ],
         ];
 

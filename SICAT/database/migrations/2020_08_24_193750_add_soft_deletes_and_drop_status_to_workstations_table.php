@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddStatusToLocales extends Migration
+class AddSoftDeletesAndDropStatusToWorkstationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,10 @@ class AddStatusToLocales extends Migration
      */
     public function up()
     {
-        Schema::table('locales', function (Blueprint $table) {
-            $table->enum('status', ['able', 'disable'])->default('able');
+        Schema::table('workstations', function (Blueprint $table) {
+            $table->dropForeign(['status_id']);
+            $table->dropColumn('status_id');
+            $table->softDeletes()->after('updated_at');
         });
     }
 
@@ -25,7 +27,7 @@ class AddStatusToLocales extends Migration
      */
     public function down()
     {
-        Schema::table('locales', function (Blueprint $table) {
+        Schema::table('workstations', function (Blueprint $table) {
             //
         });
     }

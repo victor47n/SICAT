@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddStatusToWorkstations extends Migration
+class AddSoftDeletesAndDropStatusToItemsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,10 @@ class AddStatusToWorkstations extends Migration
      */
     public function up()
     {
-        Schema::table('workstations', function (Blueprint $table) {
-            $table->enum('status', ['able', 'disable'])->default('able');
+        Schema::table('items', function (Blueprint $table) {
+            $table->dropForeign(['status_id']);
+            $table->dropColumn('status_id');
+            $table->softDeletes()->after('updated_at');
         });
     }
 
@@ -25,7 +27,7 @@ class AddStatusToWorkstations extends Migration
      */
     public function down()
     {
-        Schema::table('workstations', function (Blueprint $table) {
+        Schema::table('items', function (Blueprint $table) {
             //
         });
     }

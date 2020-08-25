@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateLocalesTable extends Migration
+class AddSoftDeletesAndDropStatusToLocalesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,10 @@ class CreateLocalesTable extends Migration
      */
     public function up()
     {
-        Schema::create('locales', function (Blueprint $table) {
-            $table->id();
-            $table->string('name', 100);
-            $table->foreignId('status_id')->constrained('statuses');
-            $table->timestamps();
+        Schema::table('locales', function (Blueprint $table) {
+            $table->dropForeign(['status_id']);
+            $table->dropColumn('status_id');
+            $table->softDeletes()->after('updated_at');
         });
     }
 
@@ -29,10 +28,7 @@ class CreateLocalesTable extends Migration
     public function down()
     {
         Schema::table('locales', function (Blueprint $table) {
-            if (Schema::hasColumn('locales', 'status_id')) {
-                $table->dropForeign(['status_id']);
-            }
+            //
         });
-        Schema::dropIfExists('locales');
     }
 }
