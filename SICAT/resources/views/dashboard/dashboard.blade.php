@@ -20,7 +20,7 @@
         <!-- small box -->
         <div class="small-box bg-info">
             <div class="inner">
-                <h3>{{$osTotal}}</h3>
+                <h3>{{$quantOSTotal}}</h3>
 
                 <p>Total</p>
             </div>
@@ -33,7 +33,7 @@
         <!-- small box -->
         <div class="small-box bg-success">
             <div class="inner">
-                <h3>{{$osFinalizados}}</h3>
+                <h3>{{$quantOSFinalizados}}</h3>
 
                 <p>Finalizado</p>
             </div>
@@ -46,7 +46,7 @@
         <!-- small box -->
         <div class="small-box bg-warning">
             <div class="inner">
-                <h3>{{$osPendentes}}</h3>
+                <h3>{{$quantOSPendentes}}</h3>
 
                 <p>Pendente</p>
             </div>
@@ -59,7 +59,7 @@
         <!-- small box -->
         <div class="small-box bg-danger">
             <div class="inner">
-                <h3>{{$osAtrasados}}</h3>
+                <h3>{{$quantOSAtrasados}}</h3>
 
                 <p>Atrasados</p>
             </div>
@@ -97,10 +97,10 @@
                         <tbody>
                             @foreach ($os as $item)
                             <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                                <td>{{$item->id}}</td>
+                                <td>{{$item->problem_type}}</td>
+                                <td>{{$item->workstation_id}}</td>
+                                <td>{{$item->status_id}}</td>
                             </tr>
                             @endforeach
                         </tbody>

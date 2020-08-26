@@ -14,19 +14,21 @@ class DashboardController extends Controller
         if (Auth::check() === true) {
 
             $os = DB::table("order_services")->orderBy("realized_date", "desc")->get();
-            $osPendentes = OrderService::where("realized_date", "<", "NOW()")->where("status_id", "4")->count();
-            $osAtrasados = OrderService::where("realized_date", ">", "NOW()")->where("status_id", "4")->count();
-            $osFinalizados = OrderService::where("realized_date", "<", new \DateTime(strtotime("last day of week")))
+            $quantOSPendentes = OrderService::where("realized_date", "<", "NOW()")->where("status_id", "5")->count();
+            $quantOSAtrasados = OrderService::where("realized_date", ">", "NOW()")->where("status_id", "5")->count();
+            $osAtrasados = OrderService::where("realized_date", ">", "NOW()")->where("status_id", "5")->get();
+            $quantOSFinalizados = OrderService::where("realized_date", "<", new \DateTime(strtotime("last day of week")))
                 ->where("realized_date", ">", new \DateTime(strtotime("first day of week")))
-                ->where("status_id", "3")->count();
-            $osTotal = $osPendentes + $osFinalizados + $osAtrasados;
+                ->where("status_id", "5")->count();
+            $quantOSTotal = $quantOSPendentes + $quantOSFinalizados + $quantOSAtrasados;
 
             return view('dashboard.dashboard', [
-                "osPendentes" => $osPendentes,
-                "osAtrasados" => $osAtrasados,
-                "osFinalizados" => $osFinalizados,
-                "osTotal" => $osTotal,
-                "os" => $os
+                "quantOSPendentes" => $quantOSPendentes,
+                "quantOSAtrasados" => $quantOSAtrasados,
+                "quantOSFinalizados" => $quantOSFinalizados,
+                "quantOSTotal" => $quantOSTotal,
+                "os" => $os,
+                "osAtrasadas" => $osAtrasados,
             ]);
         }
 
