@@ -275,6 +275,7 @@
                 context: 'json',
                 success: function (data) {
                     $("#formEdit").removeClass('d-none');
+                    console.log(typeof data);
 
                     data.map(_data => {
                         $('#inputNameEdit').val(_data.name);

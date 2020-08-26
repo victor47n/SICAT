@@ -15,8 +15,7 @@ class Borrowing extends Model
      * @var array
      */
     protected $fillable = [
-        'requester', 'phone_requester', 'email_requester', 'office_requester', 'amount', 'return_date',
-        'item_id', 'status_id',
+        'requester', 'phone_requester', 'email_requester', 'office_requester', 'acquisition_date', 'status_id',
     ];
 
     /**
@@ -40,4 +39,9 @@ class Borrowing extends Model
     protected $dates = [
         'deleted_at'
     ];
+
+    public function borrowed_item()
+    {
+        return $this->hasMany(BorrowedItem::class);
+    }
 }

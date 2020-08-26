@@ -46,15 +46,6 @@
                                 <input type="text" class="form-control" id="inputAmount" name="amount"
                                        placeholder="">
                             </div>
-{{--                            <div class="form-group col-md-12 col-lg-6">--}}
-{{--                                <label for="inputStatus">Status</label>--}}
-{{--                                <select id="inputStatus" class="form-control" name="status_id">--}}
-{{--                                    <option selected>Escolher...</option>--}}
-{{--                                    @foreach($status as $s)--}}
-{{--                                        <option value="{{ $s->id }}">{{ $s->name }}</option>--}}
-{{--                                    @endforeach--}}
-{{--                                </select>--}}
-{{--                            </div>--}}
                         </div>
                     </div>
 

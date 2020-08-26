@@ -176,7 +176,6 @@ class ItemController extends Controller
             if (config('app.debug')) {
                 return response()->json(["message" => $e->getMessage()], 400);
             }
-
             return response()->json(["message" => $e->getMessage()], 400);
         }
     }

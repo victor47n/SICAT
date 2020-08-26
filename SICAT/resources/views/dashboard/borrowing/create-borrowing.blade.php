@@ -34,10 +34,10 @@
                                 <label for="inputOffice">Cargo</label>
                                 <select id="inputOffice" class="form-control" name="office_requester">
                                     <option selected>Escolher...</option>
-                                    <option value="">Aluno</option>
-                                    <option value="">Coordenador</option>
-                                    <option value="">Funcionário</option>
-                                    <option value="">Professor</option>
+                                    <option value="Aluno">Aluno</option>
+                                    <option value="Coordenador">Coordenador</option>
+                                    <option value="Funcionário">Funcionário</option>
+                                    <option value="Professor">Professor</option>
                                 </select>
                             </div>
                             <div class="form-group col-8">
@@ -51,29 +51,37 @@
                                        placeholder="(99) 99999-9999">
                             </div>
                         </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-12 col-lg-4">
-                                <label for="inputType">Tipo</label>
-                                <select id="inputType" class="form-control">
-                                    <option selected>Escolher...</option>
-                                    @foreach($types as $type)
-                                        <option value="{{ $type->id }}">{{ $type->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="form-group col-md-12 col-lg-4">
-                                <label for="inputItem">Item</label>
-                                <select id="inputItem" class="form-control" name="item_id">
-                                    <option selected>Escolher...</option>
-{{--                                    @foreach($items as $item)--}}
-{{--                                        <option value="{{ $item->id }}">{{ $item->name }}</option>--}}
-{{--                                    @endforeach--}}
-                                </select>
-                            </div>
-                            <div class="form-group col-4">
-                                <label for="inputAmount">Quantidade</label>
-                                <input type="text" class="form-control" id="inputAmount" name="amount"
-                                       placeholder="0">
+                        <div id="fItems">
+                            <div class="form-row" id="item-row">
+                                <div class="form-group col-md-12 col-lg-4">
+                                    <label for="inputType-0">Tipo</label>
+                                    <select id="inputType-0" class="form-control" onchange="populateItemSelect(0)">
+                                        <option selected disabled>Escolher...</option>
+                                        @foreach($types as $type)
+                                            <option value="{{ $type->id }}">{{ $type->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-12 col-lg-4">
+                                    <label for="inputItem-0">Item</label>
+                                    <select id="inputItem-0" class="form-control" name="item_id[]" data-index="0">
+                                        <option selected disabled>Escolher...</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-2">
+                                    <label for="inputAmount">Quantidade</label>
+                                    <input type="text" class="form-control" id="inputAmount-0" name="amount[]"
+                                           placeholder="0">
+                                </div>
+
+                                <div class="form-group d-flex justify-content-center align-items-end col-lg-2">
+                                    <div class="btn-group" role="group" aria-label="Exemplo básico">
+                                        <button id="addItem" type="button" class="btn btn-info"><i
+                                                class="fas fa-fw fa-plus"></i></button>
+                                        <button id="delete" type="button" class="btn btn-danger"><i
+                                                class="fas fa-fw fa-minus"></i></button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="form-row">
@@ -90,7 +98,7 @@
                             <div class="form-group col-md-12 col-lg-4">
                                 <label for="inputStatus">Status</label>
                                 <select id="inputStatus" class="form-control" name="status_id">
-                                    <option selected>Escolher...</option>
+                                    <option selected disabled>Escolher...</option>
                                     @foreach($status as $s)
                                         <option value="{{ $s->id }}">{{ $s->name }}</option>
                                     @endforeach
@@ -123,9 +131,66 @@
 
 @section('js')
     <script>
-
-
         $('[data-mask]').inputmask();
+
+        $(document).ready(function () {
+            const fieldItem = $("#item-row").clone(true, true);
+            let a = 0;
+
+            $("div").on('click', '#delete', function () {
+                console.log($("#delete").parents());
+                $(this).parents()[2].remove();
+            });
+
+            // $("#addItem").on('click', function () {
+            //     console.log(fieldItem);
+            //     a++;
+            //     let t = fieldItem.clone(true, true);
+            //     t.attr('id', 'item-row-' + a);
+            //
+            //     // t.children()[1].attr('id', '-'+a);
+            //     // console.log(t.children()[1].getElementById('inputItem'));
+            //
+            //     $("#teste").append(t);
+            // });
+
+            $("#addItem").on('click', function(){
+                a++;
+                let html = '';
+                html += '<div class="form-row" id="item-row">\n' +
+                    '                                <div class="form-group col-md-12 col-lg-4">\n' +
+                    '                                    <label for="inputType-'+a+'">Tipo</label>\n' +
+                    '                                    <select id="inputType-'+a+'" class="form-control" onchange="populateItemSelect('+a+')">\n' +
+                    '                                        <option selected disabled>Escolher...</option>\n' +
+                    '                                        @foreach($types as $type)\n' +
+                    '                                            <option value="{{ $type->id }}">{{ $type->name }}</option>\n' +
+                    '                                        @endforeach\n' +
+                    '                                    </select>\n' +
+                    '                                </div>\n' +
+                    '                                <div class="form-group col-md-12 col-lg-4">\n' +
+                    '                                    <label for="inputItem-'+a+'">Item</label>\n' +
+                    '                                    <select id="inputItem-'+a+'" class="form-control" name="item_id[]">\n' +
+                    '                                        <option selected disabled>Escolher...</option>\n' +
+                    '                                    </select>\n' +
+                    '                                </div>\n' +
+                    '                                <div class="form-group col-2">\n' +
+                    '                                    <label for="inputAmount">Quantidade</label>\n' +
+                    '                                    <input type="text" class="form-control" id="inputAmount-'+a+'" name="amount[]"\n' +
+                    '                                           placeholder="0">\n' +
+                    '                                </div>\n' +
+                    '\n' +
+                    '                                <div class="form-group d-flex justify-content-center align-items-end col-lg-2">\n' +
+                    '                                    <div class="btn-group" role="group" aria-label="Opções">\n' +
+                    '                                        <button id="addItem" type="button" class="btn btn-info"><i\n' +
+                    '                                                class="fas fa-fw fa-plus"></i></button>\n' +
+                    '                                        <button id="delete" type="button" class="btn btn-danger"><i\n' +
+                    '                                                class="fas fa-fw fa-minus"></i></button>\n' +
+                    '                                    </div>\n' +
+                    '                                </div>\n' +
+                    '                            </div>';
+                $('#fItems').append(html);
+            });
+        });
 
         const Toast = Swal.mixin({
             toast: true,
@@ -158,29 +223,31 @@
             });
         });
 
-        $("#inputType").change(function() {
-            var estadoSelecionado = $(this).children("option:selected").val();
+        function populateItemSelect(a) {
+            var estadoSelecionado = $('#inputType-'+a).children("option:selected").val();
+            console.log(estadoSelecionado);
+            $('#inputItem-'+a).children('option:not(:first)').remove();
+            $('#inputItem-'+a).children('option:first').prop('selected', true);
+            // $("#inputItem").html('<option selected disabled>Escolher...</option>');
 
             $.ajax({
                 url: "{{ route('borrowing.select') }}",
                 method: "GET",
-                dataType: "HTML",
-                data: { id: estadoSelecionado }
-            }).done(function(data){
-
-                data.map(_data => {
-                    _data.map(__data => {
-                        $('#inputItem').append($('<option>', {
-                            value: __data.id,
-                            text: __data.name
+                data: {id: estadoSelecionado},
+                context: 'json',
+                success: function (data) {
+                    data.map(_data => {
+                        $('#inputItem-'+a).append($('<option>', {
+                            value: _data.id,
+                            text: _data.name
                         }));
                     });
-                });
-
-            }).fail(function(resposta){
-                alert(resposta)
+                },
+                error: function (data) {
+                    console.log(data);
+                }
             });
-        });
+        };
     </script>
 
 @stop

@@ -32,8 +32,7 @@ class UserController extends Controller
                 ->select('users.id', 'users.name', 'users.email', 'users.phone', 'users.office', 'roles.name as permission')
                 ->join('user_roles', 'users.id', '=', 'user_roles.user_id')
                 ->join('roles', 'user_roles.role_id', '=', 'roles.id')
-                ->join('status', 'users.status_id', '=', 'status.id')
-                ->where('status.name', '!=', 'Desabilitado')
+                ->whereNull('users.deleted_at')
                 ->get();
 
             return Datatables::of($users)
@@ -70,7 +69,7 @@ class UserController extends Controller
     function store(Request $request)
     {
         try {
-            $data = $request->all();
+            $data = $request->only('name', 'email', 'password', 'phone', 'office', 'role_id');
             $data['password'] = Hash::make($data['password']);
 
             DB::transaction(function () use ($data) {
@@ -95,8 +94,7 @@ class UserController extends Controller
             ->select('users.id', 'users.name', 'users.email', 'users.phone', 'users.office', 'roles.name as permission')
             ->join('user_roles', 'users.id', '=', 'user_roles.user_id')
             ->join('roles', 'user_roles.role_id', '=', 'roles.id')
-            ->join('status', 'users.status_id', '=', 'status.id')
-            ->where('status.name', '!=', 'Desabilitado')
+            ->whereNull('users.deleted_at')
             ->where('users.id', '=', $user)
             ->get();
 
@@ -112,7 +110,7 @@ class UserController extends Controller
                 'email' => 'required',
             ]);
 
-            $data = $request->except(['_token', '_method']);
+            $data = $request->only(['name', 'email', 'password', 'phone', 'office']);
             $user_role = $request->only('role_id');
             if (!empty($data['password'])) {
                 $data['password'] = Hash::make($data['password']);
@@ -137,8 +135,7 @@ class UserController extends Controller
     function disable($user)
     {
         try {
-            $disable = DB::table('status')->select('id')->where('name', '=', 'Desabilitado')->first();
-            User::find($user)->update(['status' => $disable->id]);
+            User::destroy($user);
             return response()->json(["message" => "Funcionário desabilitado com sucesso!"], 201);
         } catch (\Exception $e) {
             if (config('app.debug')) {
