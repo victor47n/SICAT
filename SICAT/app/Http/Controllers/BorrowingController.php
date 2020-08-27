@@ -4,10 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Borrowing;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class BorrowingController extends Controller
 {
+    private $borrowing;
+
+    public function __construct(Borrowing $borrowing)
+    {
+        $this->borrowing = $borrowing;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -45,28 +53,26 @@ class BorrowingController extends Controller
     public function store(Request $request)
     {
         try {
-            $data = $request->only('requester', 'phone_requester', 'email_requester', 'office_requester', 'amount[]', 'acquisition_date',
-                'item_id[]', 'status_id');
-            foreach ($data['amount'] as $amount)
+            $data = $request->all();
+
+//            $data['lender_id'] = Auth::user()->id;
+
+            $items[] = null;
+
+            for ($i = 0; $i < count($data['item_id']); $i++)
             {
-                if ($amount == 0)
-                {
-                    return response()->json(["message" => "Quantidade inválida de itens"], 400);
-                }
+                $items[$i]['item_id'] = $data['item_id'][$i];
+                $items[$i]['amount'] = $data['amount'][$i];
+                $items[$i]['lender_id'] = Auth::user()->id;
+                $items[$i]['status_id'] = $data['status_id'];
             }
 
-            $borrowing = null;
-//            $items = $request->only('item_id[]', 'amount[]');
-
-            $items = $data['item_id'] + $data['amount'];
-            dd($items);
-
-//            DB::transaction(function () use ($data, $borrowing) {
-//                $borrowing = Borrowing::create($data);
-//                foreach ($data['item_id'] as $item) {
-//                    $borrowing->borrowed_item()->create(["item_id" => $item]);
-//                }
-//            });
+            DB::transaction(function () use ($data, $items) {
+                $borrowing = Borrowing::create($data);
+                foreach ($items as $item) {
+                    $borrowing->borrowed_item()->create($item);
+                }
+            });
 
             return response()->json(["message" => "Cadastrado com sucesso"], 201);
         } catch (\Exception $e) {

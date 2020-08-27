@@ -28,11 +28,11 @@
                             <div class="form-group col-8">
                                 <label for="inputName">Nome do requisitante</label>
                                 <input type="text" class="form-control" id="inputName" name="requester"
-                                       placeholder="Nome">
+                                       placeholder="Nome" required>
                             </div>
                             <div class="form-group col-md-12 col-lg-4">
                                 <label for="inputOffice">Cargo</label>
-                                <select id="inputOffice" class="form-control" name="office_requester">
+                                <select id="inputOffice" class="form-control" name="office_requester" required>
                                     <option selected>Escolher...</option>
                                     <option value="Aluno">Aluno</option>
                                     <option value="Coordenador">Coordenador</option>
@@ -43,19 +43,21 @@
                             <div class="form-group col-8">
                                 <label for="inputEmail">Email</label>
                                 <input type="email" class="form-control" id="inputEmail" name="email_requester"
-                                       placeholder="exemplo@abc.xyz">
+                                       placeholder="exemplo@abc.xyz" required>
                             </div>
                             <div class="form-group col-4">
                                 <label for="inputPhone">Telefone</label>
                                 <input type="text" class="form-control" id="inputPhone" name="phone_requester"
+                                       data-inputmask='"mask": "(99) 9999[9]-9999"' data-mask
                                        placeholder="(99) 99999-9999">
                             </div>
                         </div>
                         <div id="fItems">
-                            <div class="form-row" id="item-row">
+                            <div class="form-row align-items-end" id="item-row-0">
                                 <div class="form-group col-md-12 col-lg-4">
                                     <label for="inputType-0">Tipo</label>
-                                    <select id="inputType-0" class="form-control" onchange="populateItemSelect(0)">
+                                    <select id="inputType-0" class="form-control" onchange="populateItemSelect(0)"
+                                            required>
                                         <option selected disabled>Escolher...</option>
                                         @foreach($types as $type)
                                             <option value="{{ $type->id }}">{{ $type->name }}</option>
@@ -64,40 +66,32 @@
                                 </div>
                                 <div class="form-group col-md-12 col-lg-4">
                                     <label for="inputItem-0">Item</label>
-                                    <select id="inputItem-0" class="form-control" name="item_id[]" data-index="0">
+                                    <select id="inputItem-0" class="form-control" name="item_id[]" required>
                                         <option selected disabled>Escolher...</option>
                                     </select>
                                 </div>
                                 <div class="form-group col-2">
                                     <label for="inputAmount">Quantidade</label>
                                     <input type="text" class="form-control" id="inputAmount-0" name="amount[]"
-                                           placeholder="0">
+                                           placeholder="0" required>
                                 </div>
 
-                                <div class="form-group d-flex justify-content-center align-items-end col-lg-2">
-                                    <div class="btn-group" role="group" aria-label="Exemplo básico">
-                                        <button id="addItem" type="button" class="btn btn-info"><i
-                                                class="fas fa-fw fa-plus"></i></button>
-                                        <button id="delete" type="button" class="btn btn-danger"><i
-                                                class="fas fa-fw fa-minus"></i></button>
-                                    </div>
+                                <div class="col-auto mb-3">
+                                    <button id="delete" type="button" class="btn btn-danger">
+                                        <i class="fas fa-fw fa-minus"></i>
+                                    </button>
                                 </div>
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-12 col-lg-4">
                                 <label for="inputDateA">Data de aquisição</label>
-                                <input type="text" class="form-control" id="inputDate" name="acquisition_date"
-                                       placeholder="dd/mm/aaaa">
-                            </div>
-                            <div class="form-group col-md-12 col-lg-4">
-                                <label for="inputDataR">Data de devolução</label>
-                                <input type="text" class="form-control" id="inputdataR" name="return_date"
-                                       placeholder="dd/mm/aaaa">
+                                <input type="date" class="form-control" id="inputDate" name="acquisition_date"
+                                       placeholder="dd/mm/aaaa" required>
                             </div>
                             <div class="form-group col-md-12 col-lg-4">
                                 <label for="inputStatus">Status</label>
-                                <select id="inputStatus" class="form-control" name="status_id">
+                                <select id="inputStatus" class="form-control" name="status_id" required>
                                     <option selected disabled>Escolher...</option>
                                     @foreach($status as $s)
                                         <option value="{{ $s->id }}">{{ $s->name }}</option>
@@ -108,6 +102,7 @@
                     </div>
 
                     <div class="card-footer text-right">
+                        <button id="addItem" type="button" class="btn btn-info">Adicionar itens</button>
                         <button type="submit" class="btn btn-primary">Emprestar</button>
                     </div>
                 </form>
@@ -133,34 +128,22 @@
     <script>
         $('[data-mask]').inputmask();
 
+
         $(document).ready(function () {
-            const fieldItem = $("#item-row").clone(true, true);
+
             let a = 0;
 
             $("div").on('click', '#delete', function () {
-                console.log($("#delete").parents());
-                $(this).parents()[2].remove();
+                $(this).parents()[1].remove();
             });
 
-            // $("#addItem").on('click', function () {
-            //     console.log(fieldItem);
-            //     a++;
-            //     let t = fieldItem.clone(true, true);
-            //     t.attr('id', 'item-row-' + a);
-            //
-            //     // t.children()[1].attr('id', '-'+a);
-            //     // console.log(t.children()[1].getElementById('inputItem'));
-            //
-            //     $("#teste").append(t);
-            // });
-
-            $("#addItem").on('click', function(){
+            $("#addItem").on('click', function () {
                 a++;
                 let html = '';
-                html += '<div class="form-row" id="item-row">\n' +
+                html += '<div class="form-row align-items-end" id="item-row-'+a+'">\n' +
                     '                                <div class="form-group col-md-12 col-lg-4">\n' +
-                    '                                    <label for="inputType-'+a+'">Tipo</label>\n' +
-                    '                                    <select id="inputType-'+a+'" class="form-control" onchange="populateItemSelect('+a+')">\n' +
+                    '                                    <label for="inputType-' + a + '">Tipo</label>\n' +
+                    '                                    <select id="inputType-' + a + '" class="form-control" onchange="populateItemSelect(' + a + ')">\n' +
                     '                                        <option selected disabled>Escolher...</option>\n' +
                     '                                        @foreach($types as $type)\n' +
                     '                                            <option value="{{ $type->id }}">{{ $type->name }}</option>\n' +
@@ -168,24 +151,20 @@
                     '                                    </select>\n' +
                     '                                </div>\n' +
                     '                                <div class="form-group col-md-12 col-lg-4">\n' +
-                    '                                    <label for="inputItem-'+a+'">Item</label>\n' +
-                    '                                    <select id="inputItem-'+a+'" class="form-control" name="item_id[]">\n' +
+                    '                                    <label for="inputItem-' + a + '">Item</label>\n' +
+                    '                                    <select id="inputItem-' + a + '" class="form-control" name="item_id[]">\n' +
                     '                                        <option selected disabled>Escolher...</option>\n' +
                     '                                    </select>\n' +
                     '                                </div>\n' +
                     '                                <div class="form-group col-2">\n' +
                     '                                    <label for="inputAmount">Quantidade</label>\n' +
-                    '                                    <input type="text" class="form-control" id="inputAmount-'+a+'" name="amount[]"\n' +
+                    '                                    <input type="text" class="form-control" id="inputAmount-' + a + '" name="amount[]"\n' +
                     '                                           placeholder="0">\n' +
                     '                                </div>\n' +
                     '\n' +
-                    '                                <div class="form-group d-flex justify-content-center align-items-end col-lg-2">\n' +
-                    '                                    <div class="btn-group" role="group" aria-label="Opções">\n' +
-                    '                                        <button id="addItem" type="button" class="btn btn-info"><i\n' +
-                    '                                                class="fas fa-fw fa-plus"></i></button>\n' +
+                    '                                <div class="col-auto mb-3">\n' +
                     '                                        <button id="delete" type="button" class="btn btn-danger"><i\n' +
                     '                                                class="fas fa-fw fa-minus"></i></button>\n' +
-                    '                                    </div>\n' +
                     '                                </div>\n' +
                     '                            </div>';
                 $('#fItems').append(html);
@@ -201,6 +180,8 @@
 
         $("#form").on("submit", function (e) {
             e.preventDefault();
+
+            console.log($('#form').serialize());
 
             $.ajax({
                 url: "{{ route('borrowing.store') }}",
@@ -224,11 +205,9 @@
         });
 
         function populateItemSelect(a) {
-            var estadoSelecionado = $('#inputType-'+a).children("option:selected").val();
-            console.log(estadoSelecionado);
-            $('#inputItem-'+a).children('option:not(:first)').remove();
-            $('#inputItem-'+a).children('option:first').prop('selected', true);
-            // $("#inputItem").html('<option selected disabled>Escolher...</option>');
+            var estadoSelecionado = $('#inputType-' + a).children("option:selected").val();
+            $('#inputItem-' + a).children('option:not(:first)').remove();
+            $('#inputItem-' + a).children('option:first').prop('selected', true);
 
             $.ajax({
                 url: "{{ route('borrowing.select') }}",
@@ -237,7 +216,7 @@
                 context: 'json',
                 success: function (data) {
                     data.map(_data => {
-                        $('#inputItem-'+a).append($('<option>', {
+                        $('#inputItem-' + a).append($('<option>', {
                             value: _data.id,
                             text: _data.name
                         }));
