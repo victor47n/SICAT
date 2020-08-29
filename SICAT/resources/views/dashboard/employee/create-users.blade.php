@@ -43,7 +43,7 @@
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-12 col-lg-4">
-                                <label for="inputPhone">Senha</label>
+                                <label for="inputPhone">Telefone</label>
                                 <input type="text" class="form-control" id="inputPhone" name="phone" data-inputmask='"mask": "(99) 99999-9999"' data-mask
                                        placeholder="(99) 99999-9999">
                             </div>

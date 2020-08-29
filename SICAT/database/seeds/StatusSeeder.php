@@ -19,6 +19,7 @@ class StatusSeeder extends Seeder
             ['name' => 'Finalizado', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
             ['name' => 'Pendente', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
             ['name' => 'Atrasado', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'Emprestado', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
         ];
 
         foreach ($status as $s)

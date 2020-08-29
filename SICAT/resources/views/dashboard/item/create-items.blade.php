@@ -35,7 +35,7 @@
                                 <select id="inputType" class="form-control" name="type_id">
                                     <option selected>Escolher...</option>
                                     @foreach($types as $type)
-                                        <option value="{{$type->id}}">{{$type->name}}</option>
+                                        <option value="{{ $type->id }}">{{ $type->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -51,7 +51,7 @@
                                 <select id="inputStatus" class="form-control" name="status_id">
                                     <option selected>Escolher...</option>
                                     @foreach($status as $s)
-                                        <option value="{{$s->id}}">{{$s->name}}</option>
+                                        <option value="{{ $s->id }}">{{ $s->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -95,7 +95,7 @@
             e.preventDefault();
 
             $.ajax({
-                url: "{{ route('user.store') }}",
+                url: "{{ route('item.store') }}",
                 method: "POST",
                 dataType: 'json',
                 data: $('#form').serialize(),
