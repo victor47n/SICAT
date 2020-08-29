@@ -20,12 +20,17 @@
                 <h3 class="card-title">Cadastros de Ordens de Serviço</h3>
             </div>
             <div class="card-body">
-                <table id="tUsers" class="table table-hover table-bordered table-striped">
+                <table id="tOS" class="table table-hover table-bordered table-striped">
                     <thead>
                         <tr role="row">
                             <th class="sorting">ID</th>
-                            <th class="sorting_asc">Nome</th>
-                            <th class="sorting">Email</th>
+                            <th class="sorting">Tipo</th>
+                            <th class="sorting_asc">Problema</th>
+                            <th class="sorting">Funcionário designado</th>
+                            <th class="sorting">Funcionário solucionador</th>
+                            <th class="sorting">Local</th>
+                            <th class="sorting">Posto de trabalho</th>
+                            <th class="sorting">Estado</th>
                             <th class="sorting">Opções</th>
                         </tr>
                     </thead>
@@ -51,7 +56,7 @@
 @section('js')
 <script>
     $(document).ready(function () {
-            var table = $('#tOrdens');
+            var table = $('#tOS');
             table.DataTable({
                 processing: true,
                 serverSide: true,
@@ -122,12 +127,32 @@
                         name: 'id'
                     },
                     {
-                        data: 'name',
-                        name: 'nome'
+                        data: 'problem',
+                        name: 'problem'
                     },
                     {
-                        data: 'email',
-                        name: 'email'
+                        data: 'problem_type',
+                        name: 'problem_type'
+                    },
+                    {
+                        data: 'designated',
+                        name: 'designated'
+                    },
+                    {
+                        data: 'solver',
+                        name: 'solver'
+                    },
+                    {
+                        data: 'locale',
+                        name: 'locale'
+                    },
+                    {
+                        data: 'workstation',
+                        name: 'workstation'
+                    },
+                    {
+                        data: 'status',
+                        name: 'Estado'
                     },
                     {
                         data: 'action',
