@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Locale;
 use Illuminate\Http\Request;
 use App\OrderService;
 use Illuminate\Support\Facades\DB;
@@ -56,7 +57,8 @@ class OrderServiceController extends Controller
 
     function create()
     {
-        return view("dashboard/order-service/create-service-orders");
+        $locales = Locale::all()->where("deleted_at", "=", null);
+        return view("dashboard/order-service/create-service-orders", ["locales" => $locales]);
     }
 
     public function store(Request $request)

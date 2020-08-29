@@ -3,51 +3,77 @@
 @section('title', 'SICAT')
 
 @section('content_header')
-<h1>Postos de Trabalho</h1>
+<h1>Ordens de serviço</h1>
 @stop
 
 @section('breadcrumb')
 <li class="breadcrumb-item"><a href={{route('dashboard.index')}}>Home</a></li>
-<li class="breadcrumb-item active">Postos de Trabalho</li>
+<li class="breadcrumb-item active">Ordens de serviço</li>
 <li class="breadcrumb-item active">Cadastrar</li>
 @stop
 
 @section('content')
 <div class="row  justify-content-center">
-    <div class="col-md-6">
+    <div class="col-md-8">
         <div class="card card-primary">
             <div class="card-header">
-                <h3 class="card-title">Cadastrar Postos de Trabalho</h3>
+                <h3 class="card-title">Cadastrar Ordens de serviço</h3>
             </div>
 
             <form id="form">
                 {{ csrf_field() }}
 
                 <div class="card-body">
-                    <div class="form-group">
-                        <label for="name">Nome</label>
-                        <input type="text" class="form-control" id="name" name="name" placeholder="Nome">
-                    </div>
-                    <h3>Salas </h3>
-                    <div id="sala-row" class="form-row">
-
-                        <div class="form-group col-10">
-                            <input type="text" class="form-control" id="sala[]" name="sala[]"
-                                placeholder="Nome da sala">
+                    <div class="row">
+                        <div class="form-group  col-md-12">
+                            <label for="name">Descrição</label>
+                            <input type="text" class="form-control" id="problem" name="problem" placeholder="Nome">
                         </div>
-                        <div class="col-auto">
-                            <button id="delete" type="button" class="btn btn-danger"><i
-                                    class="fas fa-fw fa-times"></i></button>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-4">
+                            <label for="name">Problema</label>
+                            <select class="form-control" id="problem" name="problem">
+                                <option value="" selected disabled hidden>Selecione</option>
+                                <option value="Software">Software</option>
+                                <option value="Hardware">Hardware</option>
+                                <option value="Sistema Operacional">Sistema Operacional</option>
+                                <option value="Rede">Rede</option>
+                                <option value="Outros">Outros</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group col-md-4">
+                            <label for="name">Local</label>
+                            <select class="form-control" id="locale" name="locale">
+                                @foreach ($locales as $item)
+                                <option value="{{$item->id}}">{{$item->name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="form-group col-md-4">
+                            <label for="name">Posto de Trabalho</label>
+                            <select class="form-control" id="workstation" name="workstation">
+
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label for="name">Posto de Trabalho</label>
+                            <input type="date" class="form-control" name="realized_date" id="realized_date">
+                            </select>
                         </div>
                     </div>
                 </div>
-
-                <div class="card-footer text-right">
-                    <button id="addSala" type="button" class="btn btn-info">Adicionar sala</button>
-                    <button type="submit" class="btn btn-primary">Cadastrar</button>
-                </div>
-            </form>
         </div>
+
+        <div class="card-footer text-right">
+            <button type="submit" class="btn btn-primary">Cadastrar</button>
+        </div>
+        </form>
     </div>
 </div>
 @stop
@@ -74,22 +100,7 @@
         });
 
         $(document).ready(function(){
-            const fieldSala = $("#sala-row").clone(true,true);
             var a = 0;
-
-            $("div").on('click','#delete',function(){
-                console.log( $("#delete").parents());
-                $(this).parents()[1].remove();
-            });
-
-            $("#addSala").on('click',function(){
-                console.log(fieldSala);
-                a++;
-                let t = fieldSala.clone(true,true);
-                t.attr('id','sala-row'+a)
-
-               $(".card-body").append(t);
-            });
 
             $("#form").on("submit", function (e) {
                 e.preventDefault();
