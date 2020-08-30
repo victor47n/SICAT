@@ -127,12 +127,12 @@
                         name: 'id'
                     },
                     {
-                        data: 'problem',
-                        name: 'problem'
-                    },
-                    {
                         data: 'problem_type',
                         name: 'problem_type'
+                    },
+                    {
+                        data: 'problem',
+                        name: 'problem'
                     },
                     {
                         data: 'designated',
