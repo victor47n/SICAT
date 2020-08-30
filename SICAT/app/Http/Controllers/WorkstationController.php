@@ -38,7 +38,7 @@ class WorkstationController extends Controller
             $work->save();
 
             return response()->json(["message" => "Posto de trabalho atualizado com sucesso!"], 200);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             if (config('app.debug')) {
                 return response()->json(["message" => $e->getMessage()], 400);
             }
@@ -55,7 +55,7 @@ class WorkstationController extends Controller
             $work->save();
 
             return response()->json(["message" => "Posto de trabalho desabilitado com sucesso!"], 201);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             if (config('app.debug')) {
                 return response()->json(["message" => $e->getMessage()], 400);
             }
@@ -73,7 +73,7 @@ class WorkstationController extends Controller
             $work->save();
 
             return response()->json(["message" => "Posto de trabalho habilitado com sucesso!"], 201);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             if (config('app.debug')) {
                 return response()->json(["message" => $e->getMessage()], 400);
             }

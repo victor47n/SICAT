@@ -36,6 +36,7 @@ Route::group(['middleware' => 'auth'], function () {
         ->except(['edit']);
 
     Route::put('locais/{locale}/desabilitar', 'LocaleController@disable')->name('locale.disable');
+    Route::get('locais/{locale}/workstations', 'LocaleController@workstations')->name('locale.workstations');
     Route::resource('locais', 'LocaleController')->names('locale')
         ->parameters(['locais' => 'locale'])
         ->except(['edit']);

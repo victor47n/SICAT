@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Locale;
 use App\Workstation;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -136,6 +137,16 @@ class LocaleController extends Controller
                 return response()->json(["message" => $e->getMessage()], 400);
             }
 
+            return response()->json(["message" => $e->getMessage()], 400);
+        }
+    }
+
+    function workstations($locale)
+    {
+        try {
+            $work = Workstation::all()->where("locale_id", "=", $locale);
+            return response()->json(["data" => $work]);
+        } catch (Exception $e) {
             return response()->json(["message" => $e->getMessage()], 400);
         }
     }

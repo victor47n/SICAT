@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Locale;
 use Illuminate\Http\Request;
 use App\OrderService;
+use App\User;
+use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Yajra\DataTables\DataTables;
@@ -58,12 +60,26 @@ class OrderServiceController extends Controller
     function create()
     {
         $locales = Locale::all()->where("deleted_at", "=", null);
-        return view("dashboard/order-service/create-service-orders", ["locales" => $locales]);
+        $funcionarios = User::all()->where("deleted_at", "=", null);
+        return view(
+            "dashboard/order-service/create-service-orders",
+            [
+                "locales" => $locales,
+                "funcionarios" => $funcionarios
+            ]
+        );
     }
 
     public function store(Request $request)
     {
-        //
+        try {
+            $req = $request->all();
+
+            $os = OrderService::create($req);
+            return response()->json(["message" => "Ordem de serviço criada com sucesso", "data" => $os]);
+        } catch (Exception $e) {
+            return response()->json(["message" => $e->getMessage()]);
+        }
         /*  $serviceOrders = DB::table("order_services")
         ->leftJoin("locales", "order_services.locale_id", "=", "locales.id")
         ->leftJoin("workstations", "order_services.workstation_id", "=", "workstations.id")
