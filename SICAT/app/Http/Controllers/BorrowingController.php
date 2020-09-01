@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Borrowing;
+use App\Http\Requests\StoreBorrowingRequest;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -19,7 +21,7 @@ class BorrowingController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -29,7 +31,7 @@ class BorrowingController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -47,22 +49,22 @@ class BorrowingController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(Request $request)
+    public function store(StoreBorrowingRequest $request)
     {
-        try {
-            $data = $request->all();
 
-//            $data['lender_id'] = Auth::user()->id;
+        try {
+
+            $data = $request->all();
 
             $items[] = null;
 
-            for ($i = 0; $i < count($data['item_id']); $i++)
+            for ($i = 0; $i < count($data['items']); $i++)
             {
-                $items[$i]['item_id'] = $data['item_id'][$i];
-                $items[$i]['amount'] = $data['amount'][$i];
+                $items[$i]['item_id'] = $data['items'][$i]['item_id'];
+                $items[$i]['amount'] = $data['items'][$i]['amount'];
                 $items[$i]['lender_id'] = Auth::user()->id;
                 $items[$i]['status_id'] = $data['status_id'];
             }
@@ -88,7 +90,7 @@ class BorrowingController extends Controller
      * Display the specified resource.
      *
      * @param \App\Borrowing $borrowing
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show(Borrowing $borrowing)
     {
@@ -99,7 +101,7 @@ class BorrowingController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param \App\Borrowing $borrowing
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit(Borrowing $borrowing)
     {
@@ -109,9 +111,9 @@ class BorrowingController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param Request $request
      * @param \App\Borrowing $borrowing
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request, Borrowing $borrowing)
     {
@@ -122,7 +124,7 @@ class BorrowingController extends Controller
      * Remove the specified resource from storage.
      *
      * @param \App\Borrowing $borrowing
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy(Borrowing $borrowing)
     {
