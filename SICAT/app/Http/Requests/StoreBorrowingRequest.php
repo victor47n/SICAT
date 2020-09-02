@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\ItemMin;
 use App\Rules\ItemStock;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -31,7 +32,7 @@ class StoreBorrowingRequest extends FormRequest
             'office_requester' => 'required|string',
             'acquisition_date' => 'required|date',
             'status_id' => 'required|numeric',
-            'items' => ['required', 'array', new ItemStock],
+            'items' => ['required', 'array', new ItemStock, new ItemMin],
         ];
     }
 

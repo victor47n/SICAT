@@ -50,7 +50,6 @@
                             <div class="form-group col-4">
                                 <label for="inputPhone">Telefone</label>
                                 <input type="text" class="form-control" id="inputPhone" name="phone_requester"
-                                       data-inputmask='"mask": "(99) 9999[9]-9999"' data-mask
                                        placeholder="(99) 99999-9999" autocomplete="off">
                             </div>
                         </div>
@@ -136,9 +135,21 @@
 
 @section('js')
     <script>
-        $('[data-mask]').inputmask();
+        // $('[data-mask]').inputmask();
 
         $(document).ready(function () {
+
+            $('#inputPhone').inputmask('(99) 9999[9]-9999', { showMaskOnFocus: false, showMaskOnHover: false });
+            $('#inputAmount').inputmask({
+                alias: 'numeric',
+                allowMinus: true,
+                allowPlus: true,
+                min: 1,
+                max: 100,
+                digits: 0,
+                showMaskOnFocus: false,
+                showMaskOnHover: false,
+            });
 
             var count = 0;
 
@@ -361,15 +372,15 @@
                 error: function (error) {
                     if (error.status === 422) {
                         $.each(error.responseJSON.errors, function (i, error) {
-                            let el = $(document).find('[name="' + i + '"]');
+                            let element = $(document).find('[name="' + i + '"]');
 
-                            if (el.hasClass('is-invalid')) {
-                                el.next('.invalid-feedback').text(error[0]);
+                            if (element.hasClass('is-invalid')) {
+                                element.next('.invalid-feedback').text(error[0]);
                                 return;
                             }
 
-                            el.addClass('is-invalid');
-                            el.after($('<div class="invalid-feedback">' + error[0] + '</div>'));
+                            element.addClass('is-invalid');
+                            element.after($('<div class="invalid-feedback">' + error[0] + '</div>'));
                         });
                     } else {
                         Swal.fire({

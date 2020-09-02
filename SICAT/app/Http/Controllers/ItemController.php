@@ -84,6 +84,11 @@ class ItemController extends Controller
                 $data['availability'] = 'false';
             }
 
+            if(Item::select('name')->where('name', '=', $data['name'])->exists())
+            {
+                return response()->json(["message" => "Item já existente."], 400);
+            }
+
             Item::create($data);
 
             return response()->json(["message" => "Cadastrado com sucesso"], 201);
