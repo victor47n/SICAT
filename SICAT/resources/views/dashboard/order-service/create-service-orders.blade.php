@@ -17,7 +17,7 @@
     <div class="col-md-8">
         <div class="card card-primary">
             <div class="card-header">
-                <h3 class="card-title">Cadastrar Ordens de serviço</h3>
+                <h3 class="card-title">Cadastrar ordem de serviço</h3>
             </div>
 
             <form id="form">

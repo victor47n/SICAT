@@ -22,10 +22,8 @@ class OrderServiceController extends Controller
                 ->leftJoin("workstations", "order_services.workstation_id", "=", "workstations.id")
                 ->leftJoin("statuses", "statuses.id", "=", "order_services.status_id")
                 ->select(
-                    "order_services.id",
-                    "order_services.problem",
+                    "order_services.*",
                     "statuses.name as status",
-                    "order_services.problem_type",
                     DB::raw("(SELECT name FROM users WHERE `order_services`.`designated_employee` = `users`.`id`) AS `designated`"),
                     DB::raw("(SELECT name FROM users WHERE `order_services`.`solver_employee` = `users`.`id`) AS `solver`"),
                     "workstations.name as workstation",
@@ -38,12 +36,12 @@ class OrderServiceController extends Controller
 
                 $result = '<div class="btn-group btn-group-sm" role="group" aria-label="Exemplo básico">';
                 if (Gate::allows('rolesUser', 'employee_view')) {
-                    $result .= '<button type="button" id="' . $data->id . '" class="btn btn-primary"  data-toggle="modal" data-target="#modalView" data-whatever="' . $data->id . '""><i class="fas fa-fw fa-eye"></i>Visualizar</button>';
+                    $result .= '<button type="button" id="' . $data->id . '" class="btn btn-primary"  data-toggle="modal" data-target="#modalView" onclick="visualizarOS(' . $data->id . ')"><i class="fas fa-fw fa-eye"></i>Visualizar</button>';
                 }
-                if (Gate::allows('rolesUser', 'employee_edit')) {
-                    $result .= '<button type="button" id="' . $data->id . '" class="btn btn-secondary" data-toggle="modal" data-target="#modalEdit" data-whatever="' . $data->id . '""><i class="fas fa-fw fa-edit"></i>Editar</button>';
+                if (Gate::allows('rolesUser', 'employee_edit') && $data->deleted_at == null) {
+                    $result .= '<button type="button" id="' . $data->id . '" class="btn btn-secondary" data-toggle="modal" data-target="#modalEdit" onclick="editarOS(' . $data->id . ')"><i class="fas fa-fw fa-edit"></i>Editar</button>';
                 }
-                if (Gate::allows('rolesUser', 'employee_disable')) {
+                if (Gate::allows('rolesUser', 'employee_disable') && $data->deleted_at == null) {
                     $result .= '<button type="button" id="' . $data->id . '" class="btn btn-danger" onclick="disable(' . $data->id . ')"><i class="fas fa-fw fa-trash"></i>Desabilitar</button>';
                 }
 
@@ -53,7 +51,8 @@ class OrderServiceController extends Controller
                 ->rawColumns(['action'])
                 ->make(true);
         } else {
-            return view("dashboard/order-service/list-service-orders");
+            $funcionarios = User::all()->where("deleted_at", "=", null);
+            return view("dashboard/order-service/list-service-orders", ['funcionarios' => $funcionarios]);
         }
     }
 
@@ -80,40 +79,54 @@ class OrderServiceController extends Controller
         } catch (Exception $e) {
             return response()->json(["message" => $e->getMessage()]);
         }
-        /*  $serviceOrders = DB::table("order_services")
-        ->leftJoin("locales", "order_services.locale_id", "=", "locales.id")
-        ->leftJoin("workstations", "order_services.workstation_id", "=", "workstations.id")
-        ->select("order_services.*", "workstations.name as workstation", "locales.name as locale")
-        ->get();*/
     }
 
-    public function update(Request $request, OrderService $order)
+    public function update(Request $request)
     {
-        //
+
+        try {
+            $data = $request->only(['id', 'designated_employee', 'status_id', 'solution_problem']);
+
+            $os = DB::table('order_services')
+                ->where('id', $data['id'])
+                ->update($data);
+
+            $result = OrderService::find($data['id']);
+
+            return response()->json(['data' => $result, 'message' => 'Ordem de serviço atualizada com sucesso']);
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()]);
+        }
     }
 
-    function show()
+    function show($id)
     {
-        $os = DB::table('order_services')->select(
-            'id',
-            'problem_type',
-            'problem',
-            'realized_date',
-            'solution_problem',
-            'designated_employee'
-        )->get();
-        return Datatables::of($os)
-            ->addColumn('action', function ($data) {
-                return '<div class="btn-group btn-group-sm" role="group" aria-label="Exemplo básico">
-                       <button type="button" id="' . $data->id . '" class="btn btn-secondary"><i class="fas fa-fw fa-edit"></i>Editar</button>
-                       <button type="button" id="' . $data->id . '" class="btn btn-danger"><i class="fas fa-fw fa-trash"></i>Excluir</button>
-                       </div>';
-            })
-            ->rawColumns(['action'])
-            ->make(true);
+
+        $serviceOrders = DB::table("order_services")
+            ->leftJoin("locales", "order_services.locale_id", "=", "locales.id")
+            ->leftJoin("workstations", "order_services.workstation_id", "=", "workstations.id")
+            ->leftJoin("statuses", "statuses.id", "=", "order_services.status_id")
+            ->where("order_services.id", "=", $id)
+            ->select(
+                "order_services.*",
+                "statuses.name as status",
+                DB::raw("(SELECT name FROM users WHERE `order_services`.`designated_employee` = `users`.`id`) AS `designated`"),
+                DB::raw("(SELECT name FROM users WHERE `order_services`.`solver_employee` = `users`.`id`) AS `solver`"),
+                "workstations.name as workstation",
+                "locales.name as locale"
+            )
+            ->get();
+        return $serviceOrders;
     }
 
-    function disable($order)
+    function destroy($id)
     {
+        try {
+            $os = OrderService::find($id);
+            $os->delete();
+            return response()->json(['data' => $os, 'message' => 'Ordem de serviço atualizada com sucesso']);
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()]);
+        }
     }
 }

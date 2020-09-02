@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Funcionários')
+@section('title', 'Ordens de serviço')
 
 @section('content_header')
 <h1>Ordens de serviço</h1>
@@ -17,7 +17,7 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Cadastros de Ordens de Serviço</h3>
+                <h3 class="card-title">Ordens de serviço cadastradas</h3>
             </div>
             <div class="card-body">
                 <table id="tOS" class="table table-hover table-bordered table-striped">
@@ -27,7 +27,6 @@
                             <th class="sorting">Tipo</th>
                             <th class="sorting_asc">Problema</th>
                             <th class="sorting">Funcionário designado</th>
-                            <th class="sorting">Funcionário solucionador</th>
                             <th class="sorting">Local</th>
                             <th class="sorting">Posto de trabalho</th>
                             <th class="sorting">Estado</th>
@@ -39,6 +38,144 @@
         </div>
     </div>
 </div>
+
+<!-- Modal visualizar -->
+<div class="modal fade" id="modalVisualizar" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Visualizar ordem de serviço</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="form-group  col-md-12">
+                        <label for="name">Descrição</label>
+                        <input disabled type="text" class="form-control" id="problem" name="problem" placeholder="Nome">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label for="name">Problema</label>
+                        <input disabled type="input" class="form-control" id="problem_type">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="name">Local</label>
+                        <input disabled type="input" class="form-control" id="local">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="name">Posto de Trabalho</label>
+                        <input disabled type="input" class="form-control" id="workstation">
+
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label for="name">Data</label>
+                        <input disabled type="date" class="form-control" name="realized_date" id="realized_date">
+                        </select>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="name">Funcionário designado</label>
+                        <input disabled type="input" class="form-control" id="designated">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="name">Status</label>
+                        <input disabled type="input" class="form-control" id="status">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Fim Modal -->
+
+<!-- Modal editar -->
+<div class="modal fade" id="modalEditar" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Atualizar ordem de serviço </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="formConcluido">
+                    {{ csrf_field() }}
+
+                    <input type="hidden" name="id" id="id">
+                    <div class="row">
+                        <div class="form-group  col-md-12">
+                            <label for="name">Descrição</label>
+                            <input disabled type="text" class="form-control" id="problem_type" name="problem_type"
+                                placeholder="Nome">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-4">
+                            <label for="name">Problema</label>
+                            <input disabled type="input" class="form-control" id="problem">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="name">Local</label>
+                            <input disabled type="input" class="form-control" id="local">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="name">Posto de Trabalho</label>
+                            <input disabled type="input" class="form-control" id="workstation">
+
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-4">
+                            <label for="name">Data</label>
+                            <input disabled type="date" class="form-control" name="realized_date" id="realized_date">
+                            </select>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="name">Funcionário designado</label>
+                            <select class="form-control" id="designated_employee" name="designated_employee">
+                                @foreach ($funcionarios as $item)
+                                <option value="{{$item->id}}">{{$item->name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="name">Status</label>
+                            <select class="form-control" id="status_id" name="status_id">
+                                <option value="5">Pendente</option>
+                                <option value="4">Finalizado</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label for="name">Solução: </label>
+                            <textarea type="text" class="form-control" id="solution_problem" name="solution_problem"
+                                placeholder="Solução">
+                        </textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-primary" id="updateButton">Salvar mudanças</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Fim Modal -->
 @stop
 
 @section('footer')
@@ -52,12 +189,14 @@
 @stop
 
 @section('plugins.Datatables', true)
+@section('plugins.Sweetalert2', true)
 
 @section('js')
 <script>
     $(document).ready(function () {
-            var table = $('#tOS');
-            table.DataTable({
+
+        var table = $('#tOS');
+        table.DataTable({
                 processing: true,
                 serverSide: true,
                 autoWidth: false,
@@ -139,10 +278,6 @@
                         name: 'designated'
                     },
                     {
-                        data: 'solver',
-                        name: 'solver'
-                    },
-                    {
                         data: 'locale',
                         name: 'locale'
                     },
@@ -152,7 +287,15 @@
                     },
                     {
                         data: 'status',
-                        name: 'Estado'
+                        name: 'Estado',
+                        render: function( data, type, row, meta ){
+                            console.log(row);
+                            if(row.deleted_at != null){
+                                return "Cancelado";
+                            }else{
+                                return data;
+                            }
+                        }
                     },
                     {
                         data: 'action',
@@ -173,7 +316,116 @@
                     $('#tUsers tbody tr td:last-child').addClass('text-center');
                     $('#tUsers_paginate ul.pagination').addClass("justify-content-start");
                 }
+        });
+        
+        $("#updateButton").on("click", function(){
+            $.ajax({
+                url: "ordens/"+$("#modalEditar #id").val(),
+                method: 'PUT',
+                data: $("#modalEditar #formConcluido").serialize(),
+                success: function (data) {
+                    Swal.fire({
+                        title: 'Atualizado com sucesso!',
+                        text: data.message,
+                        type: 'success'
+                   });
+                    console.log(data)
+                },
+                error:function(data){
+                    console.log(data);
+                    Toast.fire({
+                        type: 'error',
+                        title: data.message
+                    });
+                }
             });
         });
+    });
+
+    function editarOS(id){
+        $.ajax({
+            url: `ordens/`+id,
+            success: function (data) {
+                $("#modalEditar").modal("show");
+
+                var date = new Date(data[0].realized_date);
+
+                $("#modalEditar #id").val(data[0].id);
+                $("#modalEditar #problem").val(data[0].problem);
+                $("#modalEditar #problem_type").val(data[0].problem_type);
+                $("#modalEditar #local").val(data[0].locale);
+                $("#modalEditar #workstation").val(data[0].workstation);
+                $("#modalEditar #realized_date").val(date.getFullYear()+"-"+("0" + date.getMonth()).slice(-2)+"-"+("0" + date.getDate()).slice(-2));
+                $("#modalEditar #designated_employee").val(data[0].solver_employee);
+                $("#modalEditar #solver").val(data[0].solver);
+                $("#modalEditar #status_id").val(data[0].status_id);
+                
+            },
+            method: "GET"
+        });
+    }
+
+    function visualizarOS(id){
+        $.ajax({
+            url: `ordens/`+id,
+            success: function (data) {
+                console.log(data);
+                $("#modalVisualizar").modal("show");
+                var date = new Date(data[0].realized_date);
+
+                $("#modalVisualizar #problem").val(data[0].problem);
+                $("#modalVisualizar #problem_type").val(data[0].problem_type);
+                $("#modalVisualizar #local").val(data[0].locale);
+                $("#modalVisualizar #workstation").val(data[0].workstation);
+                $("#modalVisualizar #realized_date").val(date.getFullYear()+"-"+("0" + date.getMonth()).slice(-2)+"-"+("0" + date.getDate()).slice(-2));
+                $("#modalVisualizar #designated").val(data[0].designated);
+                $("#modalVisualizar #solver").val(data[0].solver);
+                if(data[0].deleted_at != null){
+                    $("#modalVisualizar #status").val("Cancelado");
+                }else{
+                    $("#modalVisualizar #status").val(data[0].status);
+                }
+
+            },
+            method: "GET"
+        });
+    }
+
+    function disable(id){
+        Swal.fire({
+                title: 'Você tem certeza?',
+                text: "Ao cancelar a ordem de serviço, você não poderá reverter isso! Apenas contatando o suporte.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sim, cancele!'
+            }).then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        url: `ordens/`+id,
+                        method: "DELETE",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function (data) {
+                            console.log(data);
+                            Swal.fire({
+                                title: 'Cancelado!',
+                                text: data.message,
+                                type: 'success'
+                            });
+                        },
+                        error:function(data){
+                            Swal.fire({
+                                title: 'Algo de errado aconteceu!',
+                                text: data.responseJSON.message,
+                                type: 'error'
+                            });
+                        }
+                    });
+                }
+           });
+    }
 </script>
 @stop
