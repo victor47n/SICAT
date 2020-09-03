@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\BorrowedItem;
 use App\Borrowing;
 use App\Http\Requests\StoreBorrowingRequest;
 use App\Item;
@@ -37,8 +38,7 @@ class BorrowingController extends Controller
                 ->join('statuses', 'borrowings.status_id', '=', 'statuses.id')
                 ->get();
 
-            foreach ($borrowings as $borrowing)
-            {
+            foreach ($borrowings as $borrowing) {
                 $borrowing->items = DB::table('borrowed_items')
                     ->select('items.name')
                     ->join('items', 'borrowed_items.item_id', '=', 'items.id')
@@ -50,13 +50,10 @@ class BorrowingController extends Controller
                 ->addColumn('action', function ($data) {
                     $result = '<div class="btn-group btn-group-sm" role="group" aria-label="Exemplo básico">';
                     if (Gate::allows('rolesUser', 'borrowing_view')) {
-                        $result .= '<button type="button" id="' . $data->id . '" class="btn btn-primary" data-toggle="modal" data-target="#modalView" data-whatever="'. $data->id .'""><i class="fas fa-fw fa-eye mr-1"></i>Visualizar</button>';
+                        $result .= '<button type="button" id="' . $data->id . '" class="btn btn-primary" data-toggle="modal" data-target="#modalView" data-whatever="' . $data->id . '""><i class="fas fa-fw fa-eye mr-1"></i>Visualizar</button>';
                     }
                     if (Gate::allows('rolesUser', 'borrowing_edit')) {
-                        $result .= '<button type="button" id="' . $data->id . '" class="btn btn-secondary" data-toggle="modal" data-target="#modalEdit" data-whatever="'. $data->id .'""><i class="fas fa-fw fa-edit mr-1"></i>Editar</button>';
-                    }
-                    if (Gate::allows('rolesUser', 'borrowing_disable')) {
-                        $result .= '<button type="button" id="' . $data->id . '" class="btn btn-danger" onclick="disable(' . $data->id . ')"><i class="fas fa-fw fa-trash mr-1"></i>Desabilitar</button>';
+                        $result .= '<button type="button" id="' . $data->id . '" class="btn btn-secondary" data-toggle="modal" data-target="#modalEdit" data-whatever="' . $data->id . '""><i class="fas fa-fw fa-edit mr-1"></i>Editar</button>';
                     }
 
                     $result .= '</div>';
@@ -103,8 +100,7 @@ class BorrowingController extends Controller
 
             $items[] = null;
 
-            for ($i = 0; $i < count($data['items']); $i++)
-            {
+            for ($i = 0; $i < count($data['items']); $i++) {
                 $items[$i]['item_id'] = $data['items'][$i]['item_id'];
                 $items[$i]['amount'] = $data['items'][$i]['amount'];
                 $items[$i]['lender_id'] = Auth::user()->id;
@@ -147,7 +143,7 @@ class BorrowingController extends Controller
 //        dd($borrowings);
 
         $borrowings[0]->items = DB::table('borrowed_items')
-            ->select('borrowed_items.id', 'items.name')
+            ->select('borrowed_items.id', 'items.name', 'borrowed_items.amount')
             ->join('items', 'borrowed_items.item_id', '=', 'items.id')
             ->where('borrowed_items.borrowing_id', '=', $borrowings[0]->id)
             ->get();
@@ -163,19 +159,75 @@ class BorrowingController extends Controller
      */
     public function edit(Borrowing $borrowing)
     {
-        //
+
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param \App\Borrowing $borrowing
-     * @return Response
+     * @param $borrowing
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, Borrowing $borrowing)
+    public function update(Request $request, $borrowing)
     {
-        //
+        try {
+
+            $data = $request->all();
+
+            DB::transaction(function () use ($data, $borrowing) {
+//                $borrowing = Borrowing::find($borrowing);
+                foreach ($data as $item) {
+                    DB::table('borrowed_items')
+                        ->where('borrowing_id', '=', $borrowing)
+                        ->where('item_id', '=', $item['id'])
+                        ->increment('amount_returned', $item['amount'], ['return_date' => $item['return_date']]);
+
+                    $amounts = DB::table('borrowed_items')
+                        ->select('amount', 'amount_returned')
+                        ->where('borrowing_id', '=', $borrowing)
+                        ->where('item_id', '=', $item['id'])
+                        ->first();
+
+                    if ($amounts['amount'] === $amounts['amount_returned']) {
+                        $returned = DB::table('statuses')
+                            ->select('id')
+                            ->where('name', '=', 'Devolvido')
+                            ->first();
+
+                        DB::table('borrowed_items')
+                            ->where('borrowing_id', '=', $borrowing)
+                            ->where('item_id', '=', $item['id'])
+                            ->update(['status_id' => $returned]);
+                    }
+
+                    $item = BorrowedItem::select('item_id')
+                        ->where('id', $item['id'])
+                        ->first();
+
+                    DB::table('items')
+                        ->where('id', '=', $item)
+                        ->increment('amount', $item['amount']);
+                }
+            });
+
+            $status = DB::table('borrowed_items')
+                ->select('items.name')
+                ->join('items', 'borrowed_items.item_id', '=', 'items.id')
+                ->where('borrowed_items.borrowing_id', '=', $borrowing)
+                ->get();
+
+
+
+
+            return response()->json(["message" => "Atualizado com sucesso"], 201);
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
+                return response()->json(["message" => $e->getMessage()], 400);
+            }
+
+            return response()->json(["message" => $e->getMessage()], 400);
+        }
     }
 
     /**
@@ -184,12 +236,14 @@ class BorrowingController extends Controller
      * @param \App\Borrowing $borrowing
      * @return Response
      */
-    public function destroy(Borrowing $borrowing)
+    public
+    function destroy(Borrowing $borrowing)
     {
         //
     }
 
-    public function select(Request $request)
+    public
+    function select(Request $request)
     {
         try {
             $data = $request->only('id');

@@ -89,7 +89,7 @@
                                 </div>
                             </div>
                             <h4 class="text-bold text-left mb-4 mt-4">Itens emprestados</h4>
-                            <div id="fItems" class="form-row">
+                            <div id="fItems">
                             </div>
                         </fieldset>
                     </form>
@@ -101,7 +101,7 @@
     <!-- Modal Edit-->
     <div class="modal fade" id="modalEdit" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
          aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <div class="overlay">
                     <div class="d-flex h-100 justify-content-center align-items-center">
@@ -152,8 +152,8 @@
                                 <input type="text" class="form-control" id="inputStatusEdit" name="status" required readonly>
                             </div>
                         </div>
-                        <h4 class="text-bold text-left mb-4 mt-4">Itens emprestados</h4>
-                        <div id="fItems" class="form-row">
+                        <h4 class="text-bold text-left mb-3 mt-4">Itens emprestados</h4>
+                        <div id="fItemsEdit">
                         </div>
                     </form>
                 </div>
@@ -176,9 +176,10 @@
 @section('css')
 @stop
 
+@section('plugins.Validation', true)
+@section('plugins.Inputmask', true)
 @section('plugins.Datatables', true)
 @section('plugins.Sweetalert2', true)
-@section('plugins.Validation', true)
 
 @section('js')
     <script>
@@ -318,38 +319,6 @@
                     $('#tBorrowings_paginate ul.pagination').addClass("justify-content-start");
                 }
             });
-
-            // $('#formEdit').validate({
-            //     rules: {
-            //         name: {
-            //             required: true,
-            //         },
-            //         email: {
-            //             required: true,
-            //             email: true,
-            //         },
-            //     },
-            //     messages: {
-            //         name: {
-            //             required: "Digite um nome",
-            //         },
-            //         email: {
-            //             required: "Digite um endereço de email",
-            //             email: "Por favor insira um email válido."
-            //         },
-            //     },
-            //     errorElement: 'span',
-            //     errorPlacement: function (error, element) {
-            //         error.addClass('invalid-feedback');
-            //         element.closest('.form-group').append(error);
-            //     },
-            //     highlight: function (element, errorClass, validClass) {
-            //         $(element).addClass('is-invalid');
-            //     },
-            //     unhighlight: function (element, errorClass, validClass) {
-            //         $(element).removeClass('is-invalid');
-            //     }
-            // });
         });
 
         const Toast = Swal.mixin({
@@ -417,8 +386,7 @@
                 context: 'json',
                 success: function (data) {
                     $("#formEdit").removeClass('d-none');
-                    let tItems = '';
-                    $('#fItems').html("");
+                    $('#fItemsEdit').html('');
                     data.map(_data => {
                         $('#inputNameEdit').val(_data.requester);
                         $('#inputEmailEdit').val(_data.email_requester);
@@ -427,19 +395,42 @@
                         $('#inputDateEdit').val(_data.acquisition_date);
                         $('#inputStatusEdit').val(_data.status);
 
+                        let count = 0;
+
                         _data.items.map(_items => {
-                            console.log('Entrou no itens? '+_items.id+ "  --  " +_items.name);
-                            tItems = '<div class="form-group col-md-12 col-lg-4">' +
-                                '<label for="inputItem-'+_items.id+'">Status</label>' +
-                                '<input type="text" class="form-control" id="inputItem-'+_items.id+'" value="'+_items.name+'">' +
+                            let tItems = '<div id="row-'+count+'" class="form-row mt-1 mb-2">' +
+                                '<input type="hidden" id="inputId-'+count+'" name="id" value="'+_items.id+'">' +
+                                '<div class="form-group col-md-12 col-lg-3">' +
+                                    '<label for="inputItem-'+count+'">Item</label>' +
+                                    '<input type="text" class="form-control" id="inputItem-'+count+'" value="'+_items.name+'" readonly>' +
+                                '</div>' +
+                                    '<div class="form-group col-md-12 col-lg-2">' +
+                                    '<label for="inputAmount-'+count+'">Quantidade</label>' +
+                                    '<input type="text" class="form-control" id="inputAmount-'+count+'" value="'+_items.amount+'" readonly>' +
+                                '</div>' +
+                                '<div class="form-group col-md-12 col-lg-2">' +
+                                    '<label for="inputAmountF-'+count+'">Quantidade a devolver</label>' +
+                                    '<input type="text" class="form-control" id="inputAmountF-'+count+'" data-inputmask="\'alias\': \'numeric\', \'allowMinus\': \'true\', \'allowPlus\': \'true\', \'min\': \'0\', \'max\': \''+_items.amount+'\', \'digits\': \'0\'">' +
+                                '</div>' +
+                                '<div class="form-group col-md-12 col-lg-3">' +
+                                    '<label for="inputDate-'+count+'">Data de devolução</label>' +
+                                    '<input type="date" class="form-control" id="inputDate-'+count+'" name="acquisition_date"' +
+                                    'placeholder="dd/mm/aaaa" required>' +
+                                '</div>' +
+                                '<div class="custom-control custom-checkbox align-items-center justify-content-center d-flex col-md-12 col-lg-2">' +
+                                    ' <input type="checkbox" class="custom-control-input" id="checkDevolution-'+count+'">' +
+                                    '<label class="custom-control-label" for="checkDevolution-'+count+'">Devolver</label>' +
+                                '</div>' +
                                 '</div>';
-                            $('#fItems').html(tItems);
+                            $('#fItemsEdit').append(tItems);
+
+                            count++
                         });
 
 
                         $('#updateButton').attr('onclick', 'update(' + recipient + ')');
                     });
-
+                    $(":input").inputmask();
                     loaderObj.hide();
                 },
                 error: function () {
@@ -449,11 +440,29 @@
         });
 
         function update(id) {
+            let line_items = $("#fItemsEdit > .form-row").not(":hidden").length;
+
+            let data = {};
+
+            for (let i = 0; i < line_items; i++){
+                if($('#checkDevolution-'+i).is(":checked"))
+                {
+                    data[i] = {
+                        id: $('#inputId-'+i).val(),
+                        amount: $('#inputAmountF-'+i).val(),
+                        return_date: $('#inputDate-'+i).val(),
+                    }
+                }
+            }
+
             $.ajax({
                 type: 'PUT',
-                url: 'funcionarios/' + id,
+                url: 'emprestimos/' + id,
                 dataType: 'json',
-                data: $('#formEdit').serialize(),
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: data,
                 success: function (data) {
                     Toast.fire({
                         type: 'success',
@@ -469,7 +478,7 @@
 
                 }
             });
-        };
+        }
 
         function disable(id) {
             let table = $('#tUsers').DataTable();
@@ -508,7 +517,7 @@
                     });
                 }
             });
-        };
+        }
     </script>
 @stop
 
