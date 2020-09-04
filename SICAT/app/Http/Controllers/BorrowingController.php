@@ -152,17 +152,6 @@ class BorrowingController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param \App\Borrowing $borrowing
-     * @return Response
-     */
-    public function edit(Borrowing $borrowing)
-    {
-
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param Request $request
@@ -176,7 +165,6 @@ class BorrowingController extends Controller
             $data = $request->all();
 
             DB::transaction(function () use ($data, $borrowing) {
-//                $borrowing = Borrowing::find($borrowing);
                 foreach ($data as $item) {
                     DB::table('borrowed_items')
                         ->where('borrowing_id', '=', $borrowing)
@@ -199,6 +187,16 @@ class BorrowingController extends Controller
                             ->where('borrowing_id', '=', $borrowing)
                             ->where('item_id', '=', $item['id'])
                             ->update(['status_id' => $returned]);
+                    } else {
+                        $pending = DB::table('statuses')
+                            ->select('id')
+                            ->where('name', '=', 'Pendente')
+                            ->first();
+
+                        DB::table('borrowed_items')
+                            ->where('borrowing_id', '=', $borrowing)
+                            ->where('item_id', '=', $item['id'])
+                            ->update(['status_id' => $pending]);
                     }
 
                     $item = BorrowedItem::select('item_id')
@@ -211,16 +209,25 @@ class BorrowingController extends Controller
                 }
             });
 
-            $status = DB::table('borrowed_items')
-                ->select('items.name')
-                ->join('items', 'borrowed_items.item_id', '=', 'items.id')
-                ->where('borrowed_items.borrowing_id', '=', $borrowing)
-                ->get();
+            DB::transaction(function () use ($borrowing) {
+                $amounts = DB::table('borrowed_items')
+                    ->select(DB::raw('sum(amount) as amount, sum(amount_returned) as amount_returned'))
+                    ->where('borrowed_items.borrowing_id', '=', $borrowing)
+                    ->get();
 
+                if ($amounts['amount'] === $amounts['amount_returned']) {
+                    $finish = DB::table('statuses')
+                        ->select('id')
+                        ->where('name', '=', 'Finalizado')
+                        ->first();
 
-
+                    Borrowing::where('id', $borrowing)
+                        ->update(['status_id' => $finish]);
+                }
+            });
 
             return response()->json(["message" => "Atualizado com sucesso"], 201);
+
         } catch (\Exception $e) {
             if (config('app.debug')) {
                 return response()->json(["message" => $e->getMessage()], 400);
