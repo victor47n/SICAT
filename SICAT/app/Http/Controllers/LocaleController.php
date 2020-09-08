@@ -31,10 +31,10 @@ class LocaleController extends Controller
 
                         $result = '<div class="btn-group btn-group-sm" role="group" aria-label="Exemplo básico">';
                         if (Gate::allows('rolesUser', 'workstation_view')) {
-                            $result .= '<button type="button" id="' . $data->id . '" class="btn btn-primary"  data-toggle="modal" data-target="#modalView" data-whatever="' . $data->id . '""><i class="fas fa-fw fa-eye"></i>Visualizar</button>';
+                            $result .= '<button type="button" id="' . $data->id . '" class="btn btn-primary"  data-toggle="modal" data-target="#modalEdit"  onclick="showModal(' . $data->id . ')"><i class="fas fa-fw fa-eye"></i>Visualizar</button>';
                         }
                         if (Gate::allows('rolesUser', 'workstation_edit')) {
-                            $result .= '<button type="button" id="' . $data->id . '" class="btn btn-secondary" data-toggle="modal" data-target="#modalEdit" data-whatever="' . $data->id . '""><i class="fas fa-fw fa-edit"></i>Editar</button>';
+                            $result .= '<button type="button" id="' . $data->id . '" class="btn btn-secondary" data-toggle="modal" data-target="#modalEdit" onclick="showEditModal(' . $data->id . ')"><i class="fas fa-fw fa-edit"></i>Editar</button>';
                         }
                         if (Gate::allows('rolesUser', 'workstation_disable')) {
                             $result .= '<button type="button" id="' . $data->id . '" class="btn btn-danger" onclick="disable(' . $data->id . ')"><i class="fas fa-fw fa-trash"></i>Desabilitar</button>';
