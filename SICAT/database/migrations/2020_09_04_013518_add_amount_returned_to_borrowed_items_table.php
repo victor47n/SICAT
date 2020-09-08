@@ -14,7 +14,7 @@ class AddAmountReturnedToBorrowedItemsTable extends Migration
     public function up()
     {
         Schema::table('borrowed_items', function (Blueprint $table) {
-            $table->integer('amount_returned')->nullable()->after('amount');
+            $table->integer('amount_returned')->default(0)->after('amount');
         });
     }
 

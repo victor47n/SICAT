@@ -40,7 +40,7 @@
                             <div class="form-group col-md-12 col-lg-6">
                                 <label for="inputType">Tipo de item</label>
                                 <select id="inputType" class="form-control" name="type_id">
-                                    <option selected>Escolher...</option>
+                                    <option selected disabled>Escolher...</option>
                                     @foreach($types as $type)
                                         <option value="{{ $type->id }}">{{ $type->name }}</option>
                                     @endforeach
@@ -95,6 +95,10 @@
                         type: 'success',
                         title: data.message
                     });
+
+                    $('#inputName').val('');
+                    $('#inputAmount').val('');
+                    $('#inputType').children('option:first').prop('selected', true);
                 },
                 error: function (data) {
                     Swal.fire({

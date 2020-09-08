@@ -23,7 +23,13 @@ class TypeSeeder extends Seeder
                 'name' => 'Cabos',
             ],
             [
+                'name' => 'Notebooks',
+            ],
+            [
                 'name' => 'Periféricos',
+            ],
+            [
+                'name' => 'Projetores',
             ],
             [
                 'name' => 'Suportes',

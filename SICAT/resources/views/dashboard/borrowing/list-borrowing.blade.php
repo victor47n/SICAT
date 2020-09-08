@@ -25,7 +25,6 @@
                         <tr role="row">
                             <th class="sorting">ID</th>
                             <th class="sorting_asc">Nome do requisitante</th>
-                            <th class="sorting_asc">Email</th>
                             <th class="sorting">Itens</th>
                             <th class="sorting">Data de aquisição</th>
                             <th class="sorting">Status</th>
@@ -152,6 +151,9 @@
                                 <input type="text" class="form-control" id="inputStatusEdit" name="status" required readonly>
                             </div>
                         </div>
+                        <div id="itemsReturned">
+
+                        </div>
                         <h4 class="text-bold text-left mb-3 mt-4">Itens emprestados</h4>
                         <div id="fItemsEdit">
                         </div>
@@ -267,10 +269,6 @@
                         name: 'nome',
                     },
                     {
-                        data: 'email_requester',
-                        name: 'email'
-                    },
-                    {
                         data: 'items[,].name',
                         name: 'itens'
                     },
@@ -297,7 +295,7 @@
                         visible: false,
                     },
                     {
-                      targets: 3,
+                      targets: 2,
                         render: function (data) {
                             let dbData = data.split(',')
                             let items = '';
@@ -310,7 +308,7 @@
                         }
                     },
                     {
-                        targets: 6,
+                        targets: 5,
                         visible: {{Gate::allows('rolesUser', ['borrowing_disable', 'borrowing_edit', 'borrowing_view']) ? 'true' : 'false'}}
                     }
                 ],
@@ -398,31 +396,53 @@
                         let count = 0;
 
                         _data.items.map(_items => {
-                            let tItems = '<div id="row-'+count+'" class="form-row mt-1 mb-2">' +
-                                '<input type="hidden" id="inputId-'+count+'" name="id" value="'+_items.id+'">' +
-                                '<div class="form-group col-md-12 col-lg-3">' +
+                            let tItems = '';
+
+                            if(_items.status == 'Devolvido') {
+                                tItems = '<div class="form-row">' +
+                                    '                            <div class="form-group col-md-12 col-lg-4">' +
+                                    '                                <label for="inputOfficeEdit">Item</label>' +
+                                    '                                <input type="text" class="form-control" id="inputOfficeEdit" value="'+_items.name+'" readonly>' +
+                                    '                            </div>' +
+                                    '                            <div class="form-group col-md-12 col-lg-4">' +
+                                    '                                <label for="inputDateEdit">Data de devolução</label>' +
+                                    '                                <input type="text" class="form-control" id="inputDateEdit" value="'+_items.return_date+'"' +
+                                    '                                       readonly>' +
+                                    '                            </div>' +
+                                    '                            <div class="form-group col-md-12 col-lg-4">' +
+                                    '                                <label for="inputStatusEdit">Status</label>' +
+                                    '                                <input type="text" class="form-control" id="inputStatusEdit" name="status" value="'+_items.status+'" readonly>' +
+                                    '                            </div>' +
+                                    '                        </div>';
+
+                                $('#itemsReturned').append(tItems);
+                            } else {
+                                tItems = '<div id="row-'+count+'" class="form-row mt-1 mb-2">' +
+                                    '<input type="hidden" id="inputId-'+count+'" name="id" value="'+_items.id+'">' +
+                                    '<div class="form-group col-md-12 col-lg-3">' +
                                     '<label for="inputItem-'+count+'">Item</label>' +
                                     '<input type="text" class="form-control" id="inputItem-'+count+'" value="'+_items.name+'" readonly>' +
-                                '</div>' +
+                                    '</div>' +
                                     '<div class="form-group col-md-12 col-lg-2">' +
                                     '<label for="inputAmount-'+count+'">Quantidade</label>' +
                                     '<input type="text" class="form-control" id="inputAmount-'+count+'" value="'+_items.amount+'" readonly>' +
-                                '</div>' +
-                                '<div class="form-group col-md-12 col-lg-2">' +
+                                    '</div>' +
+                                    '<div class="form-group col-md-12 col-lg-2">' +
                                     '<label for="inputAmountF-'+count+'">Quantidade a devolver</label>' +
                                     '<input type="text" class="form-control" id="inputAmountF-'+count+'" data-inputmask="\'alias\': \'numeric\', \'allowMinus\': \'true\', \'allowPlus\': \'true\', \'min\': \'0\', \'max\': \''+_items.amount+'\', \'digits\': \'0\'">' +
-                                '</div>' +
-                                '<div class="form-group col-md-12 col-lg-3">' +
+                                    '</div>' +
+                                    '<div class="form-group col-md-12 col-lg-3">' +
                                     '<label for="inputDate-'+count+'">Data de devolução</label>' +
                                     '<input type="date" class="form-control" id="inputDate-'+count+'" name="acquisition_date"' +
                                     'placeholder="dd/mm/aaaa" required>' +
-                                '</div>' +
-                                '<div class="custom-control custom-checkbox align-items-center justify-content-center d-flex col-md-12 col-lg-2">' +
+                                    '</div>' +
+                                    '<div class="custom-control custom-checkbox align-items-center justify-content-center d-flex col-md-12 col-lg-2">' +
                                     ' <input type="checkbox" class="custom-control-input" id="checkDevolution-'+count+'">' +
                                     '<label class="custom-control-label" for="checkDevolution-'+count+'">Devolver</label>' +
-                                '</div>' +
-                                '</div>';
-                            $('#fItemsEdit').append(tItems);
+                                    '</div>' +
+                                    '</div>';
+                                $('#fItemsEdit').append(tItems);
+                            }
 
                             count++
                         });
@@ -442,17 +462,23 @@
         function update(id) {
             let line_items = $("#fItemsEdit > .form-row").not(":hidden").length;
 
-            let data = {};
+            let data = null;
+            let items = []
 
             for (let i = 0; i < line_items; i++){
                 if($('#checkDevolution-'+i).is(":checked"))
                 {
-                    data[i] = {
+                    let item = {
                         id: $('#inputId-'+i).val(),
                         amount: $('#inputAmountF-'+i).val(),
                         return_date: $('#inputDate-'+i).val(),
                     }
+                    items.push(item);
                 }
+            }
+
+            data = {
+                items: items,
             }
 
             $.ajax({
@@ -468,7 +494,7 @@
                         type: 'success',
                         title: data.message
                     });
-                    $('#tUsers').DataTable().ajax.reload();
+                    $('#tBorrowings').DataTable().ajax.reload();
                 },
                 error: function (data) {
                     Toast.fire({

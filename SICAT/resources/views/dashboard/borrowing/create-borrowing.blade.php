@@ -73,11 +73,9 @@
                             </div>
                             <div class="form-group col-md-12 col-lg-4">
                                 <label for="inputStatus">Status</label>
-                                <select id="inputStatus" class="form-control custom-select" name="status_id" required>
-                                    <option selected disabled value>Escolher...</option>
-                                    @foreach($status as $s)
-                                        <option value="{{ $s->id }}">{{ $s->name }}</option>
-                                    @endforeach
+                                <select id="inputStatus" class="form-control custom-select" name="status_id"
+                                        required disabled>
+                                    <option selected value="{{ $status->id }}">{{ $status->name }}</option>
                                 </select>
                             </div>
                         </div>
@@ -139,7 +137,7 @@
 
         $(document).ready(function () {
 
-            $('#inputPhone').inputmask('(99) 9999[9]-9999', { showMaskOnFocus: false, showMaskOnHover: false });
+            $('#inputPhone').inputmask('(99) 9999[9]-9999', {showMaskOnFocus: false, showMaskOnHover: false});
             $('#inputAmount').inputmask({
                 alias: 'numeric',
                 allowMinus: true,
