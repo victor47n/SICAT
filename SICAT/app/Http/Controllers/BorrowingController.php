@@ -50,7 +50,6 @@ class BorrowingController extends Controller
                     ->join('items', 'borrowed_items.item_id', '=', 'items.id')
                     ->join('statuses', 'borrowed_items.status_id', '=', 'statuses.id')
                     ->where('borrowed_items.borrowing_id', '=', $borrowing->id)
-                    ->where('statuses.name', '!=', 'Devolvido')
                     ->get();
             };
 
@@ -60,7 +59,7 @@ class BorrowingController extends Controller
                     if (Gate::allows('rolesUser', 'borrowing_view')) {
                         $result .= '<button type="button" id="' . $data->id . '" class="btn btn-primary" data-toggle="modal" data-target="#modalView" data-whatever="' . $data->id . '""><i class="fas fa-fw fa-eye mr-1"></i>Visualizar</button>';
                     }
-                    if (Gate::allows('rolesUser', 'borrowing_edit')) {
+                    if (Gate::allows('rolesUser', 'borrowing_edit') && $data->status != 'Finalizado') {
                         $result .= '<button type="button" id="' . $data->id . '" class="btn btn-secondary" data-toggle="modal" data-target="#modalEdit" data-whatever="' . $data->id . '""><i class="fas fa-fw fa-edit mr-1"></i>Editar</button>';
                     }
 
@@ -147,7 +146,12 @@ class BorrowingController extends Controller
             ->get();
 
         $borrowings[0]->items = DB::table('borrowed_items')
-            ->select(DB::raw('borrowed_items.id, items.name, (borrowed_items.amount - borrowed_items.amount_returned) as remaining_amount, borrowed_items.return_date, statuses.name as status'))
+            ->select('borrowed_items.id', 'items.name', 'borrowed_items.amount',
+                DB::raw('(borrowed_items.amount - borrowed_items.amount_returned) as remaining_amount'),
+                DB::raw('(SELECT users.name FROM users WHERE borrowed_items.borrowing_id = '.$borrowings[0]->id.' and borrowed_items.lender_id = users.id) as lender'),
+                DB::raw('(SELECT users.name FROM users WHERE borrowed_items.borrowing_id = '.$borrowings[0]->id.' and borrowed_items.receiver_id = users.id) as receiver'),
+                'borrowed_items.return_date',
+                'statuses.name as status')
             ->join('items', 'borrowed_items.item_id', '=', 'items.id')
             ->join('statuses', 'borrowed_items.status_id', '=', 'statuses.id')
             ->where('borrowed_items.borrowing_id', '=', $borrowings[0]->id)

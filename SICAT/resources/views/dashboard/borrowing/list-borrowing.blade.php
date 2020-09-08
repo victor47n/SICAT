@@ -40,7 +40,7 @@
     <!-- Modal View -->
     <div class="modal fade" id="modalView" tabindex="-1" role="dialog" aria-labelledby="viewModalLabel"
          aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <div class="overlay">
                     <div class="d-flex h-100 justify-content-center align-items-center">
@@ -62,33 +62,33 @@
                             <div class="form-row">
                                 <div class="form-group col-12">
                                     <label for="inputNameView">Nome do requisitante</label>
-                                    <input type="text" class="form-control-plaintext" id="inputNameView">
+                                    <input type="text" class="form-control" id="inputNameView">
                                 </div>
                                 <div class="form-group col-8">
                                     <label for="inputEmailView">Email</label>
-                                    <input type="email" class="form-control-plaintext" id="inputEmailView">
+                                    <input type="email" class="form-control" id="inputEmailView">
                                 </div>
                                 <div class="form-group col-4">
                                     <label for="inputPhoneView">Telefone</label>
-                                    <input type="text" class="form-control-plaintext" id="inputPhoneView">
+                                    <input type="text" class="form-control" id="inputPhoneView">
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-12 col-lg-4">
                                     <label for="inputOfficeView">Cargo</label>
-                                    <input type="text" class="form-control-plaintext" id="inputOfficeView">
+                                    <input type="text" class="form-control" id="inputOfficeView">
                                 </div>
                                 <div class="form-group col-md-12 col-lg-4">
                                     <label for="inputDateView">Data de aquisição</label>
-                                    <input type="text" class="form-control-plaintext" id="inputDateView">
+                                    <input type="text" class="form-control" id="inputDateView">
                                 </div>
                                 <div class="form-group col-md-12 col-lg-4">
                                     <label for="inputStatusView">Status</label>
-                                    <input type="text" class="form-control-plaintext" id="inputStatusView">
+                                    <input type="text" class="form-control" id="inputStatusView">
                                 </div>
                             </div>
                             <h4 class="text-bold text-left mb-4 mt-4">Itens emprestados</h4>
-                            <div id="fItems">
+                            <div id="fItemsView">
                             </div>
                         </fieldset>
                     </form>
@@ -139,7 +139,8 @@
                         <div class="form-row">
                             <div class="form-group col-md-12 col-lg-4">
                                 <label for="inputOfficeEdit">Cargo</label>
-                                <input type="text" class="form-control" id="inputOfficeEdit" name="office_requester" readonly>
+                                <input type="text" class="form-control" id="inputOfficeEdit" name="office_requester"
+                                       readonly>
                             </div>
                             <div class="form-group col-md-12 col-lg-4">
                                 <label for="inputDateEdit">Data de aquisição</label>
@@ -148,11 +149,9 @@
                             </div>
                             <div class="form-group col-md-12 col-lg-4">
                                 <label for="inputStatusEdit">Status</label>
-                                <input type="text" class="form-control" id="inputStatusEdit" name="status" required readonly>
+                                <input type="text" class="form-control" id="inputStatusEdit" name="status" required
+                                       readonly>
                             </div>
-                        </div>
-                        <div id="itemsReturned">
-
                         </div>
                         <h4 class="text-bold text-left mb-3 mt-4">Itens emprestados</h4>
                         <div id="fItemsEdit">
@@ -256,7 +255,7 @@
                 ajax: {
                     url: '{{ route('borrowing.index') }}',
                 },
-                rowId: function(a) {
+                rowId: function (a) {
                     return 'row_' + a.id;
                 },
                 columns: [
@@ -295,14 +294,14 @@
                         visible: false,
                     },
                     {
-                      targets: 2,
+                        targets: 2,
                         render: function (data) {
                             let dbData = data.split(',')
                             let items = '';
                             let arr = ['primary', 'secondary', 'success', 'danger', 'info', 'dark'];
                             for (let i = 0; i < dbData.length; i++) {
                                 let idx = Math.floor(Math.random() * arr.length);
-                                items += '<span class="badge badge-'+arr[idx]+' mr-1 ml-1">'+dbData[i]+'</span>'
+                                items += '<span class="badge badge-' + arr[idx] + ' mr-1 ml-1">' + dbData[i] + '</span>'
                             }
                             return items;
                         }
@@ -327,8 +326,8 @@
         });
 
         function clearModal(formModal) {
-            $("#" +formModal).addClass('d-none');
-            $("#" +formModal)[0].reset();
+            $("#" + formModal).addClass('d-none');
+            $("#" + formModal)[0].reset();
         }
 
         function loader() {
@@ -355,18 +354,54 @@
 
             $.ajax({
                 type: 'GET',
-                url: 'funcionarios/' + recipient,
+                url: 'emprestimos/' + recipient,
                 context: 'json',
                 success: function (data) {
 
                     $("#formView").removeClass('d-none');
+                    $('#fItemsView').html('');
 
                     data.map(_data => {
-                        $('#inputNameView').val(_data.name);
-                        $('#inputEmailView').val(_data.email);
-                        $('#inputPhoneView').val(_data.phone);
-                        $('#inputOfficeView').val(_data.office);
-                        $('#inputPermissionView').val(_data.permission);
+                        $('#inputNameView').val(_data.requester);
+                        $('#inputEmailView').val(_data.email_requester);
+                        $('#inputPhoneView').val(_data.phone_requester);
+                        $('#inputOfficeView').val(_data.office_requester);
+                        $('#inputDateView').val(_data.acquisition_date);
+                        $('#inputStatusView').val(_data.status);
+
+                        let count = 0;
+
+                        _data.items.map(_items => {
+                            let tItems = '<div class="form-row">' +
+                                '                            <div class="form-group col-md-12 col-lg-2">' +
+                                '                                <label for="inputNameItemEdit-' + count + '">Item</label>' +
+                                '                                <input type="text" class="form-control" id="inputNameItemEdit-' + count + '" value="' + _items.name + '">' +
+                                '                            </div>' +
+                                '                           <div class="form-group col-md-12 col-lg-2">' +
+                                '                                <label for="inputAmountItemEdit-' + count + '">Quantidade</label>' +
+                                '                                <input type="text" class="form-control" id="inputAmountItemEdit-' + count + '" value="' + _items.amount + '">' +
+                                '                            </div>' +
+                                '                           <div class="form-group col-md-12 col-lg-2">' +
+                                '                                <label for="inputLenderItemEdit-' + count + '">Emprestador</label>' +
+                                '                                <input type="text" class="form-control" id="inputLenderItemEdit-' + count + '" value="' + _items.lender + '">' +
+                                '                            </div>' +
+                                '                           <div class="form-group col-md-12 col-lg-2">' +
+                                '                                <label for="inputReceiverItemEdit-' + count + '">Recebedor</label>' +
+                                '                                <input type="text" class="form-control" id="inputReceiverItemEdit-' + count + '" value="' + (_items.receiver == null ? "" : _items.receiver) + '">' +
+                                '                            </div>' +
+                                '                            <div class="form-group col-md-12 col-lg-2">' +
+                                '                                <label for="inputReturnDateItemEdit-' + count + '">Data de devolução</label>' +
+                                '                                <input type="text" class="form-control" id="inputReturnDateItemEdit-' + count + '" value="' + (_items.return_date == null ? "" : _items.return_date) + '">' +
+                                '                            </div>' +
+                                '                            <div class="form-group col-md-12 col-lg-2">' +
+                                '                                <label for="inputStatusItemEdit-' + count + '">Status</label>' +
+                                '                                <input type="text" class="form-control" id="inputStatusItemEdit-' + count + '" value="' + _items.status + '">' +
+                                '                            </div>' +
+                                '                        </div>';
+
+                            $('#fItemsView').append(tItems);
+                            count++;
+                        });
                     });
                     loaderObj.hide();
                 },
@@ -393,58 +428,67 @@
                         $('#inputDateEdit').val(_data.acquisition_date);
                         $('#inputStatusEdit').val(_data.status);
 
-                        let count = 0;
+                        let countView = 0;
+                        let countEdit = 0;
 
                         _data.items.map(_items => {
                             let tItems = '';
 
-                            if(_items.status == 'Devolvido') {
+                            if (_items.status == 'Devolvido') {
                                 tItems = '<div class="form-row">' +
-                                    '                            <div class="form-group col-md-12 col-lg-4">' +
-                                    '                                <label for="inputOfficeEdit">Item</label>' +
-                                    '                                <input type="text" class="form-control" id="inputOfficeEdit" value="'+_items.name+'" readonly>' +
+                                    '                            <div class="form-group col-md-12 col-lg-3">' +
+                                    '                                <label for="inputNameItemEdit-' + countView + '">Item</label>' +
+                                    '                                <input type="text" class="form-control" id="inputNameItemEdit-' + countView + '" value="' + _items.name + '" readonly>' +
                                     '                            </div>' +
-                                    '                            <div class="form-group col-md-12 col-lg-4">' +
-                                    '                                <label for="inputDateEdit">Data de devolução</label>' +
-                                    '                                <input type="text" class="form-control" id="inputDateEdit" value="'+_items.return_date+'"' +
+                                    '                           <div class="form-group col-md-12 col-lg-1">' +
+                                    '                                <label for="inputAmountItemEdit-' + countView + '">Quantidade</label>' +
+                                    '                                <input type="text" class="form-control" id="inputAmountItemEdit-' + countView + '" value="' + _items.amount + '" readonly>' +
+                                    '                            </div>' +
+                                    '                           <div class="form-group col-md-12 col-lg-3">' +
+                                    '                                <label for="inputLenderItemEdit-' + countView + '">Emprestador</label>' +
+                                    '                                <input type="text" class="form-control" id="inputLenderItemEdit-' + countView + '" value="' + _items.lender + '" readonly>' +
+                                    '                            </div>' +
+                                    '                           <div class="form-group col-md-12 col-lg-3">' +
+                                    '                                <label for="inputReceiverItemEdit-' + countView + '">Recebedor</label>' +
+                                    '                                <input type="text" class="form-control" id="inputReceiverItemEdit-' + countView + '" value="' + _items.receiver + '" readonly>' +
+                                    '                            </div>' +
+                                    '                            <div class="form-group col-md-12 col-lg-2">' +
+                                    '                                <label for="inputReturnDateItemEdit-' + countView + '">Data de devolução</label>' +
+                                    '                                <input type="text" class="form-control" id="inputReturnDateItemEdit-' + countView + '" value="' + _items.return_date + '"' +
                                     '                                       readonly>' +
-                                    '                            </div>' +
-                                    '                            <div class="form-group col-md-12 col-lg-4">' +
-                                    '                                <label for="inputStatusEdit">Status</label>' +
-                                    '                                <input type="text" class="form-control" id="inputStatusEdit" name="status" value="'+_items.status+'" readonly>' +
                                     '                            </div>' +
                                     '                        </div>';
 
-                                $('#itemsReturned').append(tItems);
+                                $('#fItemsEdit').append(tItems);
+                                countView++
                             } else {
-                                tItems = '<div id="row-'+count+'" class="form-row mt-1 mb-2">' +
-                                    '<input type="hidden" id="inputId-'+count+'" name="id" value="'+_items.id+'">' +
+                                tItems = '<div id="row-' + countEdit + '" class="form-row mt-1 mb-2">' +
+                                    '<input type="hidden" id="inputId-' + countEdit + '" name="id" value="' + _items.id + '">' +
                                     '<div class="form-group col-md-12 col-lg-3">' +
-                                    '<label for="inputItem-'+count+'">Item</label>' +
-                                    '<input type="text" class="form-control" id="inputItem-'+count+'" value="'+_items.name+'" readonly>' +
+                                    '<label for="inputItem-' + countEdit + '">Item</label>' +
+                                    '<input type="text" class="form-control" id="inputItem-' + countEdit + '" value="' + _items.name + '" readonly>' +
                                     '</div>' +
                                     '<div class="form-group col-md-12 col-lg-2">' +
-                                    '<label for="inputAmount-'+count+'">Quantidade</label>' +
-                                    '<input type="text" class="form-control" id="inputAmount-'+count+'" value="'+_items.amount+'" readonly>' +
+                                    '<label for="inputAmount-' + countEdit + '">Quantidade</label>' +
+                                    '<input type="text" class="form-control" id="inputAmount-' + countEdit + '" value="' + _items.remaining_amount + '" readonly>' +
                                     '</div>' +
                                     '<div class="form-group col-md-12 col-lg-2">' +
-                                    '<label for="inputAmountF-'+count+'">Quantidade a devolver</label>' +
-                                    '<input type="text" class="form-control" id="inputAmountF-'+count+'" data-inputmask="\'alias\': \'numeric\', \'allowMinus\': \'true\', \'allowPlus\': \'true\', \'min\': \'0\', \'max\': \''+_items.amount+'\', \'digits\': \'0\'">' +
+                                    '<label for="inputAmountF-' + countEdit + '">Quantidade a devolver</label>' +
+                                    '<input type="text" class="form-control" id="inputAmountF-' + countEdit + '" data-inputmask="\'alias\': \'numeric\', \'allowMinus\': \'true\', \'allowPlus\': \'true\', \'min\': \'0\', \'max\': \'' + _items.remaining_amount + '\', \'digits\': \'0\'">' +
                                     '</div>' +
                                     '<div class="form-group col-md-12 col-lg-3">' +
-                                    '<label for="inputDate-'+count+'">Data de devolução</label>' +
-                                    '<input type="date" class="form-control" id="inputDate-'+count+'" name="acquisition_date"' +
+                                    '<label for="inputDate-' + countEdit + '">Data de devolução</label>' +
+                                    '<input type="date" class="form-control" id="inputDate-' + countEdit + '" name="acquisition_date"' +
                                     'placeholder="dd/mm/aaaa" required>' +
                                     '</div>' +
                                     '<div class="custom-control custom-checkbox align-items-center justify-content-center d-flex col-md-12 col-lg-2">' +
-                                    ' <input type="checkbox" class="custom-control-input" id="checkDevolution-'+count+'">' +
-                                    '<label class="custom-control-label" for="checkDevolution-'+count+'">Devolver</label>' +
+                                    ' <input type="checkbox" class="custom-control-input" id="checkDevolution-' + countEdit + '">' +
+                                    '<label class="custom-control-label" for="checkDevolution-' + countEdit + '">Devolver</label>' +
                                     '</div>' +
                                     '</div>';
                                 $('#fItemsEdit').append(tItems);
+                                countEdit++
                             }
-
-                            count++
                         });
 
 
@@ -454,7 +498,7 @@
                     loaderObj.hide();
                 },
                 error: function () {
-                    console.log('Ocorreu um erro ao encontrar o funcionário');
+                    console.log('Ocorreu um erro ao encontrar ao encontrar o empréstimo');
                 }
             });
         });
@@ -465,13 +509,12 @@
             let data = null;
             let items = []
 
-            for (let i = 0; i < line_items; i++){
-                if($('#checkDevolution-'+i).is(":checked"))
-                {
+            for (let i = 0; i < line_items; i++) {
+                if ($('#checkDevolution-' + i).is(":checked")) {
                     let item = {
-                        id: $('#inputId-'+i).val(),
-                        amount: $('#inputAmountF-'+i).val(),
-                        return_date: $('#inputDate-'+i).val(),
+                        id: $('#inputId-' + i).val(),
+                        amount: $('#inputAmountF-' + i).val(),
+                        return_date: $('#inputDate-' + i).val(),
                     }
                     items.push(item);
                 }
@@ -494,6 +537,7 @@
                         type: 'success',
                         title: data.message
                     });
+                    $('#modalEdit').modal('hide')
                     $('#tBorrowings').DataTable().ajax.reload();
                 },
                 error: function (data) {
@@ -525,7 +569,7 @@
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
                         success: function (data) {
-                            table.row('#' +id).remove().draw(false);
+                            table.row('#' + id).remove().draw(false);
                             $('#tUsers').DataTable().ajax.reload();
                             Swal.fire({
                                 title: 'Desabilitado!',
