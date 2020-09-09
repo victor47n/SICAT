@@ -25,10 +25,10 @@
                         <tr role="row">
                             <th class="sorting">ID</th>
                             <th class="sorting_asc">Nome do requisitante</th>
-                            <th class="sorting">Itens</th>
+                            <th>Itens</th>
                             <th class="sorting">Data de aquisição</th>
                             <th class="sorting">Status</th>
-                            <th class="sorting">Opções</th>
+                            <th>Opções</th>
                         </tr>
                         </thead>
                     </table>
@@ -186,9 +186,14 @@
     <script>
 
         $(document).ready(function () {
+            $('#inputPhoneEdit').inputmask('(99) 9999[9]-9999');
+            $('#inputPhoneView').inputmask('(99) 9999[9]-9999');
+
             var table = $('#tBorrowings');
             table.DataTable({
                 processing: true,
+                ordering: true,
+                order: [[ 4, "asc" ]],
                 serverSide: true,
                 autoWidth: false,
                 responsive: {
@@ -239,16 +244,25 @@
                         extend: 'copy',
                         text: '<i class="fas fa-fw fa-copy"></i>Copiar',
                         titleAttr: 'Copiar',
+                        exportOptions: {
+                            columns: [ 1, 2, 3, 4 ]
+                        }
                     },
                     {
                         extend: 'excel',
                         text: '<i class="fas fa-fw fa-file-excel"></i>Excel',
                         titleAttr: 'Exportar Excel',
+                        exportOptions: {
+                            columns: [ 1, 2, 3, 4 ]
+                        }
                     },
                     {
                         extend: 'pdf',
                         text: '<i class="fas fa-fw fa-file-pdf"></i>PDF',
                         titleAttr: 'Exportar PDF',
+                        exportOptions: {
+                            columns: [ 1, 2, 3, 4 ]
+                        }
                     },
                 ],
                 dom: 'B<"row mt-3" <"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>rt<"row mt-3" <"col-sm-12 col-md-5" i><"col-sm-12 col-md-7" p>>',
@@ -261,19 +275,22 @@
                 columns: [
                     {
                         data: 'id',
-                        name: 'id'
+                        name: 'id',
+                        exportable: false,
+                        printable: false,
                     },
                     {
                         data: 'requester',
-                        name: 'nome',
+                        name: 'requester',
                     },
                     {
                         data: 'items[,].name',
-                        name: 'itens'
+                        name: 'items[,].name',
+                        orderable: false,
                     },
                     {
                         data: 'acquisition_date',
-                        name: 'data de aquisição'
+                        name: 'acquisition_date'
                     },
                     {
                         data: 'status',
@@ -281,7 +298,7 @@
                     },
                     {
                         data: 'action',
-                        name: 'opções',
+                        name: 'action',
                         searchable: false,
                         orderable: false,
                         exportable: false,

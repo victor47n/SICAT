@@ -137,7 +137,7 @@
 
         $(document).ready(function () {
 
-            $('#inputPhone').inputmask('(99) 9999[9]-9999', {showMaskOnFocus: false, showMaskOnHover: false});
+            $('#inputPhone').inputmask('(99) 9999[9]-9999', {showMaskOnFocus: false, showMaskOnHover: false, removeMaskOnSubmit: true, autoUnmask: true});
             $('#inputAmount').inputmask({
                 alias: 'numeric',
                 allowMinus: true,
@@ -287,6 +287,10 @@
 
         $("#bForm").on("submit", function (e) {
             e.preventDefault();
+            if ($('#fItems').hasClass('is-invalid')) {
+                $('#fItems').removeClass('is-invalid');
+                $('#alert-items').remove();
+            }
 
             let items = [];
             let data = null;
@@ -378,7 +382,7 @@
                             }
 
                             element.addClass('is-invalid');
-                            element.after($('<div class="invalid-feedback">' + error[0] + '</div>'));
+                            element.after($('<div id="alert-items" class="invalid-feedback">' + error[0] + '</div>'));
                         });
                     } else {
                         Swal.fire({

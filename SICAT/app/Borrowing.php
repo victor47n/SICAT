@@ -44,10 +44,4 @@ class Borrowing extends Model
     {
         return $this->hasMany(BorrowedItem::class);
     }
-
-    public function getAcquisition_DateAttribute()
-    {
-        $date = $this->attributes['acquisition_date'];
-        return $date->format('D-m-y');
-    }
 }

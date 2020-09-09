@@ -45,6 +45,7 @@ class BorrowingController extends Controller
                 ->get();
 
             foreach ($borrowings as $borrowing) {
+                $borrowing->acquisition_date = \Carbon\Carbon::parse($borrowing->acquisition_date)->format('d/m/Y');
                 $borrowing->items = DB::table('borrowed_items')
                     ->select('items.name')
                     ->join('items', 'borrowed_items.item_id', '=', 'items.id')
@@ -118,6 +119,7 @@ class BorrowingController extends Controller
                     $borrowing->borrowed_item()->create($item);
                     Item::where('id', '=', $item['item_id'])
                         ->decrement('amount', $item['amount']);
+                    DB::select('CALL update_availability(?)', [$item['item_id']]);
                 }
             });
 
@@ -148,14 +150,22 @@ class BorrowingController extends Controller
         $borrowings[0]->items = DB::table('borrowed_items')
             ->select('borrowed_items.id', 'items.name', 'borrowed_items.amount',
                 DB::raw('(borrowed_items.amount - borrowed_items.amount_returned) as remaining_amount'),
-                DB::raw('(SELECT users.name FROM users WHERE borrowed_items.borrowing_id = '.$borrowings[0]->id.' and borrowed_items.lender_id = users.id) as lender'),
-                DB::raw('(SELECT users.name FROM users WHERE borrowed_items.borrowing_id = '.$borrowings[0]->id.' and borrowed_items.receiver_id = users.id) as receiver'),
+                DB::raw('(SELECT users.name FROM users WHERE borrowed_items.borrowing_id = ' . $borrowings[0]->id . ' and borrowed_items.lender_id = users.id) as lender'),
+                DB::raw('(SELECT users.name FROM users WHERE borrowed_items.borrowing_id = ' . $borrowings[0]->id . ' and borrowed_items.receiver_id = users.id) as receiver'),
                 'borrowed_items.return_date',
                 'statuses.name as status')
             ->join('items', 'borrowed_items.item_id', '=', 'items.id')
             ->join('statuses', 'borrowed_items.status_id', '=', 'statuses.id')
             ->where('borrowed_items.borrowing_id', '=', $borrowings[0]->id)
             ->get();
+
+        $borrowings[0]->acquisition_date = \Carbon\Carbon::parse($borrowings[0]->acquisition_date)->format('d/m/Y');
+
+        foreach ($borrowings[0]->items as $items) {
+            if ($items->return_date !== null) {
+                $items->return_date = \Carbon\Carbon::parse($items->return_date)->format('d/m/Y');
+            }
+        }
 
         return $borrowings;
     }
@@ -213,9 +223,10 @@ class BorrowingController extends Controller
                         ->where('id', $item['id'])
                         ->first();
 
-                    DB::table('items')
-                        ->where('id', '=', $item_id->item_id)
+                    Item::where('id', '=', $item_id->item_id)
                         ->increment('amount', $item['amount']);
+
+                    DB::select('CALL update_availability(?)', [$item_id->item_id]);
                 }
             });
 
