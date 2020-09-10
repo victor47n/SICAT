@@ -17,7 +17,7 @@ class CreateWorkstationsTable extends Migration
             $table->id();
             $table->string('name', 100);
             $table->foreignId('locale_id')->constrained('locales');
-            $table->foreignId('status_id')->constrained('status');
+            $table->foreignId('status_id')->constrained('statuses');
             $table->timestamps();
         });
     }
@@ -31,7 +31,9 @@ class CreateWorkstationsTable extends Migration
     {
         Schema::table('workstations', function (Blueprint $table) {
             $table->dropForeign(['locale_id']);
-            $table->dropForeign(['status_id']);
+            if (Schema::hasColumn('workstations', 'status_id')) {
+                $table->dropForeign(['status_id']);
+            }
         });
         Schema::dropIfExists('workstations');
     }

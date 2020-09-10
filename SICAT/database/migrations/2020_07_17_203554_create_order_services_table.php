@@ -23,7 +23,7 @@ class CreateOrderServicesTable extends Migration
             $table->foreignId('solver_employee');
             $table->foreignId('locale_id')->constrained('locales');
             $table->foreignId('workstation_id')->constrained('workstations');
-            $table->foreignId('status_id')->constrained('status');
+            $table->foreignId('status_id')->constrained('statuses');
             $table->foreign('designated_employee')->references('id')->on('users');
             $table->foreign('solver_employee')->references('id')->on('users');
 

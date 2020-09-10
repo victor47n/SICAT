@@ -16,7 +16,7 @@ class CreateLocalesTable extends Migration
         Schema::create('locales', function (Blueprint $table) {
             $table->id();
             $table->string('name', 100);
-            $table->foreignId('status_id')->constrained('status');
+            $table->foreignId('status_id')->constrained('statuses');
             $table->timestamps();
         });
     }
@@ -29,7 +29,9 @@ class CreateLocalesTable extends Migration
     public function down()
     {
         Schema::table('locales', function (Blueprint $table) {
-            $table->dropForeign(['status_id']);
+            if (Schema::hasColumn('locales', 'status_id')) {
+                $table->dropForeign(['status_id']);
+            }
         });
         Schema::dropIfExists('locales');
     }

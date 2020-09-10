@@ -13,7 +13,7 @@ class CreateBorrowingsTable extends Migration
      */
     public function up()
     {
-        Schema::create('borrowing', function (Blueprint $table) {
+        Schema::create('borrowings', function (Blueprint $table) {
             $table->id();
             $table->string('requester', 100);
             $table->string('phone_requester', 15);
@@ -22,7 +22,7 @@ class CreateBorrowingsTable extends Migration
             $table->integer('amount');
             $table->dateTime('return_date');
             $table->foreignId('item_id')->constrained('items');
-            $table->foreignId('status_id')->constrained('status');
+            $table->foreignId('status_id')->constrained('statuses');
             $table->timestamps();
         });
     }
@@ -34,11 +34,13 @@ class CreateBorrowingsTable extends Migration
      */
     public function down()
     {
-        Schema::table('borrowing', function (Blueprint $table) {
-            $table->dropForeign(['item_id']);
+        Schema::table('borrowings', function (Blueprint $table) {
+            if (Schema::hasColumn('borrowing', 'item_id')) {
+                $table->dropForeign(['item_id']);
+            }
             $table->dropForeign(['status_id']);
         });
 
-        Schema::dropIfExists('borrowing');
+        Schema::dropIfExists('borrowings');
     }
 }

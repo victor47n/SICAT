@@ -3,9 +3,12 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Type extends Model
 {
+    use SoftDeletes;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -32,4 +35,13 @@ class Type extends Model
     protected $casts = [
 
     ];
+
+    protected $dates = [
+        'deleted_at'
+    ];
+
+    public function item()
+    {
+        return $this->belongsTo(Item::class);
+    }
 }

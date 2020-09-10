@@ -502,12 +502,12 @@ return [
                 [
                     'type' => 'js',
                     'asset' => false,
-                    'location' => '/dist/plugins/jquery-validation/jquery.validate.js',
+                    'location' => '/dist/plugins/jquery-validation-1.19.2/dist/jquery.validate.js',
                 ],
                 [
                     'type' => 'js',
                     'asset' => false,
-                    'location' => '/dist/plugins/jquery-validation/additional-methods.js',
+                    'location' => '/dist/plugins/jquery-validation-1.19.2/dist/additional-methods.js',
                 ],
             ],
         ],
