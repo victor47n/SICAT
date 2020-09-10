@@ -21,7 +21,7 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->string('phone', 16)->nullable();
             $table->string('office');
-            $table->foreignId('status_id')->constrained('status');
+            $table->foreignId('status_id')->constrained('statuses');
             $table->rememberToken();
             $table->timestamps();
         });
@@ -35,7 +35,9 @@ class CreateUsersTable extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropForeign(['status_id']);
+            if (Schema::hasColumn('users', 'status_id')) {
+                $table->dropForeign(['status_id']);
+            }
         });
 
         Schema::dropIfExists('users');

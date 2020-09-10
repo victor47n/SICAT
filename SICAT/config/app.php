@@ -22,7 +22,7 @@ return [
     |
     | This value determines the "environment" your application is currently
     | running in. This may determine how you prefer to configure various
-    | services the application utilizes. Set this in your ".env" file.
+    | services the application utilizes. Set this in your ".env.exemple.exemplo" file.
     |
     */
 
@@ -106,7 +106,7 @@ return [
     |
     */
 
-    'faker_locale' => 'en_US',
+    'faker_locale' => 'pt_BR',
 
     /*
     |--------------------------------------------------------------------------

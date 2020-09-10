@@ -14,7 +14,7 @@
 
 @section('content')
     <div class="row  justify-content-center">
-        <div class="col-sm-12 col-md-8 col-lg-8 col-xl-6">
+        <div class="col-sm-12 col-md-8 col-lg-4 col-xl-4">
             <div class="card card-primary">
                 <div class="card-header">
                     <h3 class="card-title">Cadastrar itens</h3>
@@ -25,19 +25,10 @@
 
                     <div class="card-body">
                         <div class="form-row">
-                            <div class="form-group col-md-12 col-lg-6">
+                            <div class="form-group col-md-12 col-lg-12">
                                 <label for="inputName">Nome</label>
                                 <input type="text" class="form-control" id="inputName" name="name"
                                        placeholder="">
-                            </div>
-                            <div class="form-group col-md-12 col-lg-6">
-                                <label for="inputType">Tipo de item</label>
-                                <select id="inputType" class="form-control" name="type_id">
-                                    <option selected>Escolher...</option>
-                                    @foreach($types as $type)
-                                        <option value="{{ $type->id }}">{{ $type->name }}</option>
-                                    @endforeach
-                                </select>
                             </div>
                         </div>
                         <div class="form-row">
@@ -47,11 +38,11 @@
                                        placeholder="">
                             </div>
                             <div class="form-group col-md-12 col-lg-6">
-                                <label for="inputStatus">Status</label>
-                                <select id="inputStatus" class="form-control" name="status_id">
-                                    <option selected>Escolher...</option>
-                                    @foreach($status as $s)
-                                        <option value="{{ $s->id }}">{{ $s->name }}</option>
+                                <label for="inputType">Tipo de item</label>
+                                <select id="inputType" class="form-control" name="type_id">
+                                    <option selected disabled>Escolher...</option>
+                                    @foreach($types as $type)
+                                        <option value="{{ $type->id }}">{{ $type->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -104,6 +95,10 @@
                         type: 'success',
                         title: data.message
                     });
+
+                    $('#inputName').val('');
+                    $('#inputAmount').val('');
+                    $('#inputType').children('option:first').prop('selected', true);
                 },
                 error: function (data) {
                     Swal.fire({

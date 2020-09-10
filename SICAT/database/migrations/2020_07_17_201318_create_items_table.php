@@ -19,7 +19,7 @@ class CreateItemsTable extends Migration
             $table->integer('amount');
             $table->enum('availability', ['true', 'false'])->default('true');
             $table->foreignId('type_id')->constrained('types');
-            $table->foreignId('status_id')->constrained('status');
+            $table->foreignId('status_id')->constrained('statuses');
             $table->timestamps();
         });
     }
@@ -33,8 +33,12 @@ class CreateItemsTable extends Migration
     {
         Schema::table('items', function (Blueprint $table) {
             $table->dropForeign(['type_id']);
-            $table->dropForeign(['status_id']);
+            if (Schema::hasColumn('items', 'status_id')) {
+                $table->dropForeign(['status_id']);
+            }
+
         });
+
         Schema::dropIfExists('items');
     }
 }

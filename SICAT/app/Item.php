@@ -3,16 +3,19 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Item extends Model
 {
+    use SoftDeletes;
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'name', 'amount', 'availability', 'type_id', 'status_id'
+        'name', 'amount', 'availability', 'type_id',
     ];
 
     /**
@@ -32,4 +35,13 @@ class Item extends Model
     protected $casts = [
 
     ];
+
+    protected $dates = [
+        'deleted_at'
+    ];
+
+    public function type()
+    {
+        return $this->hasOne(Type::class);
+    }
 }

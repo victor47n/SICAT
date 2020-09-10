@@ -3,17 +3,19 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Borrowing extends Model
 {
+    use SoftDeletes;
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'requester', 'phone_requester', 'email_requester', 'office_requester', 'amount', 'return_date',
-        'item_id', 'status_id',
+        'requester', 'phone_requester', 'email_requester', 'office_requester', 'acquisition_date', 'status_id',
     ];
 
     /**
@@ -33,4 +35,13 @@ class Borrowing extends Model
     protected $casts = [
 
     ];
+
+    protected $dates = [
+        'deleted_at',
+    ];
+
+    public function borrowed_item()
+    {
+        return $this->hasMany(BorrowedItem::class);
+    }
 }
