@@ -27,14 +27,15 @@
                     <div class="row">
                         <div class="form-group  col-md-12">
                             <label for="name">Descrição</label>
-                            <input type="text" class="form-control" id="problem" name="problem" placeholder="Nome">
+                            <input type="text" class="form-control" id="problem" name="problem"
+                                placeholder="Descreva o problema">
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="form-group col-md-4">
                             <label for="name">Problema</label>
-                            <select class="form-control" id="problem_type" name="problem_type">
+                            <select class="form-control custom-select" id="problem_type" name="problem_type">
                                 <option value="" selected disabled hidden>Selecione</option>
                                 <option value="Software">Software</option>
                                 <option value="Hardware">Hardware</option>
@@ -45,7 +46,7 @@
                         </div>
                         <div class="form-group col-md-4">
                             <label for="name">Local</label>
-                            <select class="form-control" id="locale_id" name="locale_id">
+                            <select class="form-control custom-select" id="locale_id" name="locale_id">
                                 <option value="" selected disabled hidden>Selecione</option>
 
                                 @foreach ($locales as $item)
@@ -56,7 +57,8 @@
                         </div>
                         <div class="form-group col-md-4">
                             <label for="name">Posto de Trabalho</label>
-                            <select class="form-control" disabled id="workstation_id" name="workstation_id">
+                            <select class="form-control custom-select" disabled id="workstation_id"
+                                name="workstation_id">
 
                             </select>
                         </div>
@@ -70,7 +72,9 @@
                         </div>
                         <div class="form-group col-md-4">
                             <label for="name">Funcionário designado</label>
-                            <select class="form-control" id="designated_employee" name="designated_employee">
+                            <select class="form-control custom-select" id="designated_employee"
+                                name="designated_employee">
+                                <option value=""></option>
                                 @foreach ($funcionarios as $item)
                                 <option value="{{$item->id}}">{{$item->name}}</option>
                                 @endforeach
@@ -78,7 +82,7 @@
                         </div>
                         <div class="form-group col-md-4">
                             <label for="name">Status</label>
-                            <select class="form-control" id="status_id" name="status_id">
+                            <select class="form-control custom-select" id="status_id" name="status_id">
                                 <option value="5">Pendente</option>
                                 <option value="4">Finalizado</option>
                             </select>

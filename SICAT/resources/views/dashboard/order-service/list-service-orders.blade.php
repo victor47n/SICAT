@@ -21,14 +21,14 @@
             </div>
             <div class="card-body">
                 <table id="tOS" class="table table-hover table-bordered table-striped">
-                    <thead>
+                    <thead class="thead-dark">
                         <tr role="row">
                             <th class="sorting">ID</th>
-                            <th class="sorting">Tipo</th>
-                            <th class="sorting_asc">Problema</th>
-                            <th class="sorting">Funcionário designado</th>
+                            <th class="sorting">Descrição</th>
+                            <th class="sorting">Data de criação</th>
+                            <th class="sorting">Data de solução</th>
+                            <th class="sorting">Funcionário</th>
                             <th class="sorting">Local</th>
-                            <th class="sorting">Posto de trabalho</th>
                             <th class="sorting">Estado</th>
                             <th class="sorting">Opções</th>
                         </tr>
@@ -147,6 +147,7 @@
                         <div class="form-group col-md-4">
                             <label for="name">Funcionário designado</label>
                             <select class="form-control" id="designated_employee" name="designated_employee">
+                                <option></option>
                                 @foreach ($funcionarios as $item)
                                 <option value="{{$item->id}}">{{$item->name}}</option>
                                 @endforeach
@@ -157,6 +158,14 @@
                             <select class="form-control" id="status_id" name="status_id">
                                 <option value="5">Pendente</option>
                                 <option value="4">Finalizado</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label for="name">Realizado por:</label>
+                            <select class="form-control" id="solver_employee" name="solver_employee">
+                                @foreach ($funcionarios as $item)
+                                <option value="{{$item->id}}">{{$item->name}}</option>
+                                @endforeach
                             </select>
                         </div>
                         <div class="form-group col-md-12">
@@ -176,6 +185,8 @@
     </div>
 </div>
 <!--Fim Modal -->
+
+
 @stop
 
 @section('footer')
@@ -194,6 +205,7 @@
 @section('js')
 <script>
     $(document).ready(function () {
+        $.fn.dataTable.moment( 'HH:mm MMM D, YY' );
 
         var table = $('#tOS');
         table.DataTable({
@@ -261,17 +273,22 @@
                     url: '{{ route('order.index') }}',
                 },
                 columns: [
+                     
                     {
                         data: 'id',
                         name: 'id'
                     },
                     {
-                        data: 'problem_type',
-                        name: 'problem_type'
-                    },
-                    {
                         data: 'problem',
                         name: 'problem'
+                    },
+                    {
+                        data: 'created_at',
+                        name: 'created_at'
+                    },
+                    {
+                        data: 'realized_date',
+                        name: 'realized_date',
                     },
                     {
                         data: 'designated',
@@ -279,11 +296,10 @@
                     },
                     {
                         data: 'locale',
-                        name: 'locale'
-                    },
-                    {
-                        data: 'workstation',
-                        name: 'workstation'
+                        name: 'locale',
+                        render: function(data,type,row,meta){
+                            return row.locale+" - "+row.workstation
+                        }
                     },
                     {
                         data: 'status',
@@ -313,8 +329,8 @@
                     }
                 ],
                 drawCallback: function () {
-                    $('#tUsers tbody tr td:last-child').addClass('text-center');
-                    $('#tUsers_paginate ul.pagination').addClass("justify-content-start");
+                    $('#tOS tbody tr td:last-child').addClass('text-center');
+                    $('#tOS_paginate ul.pagination').addClass("justify-content-start");
                 }
         });
         
@@ -428,4 +444,6 @@
            });
     }
 </script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
+<script src="//cdn.datatables.net/plug-ins/1.10.21/sorting/datetime-moment.js"></script>
 @stop

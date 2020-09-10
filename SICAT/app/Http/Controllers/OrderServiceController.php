@@ -31,6 +31,10 @@ class OrderServiceController extends Controller
                 )
                 ->get();
 
+            foreach ($serviceOrders as $order) {
+                $order->realized_date = \Carbon\Carbon::parse($order->realized_date)->format('d/m/Y');
+                $order->created_at = \Carbon\Carbon::parse($order->created_at)->format('d/m/Y');
+            }
 
             return DataTables::of($serviceOrders)->addColumn('action', function ($data) {
 
@@ -38,11 +42,11 @@ class OrderServiceController extends Controller
                 if (Gate::allows('rolesUser', 'employee_view')) {
                     $result .= '<button type="button" id="' . $data->id . '" class="btn btn-primary"  data-toggle="modal" data-target="#modalView" onclick="visualizarOS(' . $data->id . ')"><i class="fas fa-fw fa-eye"></i>Visualizar</button>';
                 }
-                if (Gate::allows('rolesUser', 'employee_edit') && $data->deleted_at == null) {
+                if (Gate::allows('rolesUser', 'employee_edit') && $data->deleted_at == null && $data->status != 'Finalizado') {
                     $result .= '<button type="button" id="' . $data->id . '" class="btn btn-secondary" data-toggle="modal" data-target="#modalEdit" onclick="editarOS(' . $data->id . ')"><i class="fas fa-fw fa-edit"></i>Editar</button>';
                 }
-                if (Gate::allows('rolesUser', 'employee_disable') && $data->deleted_at == null) {
-                    $result .= '<button type="button" id="' . $data->id . '" class="btn btn-danger" onclick="disable(' . $data->id . ')"><i class="fas fa-fw fa-trash"></i>Desabilitar</button>';
+                if (Gate::allows('rolesUser', 'employee_disable') && $data->deleted_at == null && $data->status != 'Finalizado') {
+                    $result .= '<button type="button" id="' . $data->id . '" class="btn btn-danger" onclick="disable(' . $data->id . ')"><i class="fas fa-fw fa-trash"></i>Cancelar</button>';
                 }
 
                 $result .= '</div>';
@@ -85,7 +89,7 @@ class OrderServiceController extends Controller
     {
 
         try {
-            $data = $request->only(['id', 'designated_employee', 'status_id', 'solution_problem']);
+            $data = $request->only(['id', 'designated_employee', 'solver_employee', 'status_id', 'solution_problem']);
 
             $os = DB::table('order_services')
                 ->where('id', $data['id'])
