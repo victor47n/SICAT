@@ -349,7 +349,7 @@
                 if (result.value) {
                     $.ajax({
                         type: 'PUT',
-                        url: `disable/${id}`,
+                        url: `locais/${id}/desabilitar`,
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
@@ -427,6 +427,50 @@
                 }
             });
         }
+
+        function able(id) {
+            Swal.fire({
+                title: 'Você tem certeza?',
+                text: "Deseja habilitar o local?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sim, habilite o local!'
+            }).then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        type: 'PUT',
+                        url: `locais/${id}/habilitar`,
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function (data) {
+                            Swal.fire({
+                                title: 'Habilitado!',
+                                text: data.message,
+                                type: 'success'
+                            });
+
+                            $("#sala-"+id+" > div > input").attr("data-status", "able");
+                            $("#delete-"+id).attr('onclick', 'disableWorkstation(' + id + ')')
+                                .toggleClass("btn-success btn-danger")
+                                .html(`<i class="fas fa-check"></i>`)
+
+                        // $('#tLocais').DataTable().ajax.reload();
+                        },
+                        error: function (data) {
+                            Swal.fire({
+                                title: 'Algo de errado aconteceu!',
+                                text: data.responseJSON.message,
+                                type: 'error'
+                            });
+                        }
+                    });
+                }
+            });
+        }
+
 
         function ableWorkstation(id) {
             Swal.fire({

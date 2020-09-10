@@ -23,7 +23,7 @@ class LocaleController extends Controller
     function index(Request $request)
     {
         if ($request->ajax()) {
-            $locales = DB::table('locales')->select('id', 'name')->get();
+            $locales = DB::table('locales')->select('id', 'name', 'status')->get();
 
             try {
                 return DataTables::of($locales)
@@ -37,7 +37,11 @@ class LocaleController extends Controller
                             $result .= '<button type="button" id="' . $data->id . '" class="btn btn-secondary" data-toggle="modal" data-target="#modalEdit" onclick="showEditModal(' . $data->id . ')"><i class="fas fa-fw fa-edit"></i>Editar</button>';
                         }
                         if (Gate::allows('rolesUser', 'workstation_disable')) {
-                            $result .= '<button type="button" id="' . $data->id . '" class="btn btn-danger" onclick="disable(' . $data->id . ')"><i class="fas fa-fw fa-trash"></i>Desabilitar</button>';
+                            if ($data->status == 'able') {
+                                $result .= '<button type="button" id="' . $data->id . '" class="btn btn-danger" onclick="disable(' . $data->id . ')"><i class="fas fa-fw fa-trash"></i>Desabilitar</button>';
+                            } else {
+                                $result .= '<button type="button" id="' . $data->id . '" class="btn btn-success" onclick="able(' . $data->id . ')"><i class="fas fa-fw fa-check"></i>Habilitar</button>';
+                            }
                         }
 
                         $result .= '</div>';
