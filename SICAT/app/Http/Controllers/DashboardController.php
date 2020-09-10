@@ -2,18 +2,36 @@
 
 namespace App\Http\Controllers;
 
+use App\OrderService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
     public function index()
     {
         if (Auth::check() === true) {
-            return view('dashboard.dashboard');
+
+            $os = DB::table("order_services")->orderBy("realized_date", "desc")->get();
+            $quantOSPendentes = OrderService::where("realized_date", "<", "NOW()")->where("status_id", "5")->count();
+            $quantOSAtrasados = OrderService::where("realized_date", ">", "NOW()")->where("status_id", "5")->count();
+            $osAtrasados = OrderService::where("realized_date", ">", "NOW()")->where("status_id", "5")->get();
+            $quantOSFinalizados = OrderService::where("realized_date", "<", new \DateTime(strtotime("last day of week")))
+                ->where("realized_date", ">", new \DateTime(strtotime("first day of week")))
+                ->where("status_id", "5")->count();
+            $quantOSTotal = $quantOSPendentes + $quantOSFinalizados + $quantOSAtrasados;
+
+            return view('dashboard.dashboard', [
+                "quantOSPendentes" => $quantOSPendentes,
+                "quantOSAtrasados" => $quantOSAtrasados,
+                "quantOSFinalizados" => $quantOSFinalizados,
+                "quantOSTotal" => $quantOSTotal,
+                "os" => $os,
+                "osAtrasadas" => $osAtrasados,
+            ]);
         }
 
         return redirect()->route('login');
     }
-
 }

@@ -39,6 +39,13 @@
 <div class="modal fade" id="modalEdit" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
+            <div class="overlay">
+                <div class="d-flex h-100 justify-content-center align-items-center">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+            </div>
             <div class="modal-header">
                 <h5 class="modal-title" id="editModalLabel">Editar Local</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
@@ -53,6 +60,7 @@
                         <label for="inputName">Nome</label>
                         <input type="text" class="form-control" id="inputName" name="name">
                     </div>
+                    <h3>Salas</h3>
                     <div id="sala-row" class="form-row">
 
                     </div>
@@ -88,6 +96,28 @@
             showConfirmButton: false,
             timer: 3000
         });
+
+    function clearModal(formModal) {
+        
+            $("#" +formModal).addClass('d-none');
+            $("#" +formModal)[0].reset();
+        }
+
+        function loader() {
+            this.id = '.overlay'
+        };
+
+        loader.prototype.show = function () {
+            $(this.id).fadeIn();
+        };
+
+        loader.prototype.hide = function () {
+            $(this.id).fadeOut('slow', function () {
+                $(this.id).attr("style", "display: none !important");
+            });
+        };
+
+        loaderObj = new loader();
 
     $(document).ready(function () {
             var table = $('#tLocais');
@@ -188,13 +218,17 @@
 
 
         function showEditModal(id) {
+            clearModal('formEdit');
+            loaderObj.show();
+
             $.ajax({
                 type: 'GET',
-                url: `show/${id}`,
+                url: `locais/${id}`,
                 context: 'json',
                 success: function (data) {
                     $("#sala-row").html('');
                     $('#inputName').val(data.name);
+
                     workstations = data.workstation;
 
                     workstations.forEach(element => {
@@ -209,7 +243,7 @@
                        $("#sala-row").append(`
                        <div  id="sala-${element.id}"  class="col-12 row">
                             <div class="form-group col-10">
-                                    <input type="text" data-status=${element.status} onfocusout="updateWorkstation(${element.id})" value=${element.name} class="form-control" id="sala[]" name="sala[]" placeholder="Nome da sala">
+                                    <input type="text" data-status=${element.status} onfocusout="updateWorkstation(${element.id})" value="${element.name}" class="form-control" id="sala[]" name="sala[]" placeholder="Nome da sala">
                             </div>
                             <div class="col-auto">${statusButton}</div>
                         </div>`);
@@ -226,9 +260,12 @@
                                 <button id="insert" onclick="addworkstation(${data.id})" type="button" class="btn btn-info"><i class="fas fa-plus"></i></button>
                             </div>
                         </div>`);
-                    $('#inputEmail').val(data.email);
-                    $('#updateButton').attr('onclick', 'update(' + data.id + ')');
+
+                    $('#updateButton').attr('onclick', 'update(' + data.id + ')').show();
                     $('#modalEdit').modal('show');
+                    $("#formEdit").removeClass('d-none');
+                    loaderObj.hide();                    
+
                 },
                 error: function () {
                     console.log('Ocorreu um erro ao encontrar o funcionário');
@@ -236,10 +273,47 @@
             });
         }
 
+        function showModal(id) {
+            clearModal('formEdit');
+            loaderObj.show();
+
+            $.ajax({
+                type: 'GET',
+                url: `locais/${id}`,
+                context: 'json',
+                success: function (data) {
+                    $("#sala-row").html('');
+                    $('#inputName').val(data.name);
+                    workstations = data.workstation;
+
+                    workstations.forEach(element => {
+                       
+                       $("#sala-row").append(`
+                       <div  id="sala-${element.id}"  class="col-12 row">
+                            <div class="form-group col-10">
+                                    <input type="text" data-status=${element.status} onfocusout="updateWorkstation(${element.id})" value="${element.name}" class="form-control" id="sala[]" name="sala[]" placeholder="Nome da sala">
+                            </div>
+                        </div>`);
+
+
+                    });
+
+                    $('#updateButton').removeAttr('onclick').hide();
+                    $('#modalEdit').modal('show');
+                    $("#formEdit").removeClass('d-none');
+                    loaderObj.hide();
+
+                },
+                error: function () {
+                    console.log('Ocorreu um erro ao encontrar o local');
+                }
+            });
+        }
+
         function update(id) {
             $.ajax({
                 type: 'PUT',
-                url: `update/${id}`,
+                url: `locais/${id}`,
                 headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
@@ -275,7 +349,7 @@
                 if (result.value) {
                     $.ajax({
                         type: 'PUT',
-                        url: `disable/${id}`,
+                        url: `locais/${id}/desabilitar`,
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
@@ -302,7 +376,7 @@
         function updateWorkstation(id){
             $.ajax({
                 type: 'PUT',
-                url: `postos/${id}/update`,
+                url: `postos/${id}`,
                 dataType: 'json',
                 data: {name: $("#sala-"+id+" div input").val()},
                 headers: {
@@ -353,6 +427,50 @@
                 }
             });
         }
+
+        function able(id) {
+            Swal.fire({
+                title: 'Você tem certeza?',
+                text: "Deseja habilitar o local?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sim, habilite o local!'
+            }).then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        type: 'PUT',
+                        url: `locais/${id}/habilitar`,
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function (data) {
+                            Swal.fire({
+                                title: 'Habilitado!',
+                                text: data.message,
+                                type: 'success'
+                            });
+
+                            $("#sala-"+id+" > div > input").attr("data-status", "able");
+                            $("#delete-"+id).attr('onclick', 'disableWorkstation(' + id + ')')
+                                .toggleClass("btn-success btn-danger")
+                                .html(`<i class="fas fa-check"></i>`)
+
+                        // $('#tLocais').DataTable().ajax.reload();
+                        },
+                        error: function (data) {
+                            Swal.fire({
+                                title: 'Algo de errado aconteceu!',
+                                text: data.responseJSON.message,
+                                type: 'error'
+                            });
+                        }
+                    });
+                }
+            });
+        }
+
 
         function ableWorkstation(id) {
             Swal.fire({

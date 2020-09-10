@@ -28,6 +28,7 @@
                             <label for="name">Nome</label>
                             <input type="text" class="form-control" id="name" name="name" placeholder="Nome">
                         </div>
+
                         <h3>Salas </h3>
                         <div id="sala-row" class="form-row">
 
@@ -97,7 +98,6 @@
                 $.ajax({
                     url: "{{route('locale.store')}}",
                     method: "POST",
-                    contentType: 'application/json',
                     dataType: 'json',
                     data: $('#form').serialize(),
                     success: function (data) {

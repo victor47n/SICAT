@@ -3,22 +3,26 @@
 ###############################################################################
 version: "3.1"
 services:
+  db:
+    image: mysql
+    restart: always
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: teste
+      MYSQL_PASSWORD: teste
+      MYSQL_DATABASE: vps290578
+      MYSQL_USER: teste
+    network_mode: host
+    ports:
+      - "3306:3306"
 
-    webserver:
-      image: nginx:alpine
-      container_name: tcc-webserver
-      working_dir: /SICAT
-      volumes:
-          - ./SICAT/:/SICAT
-          - ./phpdocker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
-
-
-    php-fpm:
-      build: phpdocker/php-fpm
-      container_name: tcc-php-fpm
-      working_dir: /SICAT
-      volumes:
-        - ./SICAT/:/SICAT
-        - ./phpdocker/php-fpm/php-ini-overrides.ini:/etc/php/7.4/fpm/conf.d/99-overrides.ini
-      ports:
-        - "8000:8000"
+  php-fpm:
+    build: phpdocker/php-fpm
+    container_name: tcc-php-fpm
+    working_dir: /SICAT
+    network_mode: host
+    volumes:
+      - ./SICAT/:/SICAT
+      - ./phpdocker/php-fpm/php-ini-overrides.ini:/etc/php/7.4/fpm/conf.d/99-overrides.ini
+    ports:
+      - "8000:8000"

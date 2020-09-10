@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class OrderService extends Model
 {
     use SoftDeletes;
-
+  
     /**
      * The attributes that are mass assignable.
      *
@@ -24,15 +24,14 @@ class OrderService extends Model
      *
      * @var array
      */
-    protected $hidden = [
-
-    ];
+    protected $hidden = [];
 
     /**
      * The attributes that should be cast to native types.
      *
      * @var array
      */
+
     protected $casts = [
 
     ];
