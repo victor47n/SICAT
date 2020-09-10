@@ -35,12 +35,14 @@ Route::group(['middleware' => 'auth'], function () {
         ->parameters(['ordens' => 'order'])
         ->except(['edit']);
 
+    Route::put('locais/{workstation}/habilitar', 'LocaleController@able')->name('locale.able');
     Route::put('locais/{locale}/desabilitar', 'LocaleController@disable')->name('locale.disable');
     Route::get('locais/{locale}/workstations', 'LocaleController@workstations')->name('locale.workstations');
     Route::resource('locais', 'LocaleController')->names('locale')
         ->parameters(['locais' => 'locale'])
         ->except(['edit']);
 
+    Route::put('postos/{workstation}/habilitar', 'WorkstationController@able')->name('workstation.able');
     Route::put('postos/{workstation}/desabilitar', 'WorkstationController@disable')->name('workstation.disable');
     Route::resource('postos', 'WorkstationController')->names('workstation')
         ->parameters(['postos' => 'workstation'])
