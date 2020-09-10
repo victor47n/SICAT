@@ -290,7 +290,7 @@
                     },
                     {
                         data: 'acquisition_date',
-                        name: 'acquisition_date'
+                        name: 'acquisition_date',
                     },
                     {
                         data: 'status',

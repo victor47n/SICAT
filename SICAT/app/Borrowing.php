@@ -37,7 +37,7 @@ class Borrowing extends Model
     ];
 
     protected $dates = [
-        'deleted_at'
+        'deleted_at',
     ];
 
     public function borrowed_item()

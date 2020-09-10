@@ -6,6 +6,7 @@ use App\BorrowedItem;
 use App\Borrowing;
 use App\Http\Requests\StoreBorrowingRequest;
 use App\Item;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
@@ -40,12 +41,11 @@ class BorrowingController extends Controller
         if ($request->ajax()) {
 
             $borrowings = DB::table('borrowings')
-                ->select('borrowings.id', 'borrowings.requester', 'borrowings.acquisition_date', 'statuses.name as status')
+                ->select(['borrowings.id', 'borrowings.requester', 'borrowings.acquisition_date', 'statuses.name as status'])
                 ->join('statuses', 'borrowings.status_id', '=', 'statuses.id')
                 ->get();
 
             foreach ($borrowings as $borrowing) {
-                $borrowing->acquisition_date = \Carbon\Carbon::parse($borrowing->acquisition_date)->format('d/m/Y');
                 $borrowing->items = DB::table('borrowed_items')
                     ->select('items.name')
                     ->join('items', 'borrowed_items.item_id', '=', 'items.id')
@@ -55,6 +55,9 @@ class BorrowingController extends Controller
             };
 
             return Datatables::of($borrowings)
+                ->editColumn('acquisition_date', function ($borrowing) {
+                    return $borrowing->acquisition_date ? with(new Carbon($borrowing->acquisition_date))->format('d/m/Y') : '';
+                })
                 ->addColumn('action', function ($data) {
                     $result = '<div class="btn-group btn-group-sm" role="group" aria-label="Exemplo básico">';
                     if (Gate::allows('rolesUser', 'borrowing_view')) {
