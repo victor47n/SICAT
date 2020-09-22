@@ -26,6 +26,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     /* Rotas de funcionários */
     Route::put('funcionarios/{user}/desabilitar', 'UserController@disable')->name('user.disable');
+    Route::put('funcionarios/{user}/habilitar', 'UserController@able')->name('user.able');
     Route::resource('funcionarios', 'UserController')->names('user')
         ->parameters(['funcionarios' => 'user'])
         ->except(['edit']);

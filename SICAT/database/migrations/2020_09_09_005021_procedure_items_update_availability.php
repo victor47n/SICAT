@@ -12,6 +12,8 @@ class ProcedureItemsUpdateAvailability extends Migration
      */
     public function up()
     {
+        DB::unprepared('DROP PROCEDURE IF EXISTS update_availability');
+
         DB::unprepared(
             '
                         CREATE PROCEDURE update_availability (IN item_id int)
@@ -38,6 +40,6 @@ class ProcedureItemsUpdateAvailability extends Migration
      */
     public function down()
     {
-        DB::unprepared('DROP PROCEDURE update_availability');
+        DB::unprepared('DROP PROCEDURE IF EXISTS update_availability');
     }
 }
