@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreOrderServiceRequest;
 use App\Locale;
 use Illuminate\Http\Request;
 use App\OrderService;
@@ -13,6 +14,13 @@ use Yajra\DataTables\DataTables;
 
 class OrderServiceController extends Controller
 {
+
+    private $orderService;
+
+    public function __construct(OrderService $orderService)
+    {
+        $this->orderService = $orderService;
+    }
 
     function index(Request $request)
     {
@@ -31,19 +39,14 @@ class OrderServiceController extends Controller
                 )
                 ->get();
 
-            foreach ($serviceOrders as $order) {
-                $order->realized_date = \Carbon\Carbon::parse($order->realized_date)->format('d/m/Y');
-                $order->created_at = \Carbon\Carbon::parse($order->created_at)->format('d/m/Y');
-            }
-
             return DataTables::of($serviceOrders)->addColumn('action', function ($data) {
 
                 $result = '<div class="btn-group btn-group-sm" role="group" aria-label="Exemplo básico">';
                 if (Gate::allows('rolesUser', 'employee_view')) {
-                    $result .= '<button type="button" id="' . $data->id . '" class="btn btn-primary"  data-toggle="modal" data-target="#modalView" onclick="visualizarOS(' . $data->id . ')"><i class="fas fa-fw fa-eye"></i>Visualizar</button>';
+                    $result .= '<button type="button" id="' . $data->id . '" class="btn btn-primary"  data-toggle="modal" data-target="#modalView" data-whatever="' . $data->id . '"><i class="fas fa-fw fa-eye"></i>Visualizar</button>';
                 }
                 if (Gate::allows('rolesUser', 'employee_edit') && $data->deleted_at == null && $data->status != 'Finalizado') {
-                    $result .= '<button type="button" id="' . $data->id . '" class="btn btn-secondary" data-toggle="modal" data-target="#modalEdit" onclick="editarOS(' . $data->id . ')"><i class="fas fa-fw fa-edit"></i>Editar</button>';
+                    $result .= '<button type="button" id="' . $data->id . '" class="btn btn-secondary" data-toggle="modal" data-target="#modalEdit" data-whatever="' . $data->id . '"><i class="fas fa-fw fa-edit"></i>Editar</button>';
                 }
                 if (Gate::allows('rolesUser', 'employee_disable') && $data->deleted_at == null && $data->status != 'Finalizado') {
                     $result .= '<button type="button" id="' . $data->id . '" class="btn btn-danger" onclick="disable(' . $data->id . ')"><i class="fas fa-fw fa-trash"></i>Cancelar</button>';
@@ -55,49 +58,55 @@ class OrderServiceController extends Controller
                 ->rawColumns(['action'])
                 ->make(true);
         } else {
-            $funcionarios = User::all()->where("deleted_at", "=", null);
-            return view("dashboard/order-service/list-service-orders", ['funcionarios' => $funcionarios]);
+            $employee = User::all()->where("deleted_at", "=", null);
+            $statuses = DB::table('statuses')->select('id', 'name')
+                ->where('name', '=', 'Pendente')
+                ->orWhere('name', '=', 'Finalizado')
+                ->get();
+
+            return view("dashboard/order-service/list-service-orders", ['employee' => $employee, 'statuses' => $statuses]);
         }
     }
 
     function create()
     {
         $locales = Locale::all()->where("deleted_at", "=", null);
-        $funcionarios = User::all()->where("deleted_at", "=", null);
+        $employee = User::all()->where("deleted_at", "=", null);
+        $status = DB::table('statuses')->select('id', 'name')
+            ->where('name', '=', 'Pendente')
+            ->first();
+
         return view(
-            "dashboard/order-service/create-service-orders",
-            [
-                "locales" => $locales,
-                "funcionarios" => $funcionarios
-            ]
-        );
+            "dashboard/order-service/create-service-orders", ["locales" => $locales, "employee" => $employee, 'status' => $status]);
     }
 
-    public function store(Request $request)
+    public function store(StoreOrderServiceRequest $request)
     {
         try {
-            $req = $request->all();
+            $data = $request->only('problem', 'problem_type', 'locale_id', 'workstation_id', 'realized_date', 'designated_employee', 'status_id');
+            $os = OrderService::create($data);
 
-            $os = OrderService::create($req);
-            return response()->json(["message" => "Ordem de serviço criada com sucesso", "data" => $os]);
+            return response()->json(["message" => "Ordem de serviço criada com sucesso"], 201);
+
         } catch (Exception $e) {
-            return response()->json(["message" => $e->getMessage()]);
+            if (config('app.debug')) {
+                return response()->json(["message" => $e->getMessage()], 400);
+            }
+
+            return response()->json(["message" => $e->getMessage()], 400);
         }
     }
 
-    public function update(Request $request)
+    public function update(Request $request, $orderService)
     {
 
         try {
-            $data = $request->only(['id', 'designated_employee', 'solver_employee', 'status_id', 'solution_problem']);
+            $data = $request->only(['realized_date', 'designated_employee', 'solver_employee', 'status_id', 'solution_problem']);
 
-            $os = DB::table('order_services')
-                ->where('id', $data['id'])
-                ->update($data);
+            $orderService = OrderService::find($orderService);
+            $orderService->update($data);
 
-            $result = OrderService::find($data['id']);
-
-            return response()->json(['data' => $result, 'message' => 'Ordem de serviço atualizada com sucesso']);
+            return response()->json(['message' => 'Ordem de serviço atualizada com sucesso']);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()]);
         }
@@ -120,6 +129,7 @@ class OrderServiceController extends Controller
                 "locales.name as locale"
             )
             ->get();
+
         return $serviceOrders;
     }
 

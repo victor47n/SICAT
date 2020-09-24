@@ -59,7 +59,7 @@
                                 <select id="inputOffice" class="form-control custom-select"
                                         name="office_requester"
                                         required>
-                                    <option selected disabled value>Escolher...</option>
+                                    <option selected disabled value hidden>Escolher...</option>
                                     <option value="Aluno">Aluno</option>
                                     <option value="Coordenador">Coordenador</option>
                                     <option value="Funcionário">Funcionário</option>
@@ -69,7 +69,7 @@
                             <div class="form-group col-md-12 col-lg-4">
                                 <label for="inputDate">Data de aquisição</label>
                                 <input type="date" class="form-control" id="inputDate" name="acquisition_date"
-                                       placeholder="dd/mm/aaaa" required>
+                                       placeholder="dd/mm/aaaa" required min="{{ date("Y-m-d", strtotime("-1 days")) }}" value="{{ date("Y-m-d", strtotime("-1 days")) }}">
                             </div>
                             <div class="form-group col-md-12 col-lg-4">
                                 <label for="inputStatus">Status</label>
@@ -85,7 +85,7 @@
                                 <div class="form-group col-md-12 col-lg-4">
                                     <label for="inputType">Tipo</label>
                                     <select id="inputType" class="form-control custom-select">
-                                        <option selected disabled value>Escolher...</option>
+                                        <option selected disabled value hidden>Escolher...</option>
                                         @foreach($types as $type)
                                             <option value="{{ $type->id }}">{{ $type->name }}</option>
                                         @endforeach
@@ -94,7 +94,7 @@
                                 <div class="form-group col-md-12 col-lg-4">
                                     <label for="inputItem">Item</label>
                                     <select id="inputItem" class="form-control custom-select" name="item_id">
-                                        <option selected disabled value>Escolher...</option>
+                                        <option selected disabled value hidden>Escolher...</option>
                                     </select>
                                 </div>
                                 <div class="form-group col-md-12 col-lg-4">
@@ -136,6 +136,9 @@
         // $('[data-mask]').inputmask();
 
         $(document).ready(function () {
+            // var now = new Date()
+            // console.log(now);
+            // $('#inputDate').attr('min', now.getFullYear() + '-' + ("0" + (now.getMonth() + 1)).slice(-2) + '-' + ("0" + now.getDate()).slice(-2));
 
             $('#inputPhone').inputmask('(99) 9999[9]-9999', {showMaskOnFocus: false, showMaskOnHover: false, removeMaskOnSubmit: true, autoUnmask: true});
             $('#inputAmount').inputmask({
@@ -165,7 +168,6 @@
                     },
                     acquisition_date: {
                         required: true,
-                        date: true,
                     },
                     status_id: {
                         required: true,

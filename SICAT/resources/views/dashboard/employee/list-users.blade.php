@@ -294,7 +294,7 @@
                             doc.content.splice(0, 1);
                             //Create a date string that we use in the footer. Format is dd-mm-yyyy
                             var now = new Date();
-                            var jsDate = now.getDate() + '/' + (now.getMonth() + 1) + '/' + now.getFullYear();
+                            var jsDate = now.toLocaleDateString();
                             // Logo converted to base64
                             // var logo = getBase64FromImageUrl('https://datatables.net/media/images/logo.png');
                             // The above call should work, but not when called from codepen.io

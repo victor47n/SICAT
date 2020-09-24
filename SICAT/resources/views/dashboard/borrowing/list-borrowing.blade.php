@@ -193,7 +193,7 @@
             table.DataTable({
                 processing: true,
                 ordering: true,
-                order: [[ 4, "asc" ]],
+                order: [[4, "asc"]],
                 serverSide: true,
                 autoWidth: false,
                 responsive: {
@@ -245,7 +245,7 @@
                         text: '<i class="fas fa-fw fa-copy"></i>Copiar',
                         titleAttr: 'Copiar',
                         exportOptions: {
-                            columns: [ 1, 2, 3, 4 ]
+                            columns: [1, 2, 3, 4]
                         }
                     },
                     {
@@ -253,7 +253,7 @@
                         text: '<i class="fas fa-fw fa-file-excel"></i>Excel',
                         titleAttr: 'Exportar Excel',
                         exportOptions: {
-                            columns: [ 1, 2, 3, 4 ]
+                            columns: [1, 2, 3, 4]
                         }
                     },
                     {
@@ -261,7 +261,7 @@
                         text: '<i class="fas fa-fw fa-file-pdf"></i>PDF',
                         titleAttr: 'Exportar PDF',
                         exportOptions: {
-                            columns: [ 1, 2, 3, 4 ]
+                            columns: [1, 2, 3, 4]
                         }
                     },
                 ],
