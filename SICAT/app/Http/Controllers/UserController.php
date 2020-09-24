@@ -98,6 +98,7 @@ class UserController extends Controller
 
     function store(StoreUserRequest $request)
     {
+
         try {
 
             $data = $request->only('name', 'email', 'password', 'phone', 'office', 'role_id');

@@ -23,7 +23,10 @@ class LocaleController extends Controller
     function index(Request $request)
     {
         if ($request->ajax()) {
-            $locales = DB::table('locales')->select('id', 'name', 'status')->get();
+            $locales = DB::table('locales')
+                ->select('id', 'name', 'deleted_at')
+//                ->whereNull('deleted_at')
+                ->get();
 
             try {
                 return DataTables::of($locales)
@@ -37,7 +40,7 @@ class LocaleController extends Controller
                             $result .= '<button type="button" id="' . $data->id . '" class="btn btn-secondary" data-toggle="modal" data-target="#modalEdit" onclick="showEditModal(' . $data->id . ')"><i class="fas fa-fw fa-edit"></i>Editar</button>';
                         }
                         if (Gate::allows('rolesUser', 'workstation_disable')) {
-                            if ($data->status == 'able') {
+                            if ($data->deleted_at === null) {
                                 $result .= '<button type="button" id="' . $data->id . '" class="btn btn-danger" onclick="disable(' . $data->id . ')"><i class="fas fa-fw fa-trash"></i>Desabilitar</button>';
                             } else {
                                 $result .= '<button type="button" id="' . $data->id . '" class="btn btn-success" onclick="able(' . $data->id . ')"><i class="fas fa-fw fa-check"></i>Habilitar</button>';
@@ -68,17 +71,28 @@ class LocaleController extends Controller
 
     function store(Request $req)
     {
-        $data = $req->all();
-        $local = null;
+        try {
+            $validatedData = $req->validate([
+                'name' => 'required',
+            ]);
 
-        DB::transaction(function () use ($data, $local) {
-            $local = Locale::create(["name" => $data['name']]);
-            foreach ($data['sala'] as $sala) {
-                $local->workstation()->create(["name" => $sala]);
+            $data = $req->only(['name', 'room']);
+
+            DB::transaction(function () use ($data) {
+                $locale = Locale::create(["name" => $data['name']]);
+                foreach ($data['room'] as $room) {
+                    $locale->workstation()->create(["name" => $room]);
+                }
+            });
+
+            return response()->json(["message" => "Cadastrado com sucesso"], 201);
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
+                return response()->json(["message" => $e->getMessage()], 400);
             }
-        });
 
-        return response()->json(array("message" => "Cadastrado com sucesso", "data" => json_encode($local)));
+            return response()->json(["message" => $e->getMessage()], 400);
+        }
     }
 
     function update(Request $req, $id)

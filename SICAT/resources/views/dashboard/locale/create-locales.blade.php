@@ -20,31 +20,33 @@
                     <h3 class="card-title">Cadastrar Postos de Trabalho</h3>
                 </div>
 
-                <form id="form">
+                <form id="lForm">
                     {{ csrf_field() }}
 
                     <div class="card-body">
+                        <h4 class="text-bold text-left mb-4">Local</h4>
                         <div class="form-group">
-                            <label for="name">Nome</label>
-                            <input type="text" class="form-control" id="name" name="name" placeholder="Nome">
+                            <label for="name">Nome do local</label>
+                            <input type="text" class="form-control" id="inputName" name="name" placeholder="Nome">
                         </div>
 
-                        <h3>Salas </h3>
-                        <div id="sala-row" class="form-row">
-
-                            <div class="form-group col-10">
-                                <input type="text" class="form-control" id="sala[]" name="sala[]"
-                                       placeholder="Nome da sala">
-                            </div>
-                            <div class="col-auto">
-                                <button id="delete" type="button" class="btn btn-danger"><i
-                                        class="fas fa-fw fa-times"></i></button>
+                        <h4 class="text-bold text-left mb-4 mt-4">Salas</h4>
+                        <div id="rooms">
+                            <div id="room-row" class="form-row mb-4 mb-md-0">
+                                <div class="form-group col-sm-12 col-md-10">
+                                    <input type="text" class="form-control" id="room" name="room[]"
+                                           placeholder="Nome da sala">
+                                </div>
+                                <div class="col-xs-12 col-md-2">
+                                    <button id="delete" type="button" class="btn btn-danger btn-block"><i
+                                            class="fas fa-fw fa-times"></i></button>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="card-footer text-right">
-                        <button id="addSala" type="button" class="btn btn-info">Adicionar sala</button>
+                        <button id="addRoom" type="button" class="btn btn-info">Adicionar sala</button>
                         <button type="submit" class="btn btn-primary">Cadastrar</button>
                     </div>
                 </form>
@@ -63,6 +65,7 @@
 @section('css')
 @stop
 
+@section('plugins.Validation', true)
 @section('plugins.Sweetalert2', true)
 
 @section('js')
@@ -74,38 +77,83 @@
             timer: 3000
         });
 
+        $('#lForm').validate({
+            rules: {
+                name: {
+                    required: true,
+                },
+            },
+            messages: {
+                name: {
+                    required: "O campo nome é obrigatório.",
+                },
+            },
+
+            errorElement: 'span',
+            errorPlacement: function (error, element) {
+                error.addClass('invalid-feedback');
+                element.closest('.form-group').append(error);
+            },
+            highlight: function (element, errorClass, validClass) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                $(element).removeClass('is-invalid');
+            }
+        });
+
 
         $(document).ready(function () {
-            const fieldSala = $("#sala-row").clone(true, true);
-            var a = 0;
+            const fieldSala = $("#room-row").clone(true, true);
+            let a = 0;
 
             $("div").on('click', '#delete', function () {
                 console.log($("#delete").parents());
                 $(this).parents()[1].remove();
             });
 
-            $("#addSala").on('click', function () {
-                console.log(fieldSala);
+            $("#addRoom").on('click', function () {
                 a++;
-                let t = fieldSala.clone(true, true);
-                t.attr('id', 'sala-row' + a)
 
-                $(".card-body").append(t);
+                let html = '<div id="room-row-'+a+'" class="form-row mb-4 mb-md-0">' +
+                            '<div class="form-group col-sm-12 col-md-10">' +
+                                '<input type="text" class="form-control" id="room-'+a+'" name="room[]" placeholder="Nome da sala">' +
+                            '</div>' +
+                            '<div class="col-xs-12 col-md-2">' +
+                                '<button id="delete" type="button" class="btn btn-danger btn-block"><i class="fas fa-fw fa-times"></i></button>' +
+                            '</div>' +
+                        '</div>';
+
+                $("#rooms").append(html);
             });
 
-            $("#form").on("submit", function (e) {
+            $("#lForm").on("submit", function (e) {
                 e.preventDefault();
                 $.ajax({
                     url: "{{route('locale.store')}}",
                     method: "POST",
                     dataType: 'json',
-                    data: $('#form').serialize(),
+                    data: $('#lForm').serialize(),
                     success: function (data) {
-                        console.log(data);
+                        $('#inputName').val('');
+                        $('#room').val('');
+                        const rooms = $('#rooms');
+                        let children = rooms.children().length
+                        for (let i = children; i > 0; i--) {
+                                rooms.children().eq(i).remove();
+                        }
                         Toast.fire({
                             type: 'success',
                             title: data.message
                         });
+                    },
+                    error: function (error) {
+                        Swal.fire({
+                            type: 'error',
+                            title: 'Algo de errado aconteceu!',
+                            text: error.responseJSON.message
+                        });
+                        console.log('caiu no erro');
                     }
                 });
             });

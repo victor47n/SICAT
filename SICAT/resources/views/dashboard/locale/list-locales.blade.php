@@ -20,12 +20,12 @@
                 <h3 class="card-title">Cadastros de Postos de trabalho</h3>
             </div>
             <div class="card-body">
-                <table id="tLocais" class="table table-hover table-bordered">
+                <table id="tLocales" class="table table-hover table-bordered">
                     <thead class="thead-dark">
                         <tr role="row">
                             <th class="sorting">ID</th>
                             <th class="sorting_asc">Nome</th>
-                            <th class="sorting">Opções</th>
+                            <th>Opções</th>
                         </tr>
                     </thead>
                 </table>
@@ -98,7 +98,7 @@
         });
 
     function clearModal(formModal) {
-        
+
             $("#" +formModal).addClass('d-none');
             $("#" +formModal)[0].reset();
         }
@@ -120,7 +120,7 @@
         loaderObj = new loader();
 
     $(document).ready(function () {
-            var table = $('#tLocais');
+            var table = $('#tLocales');
             table.DataTable({
                 processing: true,
                 serverSide: true,
@@ -192,11 +192,11 @@
                     },
                     {
                         data: 'name',
-                        name: 'nome'
+                        name: 'name'
                     },
                     {
                         data: 'action',
-                        name: 'opções',
+                        name: 'action',
                         searchable: false,
                         orderable: false,
                         exportable: false,
@@ -207,11 +207,15 @@
                     {
                         targets: 0,
                         visible: false,
+                    },
+                    {
+                        targets: 2,
+                        width: "20%",
                     }
                 ],
                 drawCallback: function () {
-                    $('#tUsers tbody tr td:eq(2)',).addClass('text-center');
-                    $('#tUsers_paginate ul.pagination').addClass("justify-content-start");
+                    $('#tLocales tbody tr td:last-child').addClass('text-center');
+                    $('#tLocales_paginate ul.pagination').addClass("justify-content-start");
                 }
             });
         });
@@ -264,7 +268,7 @@
                     $('#updateButton').attr('onclick', 'update(' + data.id + ')').show();
                     $('#modalEdit').modal('show');
                     $("#formEdit").removeClass('d-none');
-                    loaderObj.hide();                    
+                    loaderObj.hide();
 
                 },
                 error: function () {
@@ -287,7 +291,7 @@
                     workstations = data.workstation;
 
                     workstations.forEach(element => {
-                       
+
                        $("#sala-row").append(`
                        <div  id="sala-${element.id}"  class="col-12 row">
                             <div class="form-group col-10">

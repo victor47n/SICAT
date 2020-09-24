@@ -133,12 +133,7 @@
 
 @section('js')
     <script>
-        // $('[data-mask]').inputmask();
-
         $(document).ready(function () {
-            // var now = new Date()
-            // console.log(now);
-            // $('#inputDate').attr('min', now.getFullYear() + '-' + ("0" + (now.getMonth() + 1)).slice(-2) + '-' + ("0" + now.getDate()).slice(-2));
 
             $('#inputPhone').inputmask('(99) 9999[9]-9999', {showMaskOnFocus: false, showMaskOnHover: false, removeMaskOnSubmit: true, autoUnmask: true});
             $('#inputAmount').inputmask({
