@@ -3,25 +3,42 @@
 @section('title', 'Ordens de serviço')
 
 @section('content_header')
-    <h1>Ordens de serviço</h1>
+<h1>Ordens de serviço</h1>
 @stop
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href={{route('dashboard.index')}}>Home</a></li>
-    <li class="breadcrumb-item active">Ordens de serviço</li>
-    <li class="breadcrumb-item active">Listar</li>
+<li class="breadcrumb-item"><a href={{route('dashboard.index')}}>Home</a></li>
+<li class="breadcrumb-item active">Ordens de serviço</li>
+<li class="breadcrumb-item active">Listar</li>
 @stop
 
 @section('content')
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Ordens de serviço cadastradas</h3>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Ordens de serviço cadastradas</h3>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <h4>Data de cadastro</h4>
+                        <label>A partir de:</label>
+                        <input id="dc_inicio" type="date" class="form-control">
+                        <label>Até:</label>
+                        <input id="dc_fim" type="date" class="form-control">
+                    </div>
+                    <div class="col-6">
+                        <h4>Data agendada</h4>
+                        <label>A partir de:</label>
+                        <input id="ds_inicio" type="date" class="form-control">
+                        <label>Até:</label>
+                        <input id="ds_fim" type="date" class="form-control">
+                    </div>
+
                 </div>
-                <div class="card-body">
-                    <table id="tOS" class="table table-hover table-borderless">
-                        <thead class="thead-dark">
+                <table id="tOS" class="table table-hover table-borderless">
+                    <thead class="thead-dark">
                         <tr role="row">
                             <th>ID</th>
                             <th class="sorting">Descrição</th>
@@ -34,185 +51,182 @@
                             <th class="sorting">Estado</th>
                             <th>Opções</th>
                         </tr>
-                        </thead>
-                    </table>
-                </div>
+                    </thead>
+                </table>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Modal visualizar -->
-    <div class="modal fade" id="modalView" tabindex="-1" role="dialog" aria-labelledby="modalViewLabel"
-         aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalViewLabel">Visualizar ordem de serviço</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="formView">
-                        <fieldset disabled>
-                            <div class="row">
-                                <div class="form-group  col-md-12">
-                                    <label for="inputProblemView">Descrição</label>
-                                    <input type="text" class="form-control" id="inputProblemView">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="form-group col-md-4">
-                                    <label for="inputProblemTypeView">Problema</label>
-                                    <input type="text" class="form-control" id="inputProblemTypeView">
-                                </div>
-                                <div class="form-group col-md-4">
-                                    <label for="inputLocaleView">Local</label>
-                                    <input type="text" class="form-control" id="inputLocaleView">
-                                </div>
-                                <div class="form-group col-md-4">
-                                    <label for="inputWorkstationView">Posto de Trabalho</label>
-                                    <input type="text" class="form-control" id="inputWorkstationView">
-
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="form-group col-md-4">
-                                    <label for="inputRealizedDateView">Data</label>
-                                    <input type="text" class="form-control" id="inputRealizedDateView">
-                                    </select>
-                                </div>
-                                <div class="form-group col-md-4">
-                                    <label for="inputDesignatedEmployeeView">Funcionário designado</label>
-                                    <input type="text" class="form-control" id="inputDesignatedEmployeeView">
-                                </div>
-                                <div class="form-group col-md-4">
-                                    <label for="inputStatusView">Status</label>
-                                    <input type="text" class="form-control" id="inputStatusView">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="form-group col-md-12">
-                                    <label for="inputSolverEmployeeView">Realizado por:</label>
-                                    <input type="text" class="form-control" id="inputSolverEmployeeView">
-                                </div>
-
-                                <div class="form-group col-md-12">
-                                    <label for="inputSolutionProblem">Solução: </label>
-                                    <textarea type="text" class="form-control" id="inputSolutionProblemView">
-                                </textarea>
-                                </div>
-                            </div>
-                        </fieldset>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-                </div>
+<!-- Modal visualizar -->
+<div class="modal fade" id="modalView" tabindex="-1" role="dialog" aria-labelledby="modalViewLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalViewLabel">Visualizar ordem de serviço</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-        </div>
-    </div>
-    <!--Fim Modal -->
-
-    <!-- Modal editar -->
-    <div class="modal fade" id="modalEdit" tabindex="-1" role="dialog" aria-labelledby="modalEditLabel"
-         aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="overlay">
-                    <div class="d-flex h-100 justify-content-center align-items-center">
-                        <div class="spinner-border" role="status">
-                            <span class="sr-only">Loading...</span>
+            <div class="modal-body">
+                <form id="formView">
+                    <fieldset disabled>
+                        <div class="row">
+                            <div class="form-group  col-md-12">
+                                <label for="inputProblemView">Descrição</label>
+                                <input type="text" class="form-control" id="inputProblemView">
+                            </div>
                         </div>
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <label for="inputProblemTypeView">Problema</label>
+                                <input type="text" class="form-control" id="inputProblemTypeView">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="inputLocaleView">Local</label>
+                                <input type="text" class="form-control" id="inputLocaleView">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="inputWorkstationView">Posto de Trabalho</label>
+                                <input type="text" class="form-control" id="inputWorkstationView">
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <label for="inputRealizedDateView">Data</label>
+                                <input type="text" class="form-control" id="inputRealizedDateView">
+                                </select>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="inputDesignatedEmployeeView">Funcionário designado</label>
+                                <input type="text" class="form-control" id="inputDesignatedEmployeeView">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="inputStatusView">Status</label>
+                                <input type="text" class="form-control" id="inputStatusView">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-12">
+                                <label for="inputSolverEmployeeView">Realizado por:</label>
+                                <input type="text" class="form-control" id="inputSolverEmployeeView">
+                            </div>
+
+                            <div class="form-group col-md-12">
+                                <label for="inputSolutionProblem">Solução: </label>
+                                <textarea type="text" class="form-control" id="inputSolutionProblemView">
+                                </textarea>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Fim Modal -->
+
+<!-- Modal editar -->
+<div class="modal fade" id="modalEdit" tabindex="-1" role="dialog" aria-labelledby="modalEditLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="overlay">
+                <div class="d-flex h-100 justify-content-center align-items-center">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Loading...</span>
                     </div>
                 </div>
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalEditLabel">Atualizar ordem de serviço </h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form method="post" id="formEdit">
-                        {{ csrf_field() }}
-                        @method('PUT')
-                        <input type="hidden" name="id" id="id">
-                        <div class="form-group col-md-12">
-                            <label for="inputProblemEdit">Descrição</label>
-                            <input disabled type="text" class="form-control" id="inputProblemEdit" name="problem"
-                                   placeholder="Nome">
+            </div>
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalEditLabel">Atualizar ordem de serviço </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" id="formEdit">
+                    {{ csrf_field() }}
+                    @method('PUT')
+                    <input type="hidden" name="id" id="id">
+                    <div class="form-group col-md-12">
+                        <label for="inputProblemEdit">Descrição</label>
+                        <input disabled type="text" class="form-control" id="inputProblemEdit" name="problem"
+                            placeholder="Nome">
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-4">
+                            <label for="inputProblemTypeEdit">Problema</label>
+                            <input disabled type="input" class="form-control" id="inputProblemTypeEdit">
                         </div>
-                        <div class="row">
-                            <div class="form-group col-md-4">
-                                <label for="inputProblemTypeEdit">Problema</label>
-                                <input disabled type="input" class="form-control" id="inputProblemTypeEdit">
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label for="inputLocaleEdit">Local</label>
-                                <input disabled type="input" class="form-control" id="inputLocaleEdit">
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label for="inputWorkstationEdit">Posto de Trabalho</label>
-                                <input disabled type="input" class="form-control" id="inputWorkstationEdit">
-                            </div>
+                        <div class="form-group col-md-4">
+                            <label for="inputLocaleEdit">Local</label>
+                            <input disabled type="input" class="form-control" id="inputLocaleEdit">
                         </div>
-                        <div class="row">
-                            <div class="form-group col-md-4">
-                                <label for="inputRealizedDateEdit">Data</label>
-                                <input type="date" class="form-control" id="inputRealizedDateEdit" name="realized_date">
-                                </select>
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label for="inputDesignatedEmployeeEdit">Funcionário designado</label>
-                                <select class="form-control" id="inputDesignatedEmployeeEdit"
-                                        name="designated_employee">
-                                    @foreach ($employee as $item)
-                                        <option value="{{$item->id}}">{{$item->name}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label for="inputStatusEdit">Status</label>
-                                <select class="form-control" id="inputStatusEdit" name="status_id">
-                                    @foreach ($statuses as $status)
-                                        <option value="{{$status->id}}">{{$status->name}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
+                        <div class="form-group col-md-4">
+                            <label for="inputWorkstationEdit">Posto de Trabalho</label>
+                            <input disabled type="input" class="form-control" id="inputWorkstationEdit">
                         </div>
-                        <div class="form-group col-md-12">
-                            <label for="name">Realizado por:</label>
-                            <select class="form-control" id="inputSolverEmployeeEdit" name="solver_employee">
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-4">
+                            <label for="inputRealizedDateEdit">Data</label>
+                            <input type="date" class="form-control" id="inputRealizedDateEdit" name="realized_date">
+                            </select>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="inputDesignatedEmployeeEdit">Funcionário designado</label>
+                            <select class="form-control" id="inputDesignatedEmployeeEdit" name="designated_employee">
                                 @foreach ($employee as $item)
-                                    <option value="{{$item->id}}">{{$item->name}}</option>
+                                <option value="{{$item->id}}">{{$item->name}}</option>
                                 @endforeach
                             </select>
                         </div>
-                        <div class="form-group col-md-12">
-                            <label for="name">Solução: </label>
-                            <textarea type="text" class="form-control" id="inputSolutionProblemEdit"
-                                      name="solution_problem" placeholder="Solução">
-                                </textarea>
+                        <div class="form-group col-md-4">
+                            <label for="inputStatusEdit">Status</label>
+                            <select class="form-control" id="inputStatusEdit" name="status_id">
+                                @foreach ($statuses as $status)
+                                <option value="{{$status->id}}">{{$status->name}}</option>
+                                @endforeach
+                            </select>
                         </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-                    <button type="button" class="btn btn-primary" id="updateButton">Salvar mudanças</button>
-                </div>
+                    </div>
+                    <div class="form-group col-md-12">
+                        <label for="name">Realizado por:</label>
+                        <select class="form-control" id="inputSolverEmployeeEdit" name="solver_employee">
+                            @foreach ($employee as $item)
+                            <option value="{{$item->id}}">{{$item->name}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group col-md-12">
+                        <label for="name">Solução: </label>
+                        <textarea type="text" class="form-control" id="inputSolutionProblemEdit" name="solution_problem"
+                            placeholder="Solução">
+                                </textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-primary" id="updateButton">Salvar mudanças</button>
             </div>
         </div>
     </div>
-    <!--Fim Modal -->
+</div>
+<!--Fim Modal -->
 
 
 @stop
 
 @section('footer')
-    <div class="float-right d-none d-sm-inline">
-        <strong>Versão</strong> 1.0
-    </div>
-    <strong>Copyright &copy; {{date("Y")}} <a href="#">Carlos A. & Victor H</a>.</strong> Todos os direitos reservados.
+<div class="float-right d-none d-sm-inline">
+    <strong>Versão</strong> 1.0
+</div>
+<strong>Copyright &copy; {{date("Y")}} <a href="#">Carlos A. & Victor H</a>.</strong> Todos os direitos reservados.
 @stop
 
 @section('css')
@@ -222,11 +236,21 @@
 @section('plugins.Sweetalert2', true)
 
 @section('js')
-    <script>
-        $(document).ready(function () {
+<script>
+    var ordensServico;
+
+
+    $(document).ready(function () {
             // $.fn.dataTable.moment('DD/MM/YYYY');
 
             var table = $('#tOS');
+
+            $("#dc_inicio, #dc_fim, #ds_inicio,#ds_fim").on("change",function(e){
+                $('#tOS').DataTable().draw();
+                e.preventDefault();
+                console.log("A")
+            });
+
             table.DataTable({
                 processing: true,
                 serverSide: true,
@@ -387,6 +411,12 @@
                 dom: 'B<"row mt-3" <"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>rt<"row mt-3" <"col-sm-12 col-md-5" i><"col-sm-12 col-md-7" p>>',
                 ajax: {
                     url: '{{ route('order.index') }}',
+                    data: function (d) {
+                        d.dc_inicio = $('#dc_inicio').val();
+                        d.dc_fim = $('#dc_fim').val();
+                        d.ds_inicio = $('#ds_inicio').val();
+                        d.ds_fim = $('#ds_fim').val();
+                    },
                 },
                 columns: [
 
@@ -454,7 +484,7 @@
                     },
                     {
                         targets: [2, 3],
-                        render: $.fn.dataTable.render.moment('YYYY-MM-DD HH:mm:ss', 'DD/MM/YYYY')
+                        render: $.fn.dataTable.render.moment( 'YYYY-MM-DD HH:mm:ss', 'DD/MM/YYYY')
                     },
                 ],
                 drawCallback: function () {
@@ -515,7 +545,7 @@
                         $("#inputProblemTypeView").val(_data.problem_type);
                         $("#inputLocaleView").val(_data.locale);
                         $("#inputWorkstationView").val(_data.workstation);
-                        $("#inputRealizedDateView").val(date.toLocaleDateString());
+                        $("#inputRealizedDateView").val(("0" + date.getDate()).slice(-2) + "/" + ("0" + (date.getMonth() + 1)).slice(-2) + "/" + date.getFullYear());
                         $("#inputDesignatedEmployeeView").val(_data.designated);
                         $("#inputSolverEmployeeView").val(_data.solver);
                         $("#inputSolutionProblemView").val(_data.solution_problem);
@@ -651,8 +681,9 @@
             });
         }
 
-    </script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
-    <script src="//cdn.datatables.net/plug-ins/1.10.21/dataRender/datetime.js"></script>
+</script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
+<script src="//cdn.datatables.net/plug-ins/1.10.21/sorting/datetime-moment.js"></script>
+<script src="//cdn.datatables.net/plug-ins/1.10.21/dataRender/datetime.js"></script>
 
 @stop

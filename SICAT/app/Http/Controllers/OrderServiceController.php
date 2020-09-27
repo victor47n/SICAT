@@ -39,7 +39,25 @@ class OrderServiceController extends Controller
                 )
                 ->get();
 
-            return DataTables::of($serviceOrders)->addColumn('action', function ($data) {
+            return DataTables::of($serviceOrders)
+                ->filter(function ($query) use ($request) {
+                    if ($request->get('dc_inicio') != null) {
+                        $query->where('order_services.created_at', '>=', $request->get('dc_inicio'));
+                    }
+
+                    if ($request->get('dc_fim') != null) {
+                        $query->where('order_services.created_at', '<=', $request->get('dc_fim'));
+                    }
+
+                    if ($request->get('ds_inicio') != null) {
+                        $query->where('order_services.realized_date', '>=', $request->get('ds_inicio'));
+                    }
+
+                    if ($request->get('ds_fim') != null) {
+                        $query->where('order_services.realized_date', '<=', $request->get('ds_fim'));
+                    }
+                })
+                ->addColumn('action', function ($data) {
 
                 $result = '<div class="btn-group btn-group-sm" role="group" aria-label="Exemplo básico">';
                 if (Gate::allows('rolesUser', 'order_service_view')) {
@@ -52,9 +70,9 @@ class OrderServiceController extends Controller
                     $result .= '<button type="button" id="' . $data->id . '" class="btn btn-danger" onclick="disable(' . $data->id . ')"><i class="fas fa-fw fa-trash"></i>Cancelar</button>';
                 }
 
-                $result .= '</div>';
-                return $result;
-            })
+                    $result .= '</div>';
+                    return $result;
+                })
                 ->rawColumns(['action'])
                 ->make(true);
         } else {
