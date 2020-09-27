@@ -36,8 +36,7 @@ class OrderServiceController extends Controller
                     DB::raw("(SELECT name FROM users WHERE `order_services`.`solver_employee` = `users`.`id`) AS `solver`"),
                     "workstations.name as workstation",
                     "locales.name as locale"
-                )
-                ->get();
+                );
 
             return DataTables::of($serviceOrders)
                 ->filter(function ($query) use ($request) {
