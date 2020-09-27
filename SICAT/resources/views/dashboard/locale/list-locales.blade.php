@@ -3,83 +3,122 @@
 @section('title', 'Postos de Trabalhos')
 
 @section('content_header')
-<h1>Postos de trabalho</h1>
+    <h1>Postos de trabalho</h1>
 @stop
 
 @section('breadcrumb')
-<li class="breadcrumb-item"><a href={{route('dashboard.index')}}>Home</a></li>
-<li class="breadcrumb-item active">Postos de trabalho</li>
-<li class="breadcrumb-item active">Listar</li>
+    <li class="breadcrumb-item"><a href={{route('dashboard.index')}}>Home</a></li>
+    <li class="breadcrumb-item active">Postos de trabalho</li>
+    <li class="breadcrumb-item active">Listar</li>
 @stop
 
 @section('content')
-<div class="row">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">Cadastros de Postos de trabalho</h3>
-            </div>
-            <div class="card-body">
-                <table id="tLocales" class="table table-hover table-bordered">
-                    <thead class="thead-dark">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Cadastros de Postos de trabalho</h3>
+                </div>
+                <div class="card-body">
+                    <table id="tLocales" class="table table-hover table-bordered">
+                        <thead class="thead-dark">
                         <tr role="row">
                             <th class="sorting">ID</th>
-                            <th class="sorting_asc">Nome</th>
+                            <th class="sorting_asc">Local</th>
+                            <th>Salas</th>
                             <th>Opções</th>
                         </tr>
-                    </thead>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<!-- Modal -->
-<div class="modal fade" id="modalEdit" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="overlay">
-                <div class="d-flex h-100 justify-content-center align-items-center">
-                    <div class="spinner-border" role="status">
-                        <span class="sr-only">Loading...</span>
-                    </div>
+                        </thead>
+                    </table>
                 </div>
             </div>
-            <div class="modal-header">
-                <h5 class="modal-title" id="editModalLabel">Editar Local</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form method="post" id="formEdit" novalidate="novalidate">
-                    {{ csrf_field() }}
-                    @method('PUT')
-                    <div class="form-group">
-                        <label for="inputName">Nome</label>
-                        <input type="text" class="form-control" id="inputName" name="name">
-                    </div>
-                    <h3>Salas</h3>
-                    <div id="sala-row" class="form-row">
+        </div>
+    </div>
 
+
+    <!-- Modal -->
+    <div class="modal fade" id="modalView" tabindex="-1" role="dialog" aria-labelledby="modalViewLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="overlay">
+                    <div class="d-flex h-100 justify-content-center align-items-center">
+                        <div class="spinner-border" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
                     </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-                <button type="button" class="btn btn-primary" id="updateButton">Salvar mudanças</button>
+                </div>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalViewLabel">Editar Local</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h4 class="text-bold text-left mb-4">Local</h4>
+                    <form id="formView" novalidate="novalidate">
+                        <fieldset disabled>
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="inputNameView">
+                            </div>
+                            <h4 class="text-bold text-left mb-4 mt-4">Salas</h4>
+                            <div id="sala-row-view">
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
+
+    <div class="modal fade" id="modalEdit" tabindex="-1" role="dialog" aria-labelledby="modalEditLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="overlay">
+                    <div class="d-flex h-100 justify-content-center align-items-center">
+                        <div class="spinner-border" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalEditLabel">Editar Local</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" id="formEdit" novalidate="novalidate">
+                        {{ csrf_field() }}
+                        @method('PUT')
+                        <div class="form-group">
+                            <label for="inputName">Nome</label>
+                            <input type="text" class="form-control" id="inputNameEdit" name="name">
+                        </div>
+                        <h3>Salas</h3>
+                        <div id="sala-row-edit">
+
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-primary" id="updateButton">Salvar mudanças</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @stop
 
 @section('footer')
-<div class="float-right d-none d-sm-inline">
-    <strong>Versão</strong> 1.0
-</div>
-<strong>Copyright &copy; {{date("Y")}} <a href="#">Carlos A. & Victor H</a>.</strong> Todos os direitos reservados.
+    <div class="float-right d-none d-sm-inline">
+        <strong>Versão</strong> 1.0
+    </div>
+    <strong>Copyright &copy; {{date("Y")}} <a href="#">Carlos A. & Victor H</a>.</strong> Todos os direitos reservados.
 @stop
 
 @section('css')
@@ -89,38 +128,9 @@
 @section('plugins.Sweetalert2', true)
 
 @section('js')
-<script>
-    const Toast = Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000
-        });
-
-    function clearModal(formModal) {
-
-            $("#" +formModal).addClass('d-none');
-            $("#" +formModal)[0].reset();
-        }
-
-        function loader() {
-            this.id = '.overlay'
-        };
-
-        loader.prototype.show = function () {
-            $(this.id).fadeIn();
-        };
-
-        loader.prototype.hide = function () {
-            $(this.id).fadeOut('slow', function () {
-                $(this.id).attr("style", "display: none !important");
-            });
-        };
-
-        loaderObj = new loader();
-
-    $(document).ready(function () {
-            var table = $('#tLocales');
+    <script>
+        $(document).ready(function () {
+            let table = $('#tLocales');
             table.DataTable({
                 processing: true,
                 serverSide: true,
@@ -195,6 +205,11 @@
                         name: 'name'
                     },
                     {
+                        data: 'workstations[,].name',
+                        name: 'workstations[,].name',
+                        orderable: false,
+                    },
+                    {
                         data: 'action',
                         name: 'action',
                         searchable: false,
@@ -210,7 +225,22 @@
                     },
                     {
                         targets: 2,
-                        width: "20%",
+                        render: function (data) {
+                            let dbData = data.split(',')
+                            let items = '';
+                            let arr = ['primary', 'secondary', 'success', 'danger', 'info', 'dark', 'warning'];
+                            for (let i = 0; i < dbData.length; i++) {
+                                let idx = Math.floor(Math.random() * arr.length);
+                                items += '<span class="badge badge-' + arr[idx] + ' mr-1 ml-1">' + dbData[i] + '</span>'
+                            }
+                            items += '...';
+                            return items;
+                        }
+                    },
+                    {
+                        targets: 3,
+                        width: "30%",
+                        visible: {{Gate::allows('rolesUser', ['workstation_disable', 'workstation_edit', 'workstation_view']) ? 'true' : 'false'}}
                     }
                 ],
                 drawCallback: function () {
@@ -220,54 +250,89 @@
             });
         });
 
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000
+        });
 
-        function showEditModal(id) {
+        function clearModal(formModal) {
+
+            $("#" + formModal).addClass('d-none');
+            $("#" + formModal)[0].reset();
+        }
+
+        function loader() {
+            this.id = '.overlay'
+        };
+
+        loader.prototype.show = function () {
+            $(this.id).fadeIn();
+        };
+
+        loader.prototype.hide = function () {
+            $(this.id).fadeOut('slow', function () {
+                $(this.id).attr("style", "display: none !important");
+            });
+        };
+
+        loaderObj = new loader();
+
+        $('#modalEdit').on('show.bs.modal', function (event) {
             clearModal('formEdit');
             loaderObj.show();
-
+            let button = $(event.relatedTarget); // Botão que acionou o modal
+            let recipient = button.data('whatever'); // Extrai informação dos atributos data-*
             $.ajax({
                 type: 'GET',
-                url: `locais/${id}`,
+                url: 'locais/' + recipient,
                 context: 'json',
                 success: function (data) {
-                    $("#sala-row").html('');
-                    $('#inputName').val(data.name);
+                    $("#formEdit").removeClass('d-none');
+                    $("#sala-row-edit").html('');
+                    $('#inputNameEdit').val(data.name);
 
-                    workstations = data.workstation;
+                    let workstations = data.workstation;
 
                     workstations.forEach(element => {
-                        statusButton ="";
-                       if(element.status == 'able'){
-                            statusButton = `<button id="delete-${element.id}"  onclick="disableWorkstation(${element.id})" type="button" class="btn btn-success"><i class="fas fa-check"></i></button>`
-                        }else{
-                            statusButton = `<button id="delete-${element.id}" onclick="ableWorkstation(${element.id})" type="button" class="btn btn-danger"><i class="fas fa-times"></i></button>`
+                        let statusButton = "";
 
+                        let status;
+
+                        if (element.deleted_at == null) {
+                            status = 'able';
+                        } else {
+                            status = 'disable';
                         }
 
-                       $("#sala-row").append(`
-                       <div  id="sala-${element.id}"  class="col-12 row">
+                        if (status === 'able') {
+                            statusButton = `<button id="delete-${element.id}"  onclick="disableWorkstation(${element.id})" type="button" class="btn btn-danger btn-block"><i class="fas fa-fw fa-trash"></i></button>`
+                        } else {
+                            statusButton = `<button id="delete-${element.id}" onclick="ableWorkstation(${element.id})" type="button" class="btn btn-primary btn-block"><i class="fas fa-fw fa-trash-restore"></i></button>`
+                        }
+
+                        $("#sala-row-edit").append(`
+                       <div id="sala-row-${element.id}" class="row">
                             <div class="form-group col-10">
-                                    <input type="text" data-status=${element.status} onfocusout="updateWorkstation(${element.id})" value="${element.name}" class="form-control" id="sala[]" name="sala[]" placeholder="Nome da sala">
+                                    <input type="text" data-status=${status} onfocusout="updateWorkstation(${element.id})" value="${element.name}" class="form-control" id="sala-${element.id}" name="sala[]" placeholder="Nome da sala">
                             </div>
-                            <div class="col-auto">${statusButton}</div>
+                            <div class="col-xs-12 col-md-2">${statusButton}</div>
                         </div>`);
-
-
                     });
 
-                    $("#sala-row").append(`
-                        <div  id="sala"  class="col-12 row">
+                    $("#sala-row-edit").append(`
+                        <div  id="sala-row" class="row">
                             <div class="form-group col-10">
-                                    <input type="text" class="form-control" id="novasala" name="novasala"  placeholder="Nome da sala">
+                                    <input type="text" class="form-control" id="novasala" name="novasala" placeholder="Nome da sala">
                             </div>
-                            <div class="col-auto">
-                                <button id="insert" onclick="addworkstation(${data.id})" type="button" class="btn btn-info"><i class="fas fa-plus"></i></button>
+                            <div class="col-xs-12 col-md-2">
+                                <button id="insert" onclick="addworkstation(${data.id})" type="button" class="btn btn-info btn-block"><i class="fas fa-plus"></i></button>
                             </div>
                         </div>`);
 
                     $('#updateButton').attr('onclick', 'update(' + data.id + ')').show();
                     $('#modalEdit').modal('show');
-                    $("#formEdit").removeClass('d-none');
                     loaderObj.hide();
 
                 },
@@ -275,60 +340,58 @@
                     console.log('Ocorreu um erro ao encontrar o funcionário');
                 }
             });
-        }
+        });
 
-        function showModal(id) {
-            clearModal('formEdit');
+        $('#modalView').on('show.bs.modal', function (event) {
+            clearModal('formView');
             loaderObj.show();
-
+            let button = $(event.relatedTarget); // Botão que acionou o modal
+            let recipient = button.data('whatever'); // Extrai informação dos atributos data-*
             $.ajax({
                 type: 'GET',
-                url: `locais/${id}`,
+                url: 'locais/' + recipient,
                 context: 'json',
                 success: function (data) {
-                    $("#sala-row").html('');
-                    $('#inputName').val(data.name);
-                    workstations = data.workstation;
+                    $("#formView").removeClass('d-none');
+                    $("#sala-row-view").html('');
+                    $('#inputNameView').val(data.name);
+
+                    let workstations = data.workstation;
 
                     workstations.forEach(element => {
 
-                       $("#sala-row").append(`
-                       <div  id="sala-${element.id}"  class="col-12 row">
-                            <div class="form-group col-10">
-                                    <input type="text" data-status=${element.status} onfocusout="updateWorkstation(${element.id})" value="${element.name}" class="form-control" id="sala[]" name="sala[]" placeholder="Nome da sala">
+                        $("#sala-row-view").append(`
+                       <div class="row">
+                            <div class="form-group col-12">
+                                    <input type="text" data-status=${element.status} value="${element.name}" class="form-control" id="sala-${element.id}">
                             </div>
                         </div>`);
 
 
                     });
-
-                    $('#updateButton').removeAttr('onclick').hide();
-                    $('#modalEdit').modal('show');
-                    $("#formEdit").removeClass('d-none');
                     loaderObj.hide();
-
                 },
                 error: function () {
                     console.log('Ocorreu um erro ao encontrar o local');
                 }
             });
-        }
+        });
 
         function update(id) {
             $.ajax({
                 type: 'PUT',
                 url: `locais/${id}`,
                 headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        },
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 dataType: 'json',
-                data: {name: $('#inputName').val()},
+                data: {name: $('#inputNameEdit').val()},
                 success: function (data) {
                     Toast.fire({
                         type: 'success',
                         title: data.message
                     });
-                    $('#tLocais').DataTable().ajax.reload();
+                    $('#tLocales').DataTable().ajax.reload();
                 },
                 error: function (data) {
                     Toast.fire({
@@ -363,7 +426,7 @@
                                 text: data.message,
                                 type: 'success'
                             });
-                            $('#tLocais').DataTable().ajax.reload();
+                            $('#tLocales').DataTable().ajax.reload();
                         },
                         error: function (data) {
                             Swal.fire({
@@ -377,12 +440,12 @@
             });
         }
 
-        function updateWorkstation(id){
+        function updateWorkstation(id) {
             $.ajax({
                 type: 'PUT',
                 url: `postos/${id}`,
                 dataType: 'json',
-                data: {name: $("#sala-"+id+" div input").val()},
+                data: {name: $("#sala-row" + id + " div input").val()},
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
@@ -413,12 +476,12 @@
                                 type: 'success'
                             });
 
-                            $("#sala-"+id+" > div > input").attr("data-status", "disable");
-                            $("#delete-"+id).attr('onclick', 'ableWorkstation(' + id + ')')
-                                .toggleClass("btn-success btn-danger")
-                                .html(`<i class="fas fa-times"></i>`);
+                            $("#sala-" + id + " > div > input").attr("data-status", "disable");
+                            $("#delete-" + id).attr('onclick', 'ableWorkstation(' + id + ')')
+                                .toggleClass("btn-danger btn-primary")
+                                .html(`<i class="fas fa-fw fa-trash-restore"></i>`);
 
-                           // $('#tLocais').DataTable().ajax.reload();
+                            $('#tLocales').DataTable().ajax.reload();
                         },
                         error: function (data) {
                             Swal.fire({
@@ -456,12 +519,12 @@
                                 type: 'success'
                             });
 
-                            $("#sala-"+id+" > div > input").attr("data-status", "able");
-                            $("#delete-"+id).attr('onclick', 'disableWorkstation(' + id + ')')
-                                .toggleClass("btn-success btn-danger")
-                                .html(`<i class="fas fa-check"></i>`)
+                            $("#sala-" + id + " > div > input").attr("data-status", "able");
+                            $("#delete-" + id).attr('onclick', 'disableWorkstation(' + id + ')')
+                                .toggleClass("btn-primary btn-danger")
+                                .html(`<i class="fas fa-fw fa-trash"></i>`)
 
-                        // $('#tLocais').DataTable().ajax.reload();
+                            $('#tLocales').DataTable().ajax.reload();
                         },
                         error: function (data) {
                             Swal.fire({
@@ -474,7 +537,6 @@
                 }
             });
         }
-
 
         function ableWorkstation(id) {
             Swal.fire({
@@ -500,12 +562,12 @@
                                 type: 'success'
                             });
 
-                            $("#sala-"+id+" > div > input").attr("data-status", "able");
-                            $("#delete-"+id).attr('onclick', 'disableWorkstation(' + id + ')')
-                                .toggleClass("btn-success btn-danger")
-                                .html(`<i class="fas fa-check"></i>`)
+                            $("#sala-" + id + " > div > input").attr("data-status", "able");
+                            $("#delete-" + id).attr('onclick', 'disableWorkstation(' + id + ')')
+                                .toggleClass("btn-primary btn-danger")
+                                .html(`<i class="fas fa-fw fa-trash"></i>`)
 
-                        // $('#tLocais').DataTable().ajax.reload();
+                            $('#tLocales').DataTable().ajax.reload();
                         },
                         error: function (data) {
                             Swal.fire({
@@ -519,12 +581,12 @@
             });
         }
 
-        function addworkstation(id){
+        function addworkstation(id) {
             $.ajax({
                 type: 'POST',
                 url: "{{ route('workstation.store') }}",
                 headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 dataType: 'json',
                 data: {
@@ -538,16 +600,21 @@
                     });
 
                     data = data.data;
-                    $(`<div id="sala-${data.id}" class="col-12 row">
-                    <div class="form-group col-10">
-                        <input type="text" data-status="" value=${data.name} class="form-control" id="sala[]" name="sala[]" placeholder="Nome da sala">
-                    </div>
-                    <div class="col-auto">
-                        <button id="delete-${data.id}" onclick="disableWorkstation(${data.id})" type="button" class="btn btn-success"><i class="fas fa-check"></i></button>
-                    </div>
-                    </div>`).insertBefore("#sala");
 
-                    $('#tLocais').DataTable().ajax.reload();
+                    console.log(data);
+
+                    $(`<div id="sala-${data.id}" class="row">
+                    <div class="form-group col-10">
+                        <input type="text" data-status="able" value="${data.name}" class="form-control" id="sala-${data.id}" name="sala[]" placeholder="Nome da sala">
+                    </div>
+                    <div class="col-xs-12 col-md-2">
+                        <button id="delete-${data.id}" onclick="disableWorkstation(${data.id})" type="button" class="btn btn-danger btn-block"><i class="fas fa-fw fa-trash"></i></button>
+                    </div>
+                    </div>`).insertBefore("#sala-row");
+
+                    $('#novasala').val('');
+
+                    $('#tLocales').DataTable().ajax.reload();
                 },
                 error: function (data) {
                     Toast.fire({
@@ -558,5 +625,5 @@
                 }
             });
         }
-</script>
+    </script>
 @stop

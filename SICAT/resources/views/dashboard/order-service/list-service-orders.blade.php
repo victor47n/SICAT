@@ -454,7 +454,7 @@
                     },
                     {
                         targets: [2, 3],
-                        render: $.fn.dataTable.render.moment( 'YYYY-MM-DD HH:mm:ss', 'DD/MM/YYYY')
+                        render: $.fn.dataTable.render.moment('YYYY-MM-DD HH:mm:ss', 'DD/MM/YYYY')
                     },
                 ],
                 drawCallback: function () {
@@ -515,7 +515,7 @@
                         $("#inputProblemTypeView").val(_data.problem_type);
                         $("#inputLocaleView").val(_data.locale);
                         $("#inputWorkstationView").val(_data.workstation);
-                        $("#inputRealizedDateView").val(("0" + date.getDate()).slice(-2) + "/" + ("0" + (date.getMonth() + 1)).slice(-2) + "/" + date.getFullYear());
+                        $("#inputRealizedDateView").val(date.toLocaleDateString());
                         $("#inputDesignatedEmployeeView").val(_data.designated);
                         $("#inputSolverEmployeeView").val(_data.solver);
                         $("#inputSolutionProblemView").val(_data.solution_problem);
@@ -653,7 +653,6 @@
 
     </script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
-    <script src="//cdn.datatables.net/plug-ins/1.10.21/sorting/datetime-moment.js"></script>
     <script src="//cdn.datatables.net/plug-ins/1.10.21/dataRender/datetime.js"></script>
 
 @stop

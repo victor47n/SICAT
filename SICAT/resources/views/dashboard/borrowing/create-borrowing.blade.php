@@ -69,7 +69,7 @@
                             <div class="form-group col-md-12 col-lg-4">
                                 <label for="inputDate">Data de aquisição</label>
                                 <input type="date" class="form-control" id="inputDate" name="acquisition_date"
-                                       placeholder="dd/mm/aaaa" required min="{{ date("Y-m-d", strtotime("-1 days")) }}" value="{{ date("Y-m-d", strtotime("-1 days")) }}">
+                                       placeholder="dd/mm/aaaa" required min="{{ date("Y-m-d") }}" value="{{ date("Y-m-d") }}">
                             </div>
                             <div class="form-group col-md-12 col-lg-4">
                                 <label for="inputStatus">Status</label>

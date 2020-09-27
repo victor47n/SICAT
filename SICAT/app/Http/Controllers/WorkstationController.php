@@ -15,16 +15,28 @@ class WorkstationController extends Controller
     {
         try {
             $data = $req->all();
-            $local = null;
-            DB::beginTransaction();
 
-            $local = Locale::find($data['id']);
-            $result =  $local->workstation()->create(["name" => $data['name']]);
-            DB::commit();
+            DB::transaction(function () use ($data) {
+                $local = Locale::find($data['id']);
+                $local->workstation()->create(["name" => $data['name']]);
+            });
 
-            return response()->json(["message" => "Cadastrado com sucesso", "data" => $result]);
+            $result = DB::table('workstations')
+                ->select('id', 'name')
+                ->where('name', '=', $data['name'])
+                ->where('locale_id', '=', $data['id'])
+                ->first();
+
+//            dd($result->data);
+
+            return response()->json(["message" => "Cadastrado com sucesso", "data" => $result], 201);
         } catch (Exception $e) {
-            DB::rollBack();
+//            DB::rollBack();
+            if (config('app.debug')) {
+                return response()->json(["message" => $e->getMessage()], 400);
+            }
+
+            return response()->json(["message" => $e->getMessage()], 400);
         }
     }
 
@@ -50,9 +62,7 @@ class WorkstationController extends Controller
     function disable($id)
     {
         try {
-            $work = Workstation::find($id);
-            $work->status = "disable";
-            $work->save();
+            Workstation::destroy($id);
 
             return response()->json(["message" => "Posto de trabalho desabilitado com sucesso!"], 201);
         } catch (Exception $e) {
@@ -68,9 +78,7 @@ class WorkstationController extends Controller
     function able($id)
     {
         try {
-            $work = Workstation::find($id);
-            $work->status = "able";
-            $work->save();
+            Workstation::withTrashed()->where('id', $id)->restore();
 
             return response()->json(["message" => "Posto de trabalho habilitado com sucesso!"], 201);
         } catch (Exception $e) {
