@@ -36,25 +36,42 @@ class OrderServiceController extends Controller
                     DB::raw("(SELECT name FROM users WHERE `order_services`.`solver_employee` = `users`.`id`) AS `solver`"),
                     "workstations.name as workstation",
                     "locales.name as locale"
-                )
-                ->get();
+                );
 
-            return DataTables::of($serviceOrders)->addColumn('action', function ($data) {
+            return DataTables::of($serviceOrders)
+                ->filter(function ($query) use ($request) {
+                    if ($request->get('dc_inicio') != null) {
+                        $query->where('order_services.created_at', '>=', $request->get('dc_inicio'));
+                    }
 
-                $result = '<div class="btn-group btn-group-sm" role="group" aria-label="Exemplo básico">';
-                if (Gate::allows('rolesUser', 'employee_view')) {
-                    $result .= '<button type="button" id="' . $data->id . '" class="btn btn-primary"  data-toggle="modal" data-target="#modalView" data-whatever="' . $data->id . '"><i class="fas fa-fw fa-eye"></i>Visualizar</button>';
-                }
-                if (Gate::allows('rolesUser', 'employee_edit') && $data->deleted_at == null && $data->status != 'Finalizado') {
-                    $result .= '<button type="button" id="' . $data->id . '" class="btn btn-secondary" data-toggle="modal" data-target="#modalEdit" data-whatever="' . $data->id . '"><i class="fas fa-fw fa-edit"></i>Editar</button>';
-                }
-                if (Gate::allows('rolesUser', 'employee_disable') && $data->deleted_at == null && $data->status != 'Finalizado') {
-                    $result .= '<button type="button" id="' . $data->id . '" class="btn btn-danger" onclick="disable(' . $data->id . ')"><i class="fas fa-fw fa-trash"></i>Cancelar</button>';
-                }
+                    if ($request->get('dc_fim') != null) {
+                        $query->where('order_services.created_at', '<=', $request->get('dc_fim'));
+                    }
 
-                $result .= '</div>';
-                return $result;
-            })
+                    if ($request->get('ds_inicio') != null) {
+                        $query->where('order_services.realized_date', '>=', $request->get('ds_inicio'));
+                    }
+
+                    if ($request->get('ds_fim') != null) {
+                        $query->where('order_services.realized_date', '<=', $request->get('ds_fim'));
+                    }
+                })
+                ->addColumn('action', function ($data) {
+
+                    $result = '<div class="btn-group btn-group-sm" role="group" aria-label="Exemplo básico">';
+                    if (Gate::allows('rolesUser', 'employee_view')) {
+                        $result .= '<button type="button" id="' . $data->id . '" class="btn btn-primary"  data-toggle="modal" data-target="#modalView" data-whatever="' . $data->id . '"><i class="fas fa-fw fa-eye"></i>Visualizar</button>';
+                    }
+                    if (Gate::allows('rolesUser', 'employee_edit') && $data->deleted_at == null && $data->status != 'Finalizado') {
+                        $result .= '<button type="button" id="' . $data->id . '" class="btn btn-secondary" data-toggle="modal" data-target="#modalEdit" data-whatever="' . $data->id . '"><i class="fas fa-fw fa-edit"></i>Editar</button>';
+                    }
+                    if (Gate::allows('rolesUser', 'employee_disable') && $data->deleted_at == null && $data->status != 'Finalizado') {
+                        $result .= '<button type="button" id="' . $data->id . '" class="btn btn-danger" onclick="disable(' . $data->id . ')"><i class="fas fa-fw fa-trash"></i>Cancelar</button>';
+                    }
+
+                    $result .= '</div>';
+                    return $result;
+                })
                 ->rawColumns(['action'])
                 ->make(true);
         } else {
@@ -77,7 +94,9 @@ class OrderServiceController extends Controller
             ->first();
 
         return view(
-            "dashboard/order-service/create-service-orders", ["locales" => $locales, "employee" => $employee, 'status' => $status]);
+            "dashboard/order-service/create-service-orders",
+            ["locales" => $locales, "employee" => $employee, 'status' => $status]
+        );
     }
 
     public function store(StoreOrderServiceRequest $request)
@@ -87,7 +106,6 @@ class OrderServiceController extends Controller
             $os = OrderService::create($data);
 
             return response()->json(["message" => "Ordem de serviço criada com sucesso"], 201);
-
         } catch (Exception $e) {
             if (config('app.debug')) {
                 return response()->json(["message" => $e->getMessage()], 400);
