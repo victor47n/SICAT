@@ -55,9 +55,6 @@ class BorrowingController extends Controller
             };
 
             return Datatables::of($borrowings)
-                ->editColumn('acquisition_date', function ($borrowing) {
-                    return $borrowing->acquisition_date ? with(new Carbon($borrowing->acquisition_date))->format('d/m/Y') : '';
-                })
                 ->addColumn('action', function ($data) {
                     $result = '<div class="btn-group btn-group-sm" role="group" aria-label="Exemplo básico">';
                     if (Gate::allows('rolesUser', 'borrowing_view')) {
