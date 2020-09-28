@@ -71,7 +71,7 @@
     <div class="col-lg-6">
         <div class="card">
             <div class="card-header border-transparent">
-                <h3 class="card-title">Ultimas Ordens de Serviço</h3>
+                <h3 class="card-title">Ultimas Ordens de Serviço ? </h3>
 
                 <div class="card-tools">
                     <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -95,14 +95,20 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @if(count($os) >=1)
                             @foreach ($os as $item)
                             <tr>
                                 <td>{{$item->id}}</td>
                                 <td>{{$item->problem_type}}</td>
-                                <td>{{$item->workstation_id}}</td>
-                                <td>{{$item->status_id}}</td>
+                                <td>{{$item->workstation}}</td>
+                                <td>{{$item->status}}</td>
                             </tr>
                             @endforeach
+                            @else
+                            <tr>
+                                <td class="text-center" colspan="4">Sem tarefas designadas a você</td>
+                            </tr>
+                            @endif
                         </tbody>
                     </table>
                 </div>
@@ -110,8 +116,9 @@
             </div>
             <!-- /.card-body -->
             <div class="card-footer clearfix">
-                <a href="javascript:void(0)" class="btn btn-sm btn-info float-left"></a>
-                <a href="javascript:void(0)" class="btn btn-sm btn-secondary float-right"></a>
+                <a href="{{route('order.index')}}" class="btn btn-sm btn-info float-left">Ver ordens de serviço</a>
+                <a href="{{route('order.create')}}" class="btn btn-sm btn-secondary float-right">Criar ordem de
+                    serviço</a>
             </div>
             <!-- /.card-footer -->
         </div>
@@ -143,14 +150,21 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($os as $item)
+                            @if(count($osAtrasadas) >=1)
+                            @foreach ($osAtrasadas as $item)
                             <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                                <td>{{$item->id}}</td>
+                                <td>{{$item->problem_type}}</td>
+                                <td>{{$item->workstation}}</td>
+                                <td>{{$item->status}}</td>
                             </tr>
                             @endforeach
+
+                            @else
+                            <tr>
+                                <td class="text-center" colspan="4">Sem tarefas se encerrando</td>
+                            </tr>
+                            @endif
                         </tbody>
                     </table>
                 </div>
@@ -158,8 +172,9 @@
             </div>
             <!-- /.card-body -->
             <div class="card-footer clearfix">
-                <a href="javascript:void(0)" class="btn btn-sm btn-info float-left"></a>
-                <a href="javascript:void(0)" class="btn btn-sm btn-secondary float-right"></a>
+                <a href="{{route('order.index')}}" class="btn btn-sm btn-info float-left">Ver ordens de serviço</a>
+                <a href="{{route('order.create')}}" class="btn btn-sm btn-secondary float-right">Criar ordem de
+                    serviço</a>
             </div>
             <!-- /.card-footer -->
         </div>

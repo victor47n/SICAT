@@ -13,10 +13,27 @@ class DashboardController extends Controller
     {
         if (Auth::check() === true) {
 
-            $os = DB::table("order_services")->orderBy("realized_date", "desc")->get();
+            $os = DB::table("order_services")
+                ->leftJoin("workstations", "order_services.workstation_id", "=", "workstations.id")
+                ->leftJoin("statuses", "statuses.id", "=", "order_services.status_id")
+                ->select('*', 'workstations.name AS workstation', 'statuses.name AS status')
+                ->where('designated_employee', '=', Auth::user()->id)
+                ->orderBy("realized_date", "desc")
+                ->limit(5)
+                ->get();
+
+            $osAtrasados = OrderService::where("realized_date", ">", "NOW()")
+                ->where("status_id", "5")
+                ->leftJoin("workstations", "order_services.workstation_id", "=", "workstations.id")
+                ->leftJoin("statuses", "statuses.id", "=", "order_services.status_id")
+                ->select('*', 'workstations.name AS workstation', 'statuses.name AS status')
+                ->where('designated_employee', '=', Auth::user()->id)
+                ->limit(5)
+                ->get();
+
+
             $quantOSPendentes = OrderService::where("realized_date", "<", "NOW()")->where("status_id", "5")->count();
             $quantOSAtrasados = OrderService::where("realized_date", ">", "NOW()")->where("status_id", "5")->count();
-            $osAtrasados = OrderService::where("realized_date", ">", "NOW()")->where("status_id", "5")->get();
             $quantOSFinalizados = OrderService::where("realized_date", "<", new \DateTime(strtotime("last day of week")))
                 ->where("realized_date", ">", new \DateTime(strtotime("first day of week")))
                 ->where("status_id", "5")->count();
