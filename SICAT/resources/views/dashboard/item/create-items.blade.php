@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'SICAT')
+@section('title', 'Itens')
 
 @section('content_header')
     <h1>Itens</h1>
@@ -69,11 +69,61 @@
 @stop
 
 @section('plugins.Inputmask', true)
+@section('plugins.Validation', true)
 @section('plugins.Sweetalert2', true)
 
 @section('js')
     <script>
-        $('[data-mask]').inputmask();
+        $(document).ready(function () {
+            $('#inputAmount').inputmask({
+                alias: 'numeric',
+                allowMinus: true,
+                min: 0,
+                digits: 0,
+                showMaskOnFocus: false,
+                showMaskOnHover: false,
+            });
+
+            $('#bForm').validate({
+                rules: {
+                    name: {
+                        required: true,
+                    },
+                    amount: {
+                        required: true,
+                        digits: true,
+                    },
+                    type_id: {
+                        required: true,
+                    },
+
+                },
+                messages: {
+                    name: {
+                        required: "O campo nome é obrigatório.",
+                    },
+                    amount: {
+                        required: "A quantidade é obrigatória.",
+                        email: "Por favor, insira uma quantidade válida."
+                    },
+                    type_id: {
+                        required: "O tipo é obrigatório.",
+                    },
+                },
+
+                errorElement: 'span',
+                errorPlacement: function (error, element) {
+                    error.addClass('invalid-feedback');
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function (element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
+                }
+            });
+        });
 
         const Toast = Swal.mixin({
             toast: true,
@@ -100,12 +150,26 @@
                     $('#inputAmount').val('');
                     $('#inputType').children('option:first').prop('selected', true);
                 },
-                error: function (data) {
-                    Swal.fire({
-                        type: 'error',
-                        title: 'Algo de errado aconteceu!',
-                        text: data.responseJSON.message
-                    });
+                error: function (error) {
+                    if (error.status === 422) {
+                        $.each(error.responseJSON.errors, function (i, error) {
+                            let element = $(document).find('[name="' + i + '"]');
+
+                            if (element.hasClass('is-invalid')) {
+                                element.next('.invalid-feedback').text(error[0]);
+                                return;
+                            }
+
+                            element.addClass('is-invalid');
+                            element.after($('<div id="alert-items" class="invalid-feedback">' + error[0] + '</div>'));
+                        });
+                    } else {
+                        Swal.fire({
+                            type: 'error',
+                            title: 'Algo de errado aconteceu!',
+                            text: error.responseJSON.message
+                        });
+                    }
                 }
             });
         });
