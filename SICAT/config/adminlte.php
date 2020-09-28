@@ -233,7 +233,7 @@ return [
     'menu' => [
         [
             'text' => 'Procurar',
-            'search' => true,
+            'search' => false,
             'topnav' => true,
         ],
 
