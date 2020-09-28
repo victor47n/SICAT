@@ -28,5 +28,8 @@ class AppServiceProvider extends ServiceProvider
             'create' => 'novo',
         ]);
 
+        setlocale(LC_TIME, 'pt-br');
+
+
     }
 }

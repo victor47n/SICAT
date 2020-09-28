@@ -23,7 +23,19 @@ class LocaleController extends Controller
     function index(Request $request)
     {
         if ($request->ajax()) {
-            $locales = DB::table('locales')->select('id', 'name', 'status')->get();
+            $locales = DB::table('locales')
+                ->select('id', 'name', 'deleted_at')
+                ->get();
+
+            foreach ($locales as $locale) {
+                $locale->workstations = DB::table('workstations')
+                    ->select('workstations.name')
+                    ->join('locales', 'workstations.locale_id', '=', 'locales.id')
+                    ->where('workstations.locale_id', '=', $locale->id)
+                    ->whereNull('locales.deleted_at')
+                    ->take(3)
+                    ->get();
+            };
 
             try {
                 return DataTables::of($locales)
@@ -31,16 +43,16 @@ class LocaleController extends Controller
 
                         $result = '<div class="btn-group btn-group-sm" role="group" aria-label="Exemplo básico">';
                         if (Gate::allows('rolesUser', 'workstation_view')) {
-                            $result .= '<button type="button" id="' . $data->id . '" class="btn btn-primary"  data-toggle="modal" data-target="#modalEdit"  onclick="showModal(' . $data->id . ')"><i class="fas fa-fw fa-eye"></i>Visualizar</button>';
+                            $result .= '<button type="button" id="' . $data->id . '" class="btn btn-primary"  data-toggle="modal" data-target="#modalView" data-whatever="' . $data->id . '"><i class="fas fa-fw fa-eye"></i>Visualizar</button>';
                         }
                         if (Gate::allows('rolesUser', 'workstation_edit')) {
-                            $result .= '<button type="button" id="' . $data->id . '" class="btn btn-secondary" data-toggle="modal" data-target="#modalEdit" onclick="showEditModal(' . $data->id . ')"><i class="fas fa-fw fa-edit"></i>Editar</button>';
+                            $result .= '<button type="button" id="' . $data->id . '" class="btn btn-secondary" data-toggle="modal" data-target="#modalEdit" data-whatever="' . $data->id . '"><i class="fas fa-fw fa-edit"></i>Editar</button>';
                         }
                         if (Gate::allows('rolesUser', 'workstation_disable')) {
-                            if ($data->status == 'able') {
+                            if ($data->deleted_at === null) {
                                 $result .= '<button type="button" id="' . $data->id . '" class="btn btn-danger" onclick="disable(' . $data->id . ')"><i class="fas fa-fw fa-trash"></i>Desabilitar</button>';
                             } else {
-                                $result .= '<button type="button" id="' . $data->id . '" class="btn btn-success" onclick="able(' . $data->id . ')"><i class="fas fa-fw fa-check"></i>Habilitar</button>';
+                                $result .= '<button type="button" id="' . $data->id . '" class="btn btn-success" onclick="able(' . $data->id . ')"><i class="fas fa-fw fa-trash-restore"></i>Habilitar</button>';
                             }
                         }
 
@@ -68,17 +80,28 @@ class LocaleController extends Controller
 
     function store(Request $req)
     {
-        $data = $req->all();
-        $local = null;
+        try {
+            $validatedData = $req->validate([
+                'name' => 'required',
+            ]);
 
-        DB::transaction(function () use ($data, $local) {
-            $local = Locale::create(["name" => $data['name']]);
-            foreach ($data['sala'] as $sala) {
-                $local->workstation()->create(["name" => $sala]);
+            $data = $req->only(['name', 'room']);
+
+            DB::transaction(function () use ($data) {
+                $locale = Locale::create(["name" => $data['name']]);
+                foreach ($data['room'] as $room) {
+                    $locale->workstation()->create(["name" => $room]);
+                }
+            });
+
+            return response()->json(["message" => "Cadastrado com sucesso"], 201);
+        } catch (\Exception $e) {
+            if (config('app.debug')) {
+                return response()->json(["message" => $e->getMessage()], 400);
             }
-        });
 
-        return response()->json(array("message" => "Cadastrado com sucesso", "data" => json_encode($local)));
+            return response()->json(["message" => $e->getMessage()], 400);
+        }
     }
 
     function update(Request $req, $id)
@@ -114,9 +137,7 @@ class LocaleController extends Controller
     function disable($id)
     {
         try {
-            $locale = Locale::find($id);
-            $locale->status = "disable";
-            $locale->save();
+            Locale::destroy($id);
 
             return response()->json(["message" => "Local desabilitado com sucesso!"], 201);
         } catch (\Exception $e) {
@@ -131,9 +152,8 @@ class LocaleController extends Controller
     function able($id)
     {
         try {
-            $locale = Locale::find($id);
-            $locale->status = "able";
-            $locale->save();
+
+            Locale::withTrashed()->where('id', $id)->restore();
 
             return response()->json(["message" => "Local habilitado com sucesso!"], 201);
         } catch (\Exception $e) {

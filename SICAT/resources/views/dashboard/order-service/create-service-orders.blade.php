@@ -67,7 +67,7 @@
                         <div class="row">
                             <div class="form-group col-md-4">
                                 <label for="name">Data de realização</label>
-                                <input type="date" class="form-control" name="realized_date" id="realized_date" value="{{ date("Y-m-d", strtotime("-1 days")) }}">
+                                <input type="date" class="form-control" name="realized_date" id="realized_date" value="{{ date("Y-m-d") }}">
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="name">Funcionário designado</label>
@@ -112,6 +112,7 @@
 
 @section('js')
     <script>
+
         const Toast = Swal.mixin({
             toast: true,
             position: 'top-end',
