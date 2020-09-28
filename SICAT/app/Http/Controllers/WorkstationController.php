@@ -27,11 +27,8 @@ class WorkstationController extends Controller
                 ->where('locale_id', '=', $data['id'])
                 ->first();
 
-//            dd($result->data);
-
             return response()->json(["message" => "Cadastrado com sucesso", "data" => $result], 201);
         } catch (Exception $e) {
-//            DB::rollBack();
             if (config('app.debug')) {
                 return response()->json(["message" => $e->getMessage()], 400);
             }

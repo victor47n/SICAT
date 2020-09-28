@@ -42,8 +42,17 @@ class BorrowingController extends Controller
 
             $borrowings = DB::table('borrowings')
                 ->select(['borrowings.id', 'borrowings.requester', 'borrowings.acquisition_date', 'statuses.name as status'])
-                ->join('statuses', 'borrowings.status_id', '=', 'statuses.id')
-                ->get();
+                ->join('statuses', 'borrowings.status_id', '=', 'statuses.id');
+
+            if ($request->get('da_inicio') != null) {
+                $borrowings->where('borrowings.acquisition_date', '>=', $request->get('da_inicio'));
+            }
+
+            if ($request->get('da_fim') != null) {
+                $borrowings->where('borrowings.acquisition_date', '<=', $request->get('da_fim'));
+            }
+
+            $borrowings = $borrowings->get();
 
             foreach ($borrowings as $borrowing) {
                 $borrowing->items = DB::table('borrowed_items')
@@ -158,14 +167,6 @@ class BorrowingController extends Controller
             ->join('statuses', 'borrowed_items.status_id', '=', 'statuses.id')
             ->where('borrowed_items.borrowing_id', '=', $borrowings[0]->id)
             ->get();
-
-        $borrowings[0]->acquisition_date = \Carbon\Carbon::parse($borrowings[0]->acquisition_date)->format('d/m/Y');
-
-        foreach ($borrowings[0]->items as $items) {
-            if ($items->return_date !== null) {
-                $items->return_date = \Carbon\Carbon::parse($items->return_date)->format('d/m/Y');
-            }
-        }
 
         return $borrowings;
     }

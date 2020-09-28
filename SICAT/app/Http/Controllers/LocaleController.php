@@ -33,7 +33,8 @@ class LocaleController extends Controller
                     ->join('locales', 'workstations.locale_id', '=', 'locales.id')
                     ->where('workstations.locale_id', '=', $locale->id)
                     ->whereNull('locales.deleted_at')
-                    ->take(3)
+                    ->whereNull('workstations.deleted_at')
+//                    ->take(3)
                     ->get();
             };
 
@@ -129,6 +130,7 @@ class LocaleController extends Controller
     function show($id)
     {
         $data = Locale::find($id);
+
         $data->workstation = $data->workstation;
 
         return $data;

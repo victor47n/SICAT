@@ -267,14 +267,6 @@
                 },
                 buttons: [
                     {
-                        extend: 'copy',
-                        text: '<i class="fas fa-fw fa-copy"></i>Copiar',
-                        titleAttr: 'Copiar',
-                        exportOptions: {
-                            columns: [1, 2, 3, 4, 5]
-                        }
-                    },
-                    {
                         extend: 'excel',
                         text: '<i class="fas fa-fw fa-file-excel"></i>Excel',
                         titleAttr: 'Exportar Excel',

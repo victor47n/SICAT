@@ -189,12 +189,14 @@
             $('#inputPhoneEdit').inputmask('(99) 9999[9]-9999');
             $('#inputPhoneView').inputmask('(99) 9999[9]-9999');
 
-            var table = $('#tBorrowings');
+            let table = $('#tBorrowings');
+
             table.DataTable({
                 processing: true,
                 ordering: true,
                 order: [[4, "asc"]],
                 serverSide: true,
+                responsive: true,
                 autoWidth: false,
                 deferRender: true,
                 language: {
@@ -237,11 +239,19 @@
                 },
                 buttons: [
                     {
-                        text: 'Filtro',
                         text: '<i class="fas fa-fw fa-filter"></i>Filtro',
                         titleAttr: 'Exibir ou Desativar Filtro',
-                        action: function ( e, dt, node, config ) {
-                            alert( 'Button activated' );
+                        action: function (e, dt, node, config) {
+                            let x = document.getElementById("eFilter");
+                            $('#da_inicio').val('');
+                            $('#da_fim').val('');
+                            table.DataTable().draw();
+
+                            if (x.style.display === "none") {
+                                x.style.display = "block";
+                            } else {
+                                x.style.display = "none";
+                            }
                         }
                     },
                     {
@@ -350,6 +360,10 @@
                 dom: 'B<"row mt-3" <"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>rt<"row mt-3" <"col-sm-12 col-md-5" i><"col-sm-12 col-md-7" p>>',
                 ajax: {
                     url: '{{ route('borrowing.index') }}',
+                    data: function (d) {
+                        d.da_inicio = $('#da_inicio').val();
+                        d.da_fim = $('#da_fim').val();
+                    },
                 },
                 rowId: function (a) {
                     return 'row_' + a.id;
@@ -395,7 +409,7 @@
                     {
                         targets: 3,
                         width: "20%",
-                        render: $.fn.dataTable.render.moment( 'YYYY-MM-DD HH:mm:ss', 'DD/MM/YYYY')
+                        render: $.fn.dataTable.render.moment('YYYY-MM-DD HH:mm:ss', 'DD/MM/YYYY')
                     },
                     {
                         targets: 2,
@@ -430,6 +444,27 @@
                     }
                 ],
                 drawCallback: function () {
+                    if($('#eFilter').length === 0) {
+                        $('<div id="eFilter" class="mb-3 mt-2" style="display: none">\n' +
+                            '                        <div class="col-12 row">\n' +
+                            '                            <h4>Data de aquisição</h4>\n' +
+                            '                        </div>\n' +
+                            '                        <div class="row">\n' +
+                            '                            <div class="col-xs-12 col-md-6">\n' +
+                            '                                <label>A partir de:</label>\n' +
+                            '                                <input id="da_inicio" type="date" class="form-control">\n' +
+                            '                            </div>\n' +
+                            '                            <div class="col-xs-12 col-md-6">\n' +
+                            '                                <label>Até:</label>\n' +
+                            '                                <input id="da_fim" type="date" class="form-control">\n' +
+                            '                            </div>\n' +
+                            '                        </div>\n' +
+                            '                    </div>').insertAfter(".dt-buttons");
+                    }
+                    $("#da_inicio, #da_fim").on("change", function (e) {
+                        table.DataTable().draw();
+                        e.preventDefault();
+                    });
                     $('#tBorrowings tbody tr td:last-child').addClass('text-center');
                     $('#tBorrowings_paginate ul.pagination').addClass("justify-content-start");
                 }
@@ -480,16 +515,22 @@
                     $('#fItemsView').html('');
 
                     data.map(_data => {
+                        let _date = new Date(_data.acquisition_date);
+                        let acquisition_date = ("0" + _date.getDate()).slice(-2) + "/" + ("0" + (_date.getMonth() + 1)).slice(-2) + "/" + _date.getFullYear();
+
                         $('#inputNameView').val(_data.requester);
                         $('#inputEmailView').val(_data.email_requester);
                         $('#inputPhoneView').val(_data.phone_requester);
                         $('#inputOfficeView').val(_data.office_requester);
-                        $('#inputDateView').val(_data.acquisition_date);
+                        $('#inputDateView').val(acquisition_date);
                         $('#inputStatusView').val(_data.status);
 
                         let count = 0;
 
                         _data.items.map(_items => {
+                            let date = new Date(_items.return_date);
+                            let formated_date = ("0" + date.getDate()).slice(-2) + "/" + ("0" + (date.getMonth() + 1)).slice(-2) + "/" + date.getFullYear();
+
                             let tItems = '<div class="form-row">' +
                                 '                            <div class="form-group col-md-12 col-lg-2">' +
                                 '                                <label for="inputNameItemEdit-' + count + '">Item</label>' +
@@ -509,7 +550,7 @@
                                 '                            </div>' +
                                 '                            <div class="form-group col-md-12 col-lg-2">' +
                                 '                                <label for="inputReturnDateItemEdit-' + count + '">Data de devolução</label>' +
-                                '                                <input type="text" class="form-control" id="inputReturnDateItemEdit-' + count + '" value="' + (_items.return_date == null ? "" : _items.return_date) + '">' +
+                                '                                <input type="text" class="form-control" id="inputReturnDateItemEdit-' + count + '" value="' + (_items.return_date == null ? "" : formated_date) + '">' +
                                 '                            </div>' +
                                 '                            <div class="form-group col-md-12 col-lg-2">' +
                                 '                                <label for="inputStatusItemEdit-' + count + '">Status</label>' +
@@ -539,11 +580,14 @@
                     $("#formEdit").removeClass('d-none');
                     $('#fItemsEdit').html('');
                     data.map(_data => {
+                        let _date = new Date(_data.acquisition_date);
+                        let acquisition_date = ("0" + _date.getDate()).slice(-2) + "/" + ("0" + (_date.getMonth() + 1)).slice(-2) + "/" + _date.getFullYear();
+
                         $('#inputNameEdit').val(_data.requester);
                         $('#inputEmailEdit').val(_data.email_requester);
                         $('#inputPhoneEdit').val(_data.phone_requester);
                         $('#inputOfficeEdit').val(_data.office_requester);
-                        $('#inputDateEdit').val(_data.acquisition_date);
+                        $('#inputDateEdit').val(acquisition_date);
                         $('#inputStatusEdit').val(_data.status);
 
                         let countView = 0;
@@ -553,6 +597,8 @@
                             let tItems = '';
 
                             if (_items.status == 'Devolvido') {
+                                let date = new Date(_data.return_date);
+                                let formated_date = date.getFullYear() + "/" + ("0" + (date.getMonth() + 1)).slice(-2) + "/" + ("0" + date.getDate()).slice(-2);
                                 tItems = '<div class="form-row">' +
                                     '                            <div class="form-group col-md-12 col-lg-3">' +
                                     '                                <label for="inputNameItemEdit-' + countView + '">Item</label>' +
@@ -572,7 +618,7 @@
                                     '                            </div>' +
                                     '                            <div class="form-group col-md-12 col-lg-2">' +
                                     '                                <label for="inputReturnDateItemEdit-' + countView + '">Data de devolução</label>' +
-                                    '                                <input type="text" class="form-control" id="inputReturnDateItemEdit-' + countView + '" value="' + _items.return_date + '"' +
+                                    '                                <input type="text" class="form-control" id="inputReturnDateItemEdit-' + countView + '" value="' + formated_date + '"' +
                                     '                                       readonly>' +
                                     '                            </div>' +
                                     '                        </div>';
@@ -580,6 +626,9 @@
                                 $('#fItemsEdit').append(tItems);
                                 countView++
                             } else {
+                                let date = new Date(_data.acquisition_date);
+                                let formated_date = date.getFullYear() + "-" + ("0" + (date.getMonth() + 1)).slice(-2) + "-" + ("0" + date.getDate()).slice(-2);
+
                                 tItems = '<div id="row-' + countEdit + '" class="form-row mt-1 mb-2">' +
                                     '<input type="hidden" id="inputId-' + countEdit + '" name="id" value="' + _items.id + '">' +
                                     '<div class="form-group col-md-12 col-lg-3">' +
@@ -596,8 +645,8 @@
                                     '</div>' +
                                     '<div class="form-group col-md-12 col-lg-3">' +
                                     '<label for="inputDate-' + countEdit + '">Data de devolução</label>' +
-                                    '<input type="date" class="form-control" id="inputDate-' + countEdit + '" name="acquisition_date"' +
-                                    'placeholder="dd/mm/aaaa" required>' +
+                                    '<input type="date" class="form-control" id="inputDate-' + countEdit + '" name="return_date"' +
+                                    'placeholder="dd/mm/aaaa" min="'+ formated_date +'" required>' +
                                     '</div>' +
                                     '<div class="custom-control custom-checkbox align-items-center justify-content-center d-flex col-md-12 col-lg-2">' +
                                     ' <input type="checkbox" class="custom-control-input" id="checkDevolution-' + countEdit + '">' +
@@ -708,7 +757,7 @@
         }
     </script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
-{{--    <script src="//cdn.datatables.net/plug-ins/1.10.21/sorting/datetime-moment.js"></script>--}}
+    {{--    <script src="//cdn.datatables.net/plug-ins/1.10.21/sorting/datetime-moment.js"></script>--}}
     <script src="//cdn.datatables.net/plug-ins/1.10.21/dataRender/datetime.js"></script>
 @stop
 
