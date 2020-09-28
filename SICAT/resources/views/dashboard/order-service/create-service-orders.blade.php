@@ -186,7 +186,6 @@
                     dataType: 'json',
                     data: $('#osForm').serialize(),
                     success: function (data) {
-                        console.log(data);
                         workstations = data.data;
                         $("#workstation_id").html("").removeAttr("disabled");
 

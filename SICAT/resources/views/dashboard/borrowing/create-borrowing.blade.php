@@ -411,7 +411,10 @@
                     });
                 },
                 error: function (data) {
-                    console.log(data);
+                    Toast.fire({
+                        type: 'error',
+                        title: 'Ocorreu um erro ao encontrar os itens'
+                    });
                 }
             });
         });

@@ -235,12 +235,6 @@
 
             let table = $('#tOS');
 
-            $("#dc_inicio, #dc_fim, #ds_inicio,#ds_fim").on("change", function (e) {
-                table.DataTable().draw();
-                e.preventDefault();
-                console.log("A")
-            });
-
             table.DataTable({
                 processing: true,
                 serverSide: true,
@@ -519,7 +513,6 @@
                     $("#dc_inicio, #dc_fim, #ds_inicio,#ds_fim").on("change", function (e) {
                         table.DataTable().draw();
                         e.preventDefault();
-                        console.log("A")
                     });
                     $('#tOS tbody tr td:last-child').addClass('text-center');
                     $('#tOS_paginate ul.pagination').addClass("justify-content-start");
@@ -566,7 +559,6 @@
                 type: "GET",
                 url: `ordens/` + recipient,
                 success: function (data) {
-                    console.log(data);
                     $("#modalView").modal("show");
 
                     $("#formView").removeClass('d-none');
@@ -606,12 +598,7 @@
                 success: function (data) {
                     $('#formEdit').removeClass('d-none');
                     data.map(_data => {
-                        console.log(_data);
                         let date = new Date(_data.realized_date);
-                        console.log(date);
-                        console.log("Dia: " + ("0" + date.getDate()).slice(-2));
-                        console.log("Mês: " + ("0" + (date.getMonth() + 1)).slice(-2));
-                        console.log("Ano: " + date.getFullYear());
                         $("#modalEditar #id").val(_data.id);
                         $("#inputProblemEdit").val(_data.problem);
                         $("#inputProblemTypeEdit").val(_data.problem_type);
@@ -669,7 +656,6 @@
                     $('#tOS').DataTable().ajax.reload();
                 },
                 error: function (data) {
-                    console.log(data);
                     Toast.fire({
                         type: 'error',
                         title: responseJSON.message
@@ -696,7 +682,6 @@
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
                         success: function (data) {
-                            console.log(data);
                             Swal.fire({
                                 title: 'Cancelado!',
                                 text: data.message,

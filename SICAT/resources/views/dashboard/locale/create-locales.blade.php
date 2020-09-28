@@ -108,7 +108,6 @@
             let a = 0;
 
             $("div").on('click', '#delete', function () {
-                console.log($("#delete").parents());
                 $(this).parents()[1].remove();
             });
 
@@ -153,7 +152,6 @@
                             title: 'Algo de errado aconteceu!',
                             text: error.responseJSON.message
                         });
-                        console.log('caiu no erro');
                     }
                 });
             });

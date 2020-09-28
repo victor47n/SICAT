@@ -571,7 +571,10 @@
                     loaderObj.hide();
                 },
                 error: function () {
-                    console.log('Ocorreu um erro ao encontrar o funcionário');
+                    Toast.fire({
+                        type: 'error',
+                        title: 'Ocorreu um erro ao encontrar o funcionário'
+                    });
                 }
             });
         });

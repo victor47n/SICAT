@@ -359,7 +359,6 @@
                 context: 'json',
                 success: function (data) {
                     $("#formEdit").removeClass('d-none');
-                    console.log(typeof data);
 
                     data.map(_data => {
                         $('#inputNameEdit').val(_data.name);
@@ -386,7 +385,10 @@
                     loaderObj.hide();
                 },
                 error: function () {
-                    console.log('Ocorreu um erro ao encontrar o funcionário');
+                    Toast.fire({
+                        type: 'error',
+                        title: 'Ocorreu um erro ao encontrar o item'
+                    });
                 }
             });
         });

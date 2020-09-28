@@ -665,7 +665,10 @@
                     loaderObj.hide();
                 },
                 error: function () {
-                    console.log('Ocorreu um erro ao encontrar ao encontrar o empréstimo');
+                    Toast.fire({
+                        type: 'error',
+                        title: 'Ocorreu um erro ao encontrar o empréstimo'
+                    });
                 }
             });
         });
