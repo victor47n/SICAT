@@ -5,7 +5,7 @@ namespace App\Rules;
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 
-class RoleValid implements Rule
+class ItemExist implements Rule
 {
     /**
      * Create a new rule instance.
@@ -20,22 +20,22 @@ class RoleValid implements Rule
     /**
      * Determine if the validation rule passes.
      *
-     * @param string $attribute
-     * @param mixed $value
+     * @param  string  $attribute
+     * @param  mixed  $value
      * @return bool
      */
     public function passes($attribute, $value)
     {
-        $response = DB::table('roles')
+        $response = DB::table('items')
             ->selectRaw('count(*) as count')
-            ->where('id', '=', $value)
+            ->where('name', '=', $value)
             ->first();
 
         if ($response->count == 0) {
-            return false;
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     /**
@@ -45,6 +45,6 @@ class RoleValid implements Rule
      */
     public function message()
     {
-        return 'Esse nivel de permissão não existe.';
+        return 'Este item já existe. Se desejar fazer alterações, por favor edite-o.';
     }
 }

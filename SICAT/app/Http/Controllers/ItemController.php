@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreItemRequest;
 use App\Item;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -72,21 +73,16 @@ class ItemController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param StoreItemRequest $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(Request $request)
+    public function store(StoreItemRequest $request)
     {
         try {
             $data = $request->only('name', 'amount', 'type_id');
             if ($data['amount'] == 0)
             {
                 $data['availability'] = 'false';
-            }
-
-            if(Item::select('name')->where('name', '=', $data['name'])->exists())
-            {
-                return response()->json(["message" => "Item já existente."], 400);
             }
 
             Item::create($data);
